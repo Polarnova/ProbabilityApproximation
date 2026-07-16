@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Lean and restore Mathlib cache
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          use-mathlib-cache: true
+          use-github-cache: false
+      - name: Restore project build cache
+        uses: actions/cache@v4
+        with:
+          path: .lake/build
+          key: probability-approximation-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            probability-approximation-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
+      - name: Build production library
+        run: lake build ProbabilityApproximation
+      - name: Forbidden token audit
+        run: ./.github/scripts/forbidden_tokens.sh
+      - name: Axiom audit
+        run: ./.github/scripts/audit_axioms.sh
+      - name: Fetch Mathlib cache for Blueprint
+        working-directory: blueprint-verso
+        run: lake exe cache get
+      - name: Restore Blueprint dependency build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            blueprint-verso/.lake/packages/Cli/.lake/build
+            blueprint-verso/.lake/packages/LeanSearchClient/.lake/build
+            blueprint-verso/.lake/packages/MD4Lean/.lake/build
+            blueprint-verso/.lake/packages/Qq/.lake/build
+            blueprint-verso/.lake/packages/VersoBlueprint/.lake/build
+            blueprint-verso/.lake/packages/aesop/.lake/build
+            blueprint-verso/.lake/packages/batteries/.lake/build
+            blueprint-verso/.lake/packages/checkdecls/.lake/build
+            blueprint-verso/.lake/packages/illuminate/.lake/build
+            blueprint-verso/.lake/packages/importGraph/.lake/build
+            blueprint-verso/.lake/packages/plausible/.lake/build
+            blueprint-verso/.lake/packages/proofwidgets/.lake/build
+            blueprint-verso/.lake/packages/subverso/.lake/build
+            blueprint-verso/.lake/packages/verso/.lake/build
+            blueprint-verso/.lake/packages/verso-slides/.lake/build
+          key: probability-blueprint-deps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json') }}
+      - name: Restore Blueprint project build cache
+        uses: actions/cache@v4
+        with:
+          path: blueprint-verso/.lake/build
+          key: probability-blueprint-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json', 'lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            probability-blueprint-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json', 'lake-manifest.json') }}-
+      - name: Build and validate Verso Blueprint
+        working-directory: blueprint-verso
+        run: ./scripts/site.sh build
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: blueprint-verso/_out/site/html-multi
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

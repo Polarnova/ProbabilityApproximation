@@ -1,0 +1,87 @@
+/-
+Copyright (c) 2026 ProbabilityApproximation contributors.
+Released under Apache 2.0 license as described in the file LICENSE.
+-/
+import ProbabilityApproximation.ChenShao.Leaves
+import ProbabilityApproximation.ChenShao.TruncationComparison
+import ProbabilityApproximation.ChenShao.Concentration
+import ProbabilityApproximation.ChenShao.ExponentialConcentration
+import ProbabilityApproximation.ChenShao.UpperTruncation
+import ProbabilityApproximation.ChenShao.UpperTruncatedStein
+import ProbabilityApproximation.ChenShao.UpperTruncatedResidual
+import ProbabilityApproximation.ChenShao.UpperTruncatedExpectedKernel
+import ProbabilityApproximation.ChenShao.UpperTruncatedIndicator
+import ProbabilityApproximation.ChenShao.SteinProductDerivative
+import ProbabilityApproximation.ChenShao.SteinProductIncrement
+import ProbabilityApproximation.ChenShao.UpperTruncatedSteinBounds
+import ProbabilityApproximation.ChenShao.UpperTruncatedAssembly
+import ProbabilityApproximation.ChenShao.UpperTruncatedProduct
+import ProbabilityApproximation.ChenShao.CDFReflection
+import ProbabilityApproximation.ChenShao.ReflectedFamily
+import ProbabilityApproximation.ChenShao.NonuniformAssembly
+import ProbabilityApproximation.ChenShao.NonuniformLargeGamma
+import ProbabilityApproximation.ChenShao.NonuniformReduction
+import ProbabilityApproximation.ChenShao.NonuniformRelease
+import ProbabilityApproximation.ChenShao.ThirdMoment
+import ProbabilityApproximation.ChenShao.FourthMoment
+import ProbabilityApproximation.ChenShao.UniformBerryEsseen
+import ProbabilityApproximation.ChenShao.TruncatedUniform
+import ProbabilityApproximation.ChenShao.NonuniformBerryEsseen
+import ProbabilityApproximation.Stein.IndicatorSolution
+import ProbabilityApproximation.ConvexGeometry.ParallelSets
+import ProbabilityApproximation.ConvexGeometry.MetricProjection
+import ProbabilityApproximation.ConvexGeometry.SquaredDistance
+import ProbabilityApproximation.ConvexGeometry.SmoothCutoff
+import ProbabilityApproximation.ConvexGeometry.ScalarCoarea
+import ProbabilityApproximation.ConvexGeometry.SupportingNormal
+import ProbabilityApproximation.ConvexGeometry.BallProjectionJacobian
+import ProbabilityApproximation.ConvexGeometry.BallGraphJacobian
+import ProbabilityApproximation.ConvexGeometry.GaussianShell
+import ProbabilityApproximation.ConvexGeometry.GaussianShellCoarea
+import ProbabilityApproximation.ConvexGeometry.BallSphereMeasure
+import ProbabilityApproximation.ConvexGeometry.BallSphereMoments
+import ProbabilityApproximation.ConvexGeometry.BallSphereHausdorff
+import ProbabilityApproximation.ConvexGeometry.BallSphericalRearrangement
+import ProbabilityApproximation.ConvexGeometry.BallProjectionArea
+import ProbabilityApproximation.ConvexGeometry.BallRadialGammaBound
+import ProbabilityApproximation.ConvexGeometry.BallRadialMajorant
+import ProbabilityApproximation.ConvexGeometry.BallRadialMass
+import ProbabilityApproximation.ConvexGeometry.BallGaussianPerimeter
+import ProbabilityApproximation.Bentkus.GaussianCompanions
+import ProbabilityApproximation.Bentkus.GaussianCompanionMoments
+import ProbabilityApproximation.Bentkus.CovarianceAlgebra
+import ProbabilityApproximation.Bentkus.InductionBranches
+import ProbabilityApproximation.Bentkus.ParameterClosure
+import ProbabilityApproximation.Bentkus.TaylorRemainder
+import ProbabilityApproximation.Bentkus.Whitening
+import ProbabilityApproximation.Bentkus.LeaveOneOutWhitening
+import ProbabilityApproximation.Bentkus.ProbabilitySpaceTransport
+import ProbabilityApproximation.Bentkus.SmoothingInequality
+import ProbabilityApproximation.Bentkus.Rotation
+import ProbabilityApproximation.Bentkus.GaussianDensityDerivatives
+import ProbabilityApproximation.Bentkus.GaussianIntegrationByParts
+import ProbabilityApproximation.Bentkus.GaussianDensityIntegrationByParts
+import ProbabilityApproximation.Bentkus.CutoffDerivativeGaussianIBP
+import ProbabilityApproximation.Bentkus.AngleCalculus
+import ProbabilityApproximation.Bentkus.Induction
+
+/-!
+# ProbabilityApproximation
+
+Standalone formalization of Berry–Esseen theorems (see `SPEC.md`).
+
+## Verified foundation
+
+* `ProbabilityTheory.uniformBerryEsseen_thirdMoment` — uniform bound with constant `30`
+* `ProbabilityTheory.nonuniformBerryEsseen` — finite-third-moment nonuniform flagship
+* Mathlib-native Stein, concentration, truncation, and moment lemmas used by the release proofs
+
+## Open release target
+
+* `ProbabilityTheory.exists_bentkus_convex_set_constant` — multivariate convex-set flagship
+
+Chen–Shao truncated theorems with constant `41/10` are optional strengthenings, not release blockers.
+
+Every declaration currently exported by this aggregate has a kernel-checked proof.  The remaining
+open flagship is not declared or associated with the Blueprint until its complete proof closes.
+-/

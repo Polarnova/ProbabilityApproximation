@@ -1,0 +1,14 @@
+.DS_Store
+.lake/
+.playwright-cli/
+build/
+output/
+tmp/
+_out/
+blueprint-verso/_out/
+*.pdf
+*.olean
+*.ilean
+*.trace
+__pycache__/
+*.pyc
