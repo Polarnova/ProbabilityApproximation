@@ -1186,7 +1186,7 @@ private theorem integral_fderiv_convexSetCutoff_scaled_unwhitening_stdGaussian_e
   have hPqBq : Pq (Bq r') = r' := by
     dsimp only [Pq, Bq]
     simp only [_root_.smul_apply, smul_smul, map_smul, hPB]
-    rw [mul_inv_cancel₀ hq, one_smul]
+    rw [inv_mul_cancel₀ hq, one_smul]
   have hbase := integral_fderiv_convexSetCutoff_affineGaussian_eq_neg_D1
     hs hε Pq Bq r r' hPqBq
   have hdensity :
@@ -1215,6 +1215,7 @@ private theorem integral_fderiv_convexSetCutoff_scaled_unwhitening_stdGaussian_e
         dsimp only [Pq]
         rw [_root_.smul_apply, map_smul],
     hdensity, hbase]
+  simp_rw [Pq, Bq, _root_.smul_apply, map_smul]
   rfl
 
 /-- First-order Gaussian integration by parts after undoing a positive-definite covariance
