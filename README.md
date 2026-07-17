@@ -21,7 +21,7 @@ $A\subseteq\mathbb R^d$ satisfies
 
 $$
 \left|\mathbb P\!\left[\sum_i X_i\in A\right]-\mathcal N(0,S)(A)\right|
-\le C\,d^{1/4}\sum_i\mathbb E\left\|S^{-1/2}X_i\right\|_2^3.
+\le C\ d^{1/4}\sum_i\mathbb E\left\|S^{-1/2}X_i\right\|_2^3.
 $$
 
 ## Mathematical infrastructure
