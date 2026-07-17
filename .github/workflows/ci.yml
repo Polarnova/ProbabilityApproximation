@@ -88,7 +88,6 @@ jobs:
             incgraph
             listingsutf8
             iftex
-            ifluatex
             hyperref
             ulem
             newunicodechar
