@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ChenShao.Concentration
 import ProbabilityApproximation.Stein.IndicatorSolution
@@ -61,21 +61,16 @@ Target (SPEC §4.1):
 * **Release uniform theorem** `uniformBerryEsseen_thirdMoment`: `|F−Φ| ≤ 30γ` for all `γ`
   (triangle: concentration + residual ≤ (coeff+6)γ ≤ 30γ). SPEC accepts constant `30`.
 
-### Truncated uniform status (see `TruncatedUniform.lean`)
+### Optional truncated strengthening
 
-* Max form at frozen constant: `|F−Φ| ≤ (41/10)·max(β,10/41)`
-  (`chenShao_uniformBerryEsseen_truncated_max`)
-* Large weak pure-linear branch: `|F−Φ| ≤ 1000·β` when `β ≥ 1/1000`
-  (`chenShao_uniformBerryEsseen_truncated_weak_of_large`)
-* Frozen pure-linear `chenShao_uniformBerryEsseen_truncated` at exactly `41/10`
-  is **not** claimed: needs Chen–Shao §4 (R₁–R₄ + Prop. 3.2). Truncation+third-moment
-  BE cannot give `C ≤ 41/10` because the third-moment constant is already `30`.
+The large branch `abs_cdf_sub_le_truncMomentSum_of_large` records the elementary part of the exact
+truncated theorem.  The pure-linear theorem at `41/10` is not claimed: it needs Chen–Shao §4
+(R₁–R₄ and Proposition 3.2), and is not a release dependency.
 
 ### Downstream status
 
 The finite-third-moment nonuniform release theorem is proved in the later one-sided-truncation
-modules and exported as `nonuniformBerryEsseen`.  The two pure-linear truncated statements listed
-above remain optional future strengthenings; neither is a dependency of that release theorem.
+modules and exported as `nonuniformBerryEsseen`.
 -/
 
 open MeasureTheory ProbabilityTheory Real Set Filter

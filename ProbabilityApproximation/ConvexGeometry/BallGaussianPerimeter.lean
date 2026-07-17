@@ -1,9 +1,9 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
-import ProbabilityApproximation.ConvexGeometry.GaussianShell
+import ProbabilityApproximation.ConvexGeometry.BallSphericalProjection
 import Mathlib.Topology.MetricSpace.HausdorffDimension
 
 /-!
@@ -18,12 +18,11 @@ Such a set lies in its proper affine span.  If that span has codimension at leas
 isometric parametrization identifies the affine span with a hyperplane, whose exact Gaussian
 surface content is a one-dimensional standard-Gaussian density and hence at most one.
 
-For sets with nonempty interior, the remaining domain reductions are exact: increasing-ball
-truncation reduces an arbitrary convex set to bounded ones, and closure preserves both the
-frontier and its Gaussian boundary content while turning a bounded set into a compact convex
-body.  Thus `standardGaussianBoundaryContent_le_of_convexBody_case_all` isolates precisely the
-compact, full-dimensional source domain of Ball's projection argument.  The projection/area
-argument itself is the remaining theorem core.
+For sets with nonempty interior, increasing-ball truncation reduces an arbitrary convex set to
+bounded ones, and closure preserves both the frontier and its Gaussian boundary content while
+turning a bounded set into a compact convex body.  The compact full-dimensional case is then
+closed by Ball's supporting-normal spherical projection and the radial Gaussian majorant.  The
+final declaration covers every finite dimension and every convex set.
 -/
 
 open Set MeasureTheory
@@ -33,11 +32,11 @@ noncomputable section
 
 namespace ProbabilityTheory
 
-local instance {d : ℕ} :
+local instance instConvexSpaceRealEuclideanSpaceFin_ballGaussianPerimeter {d : ℕ} :
     Convexity.ConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.ConvexSpace.ofModule
 
-local instance {d : ℕ} :
+local instance instIsModuleConvexSpaceRealEuclideanSpaceFin_ballGaussianPerimeter {d : ℕ} :
     Convexity.IsModuleConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.IsModuleConvexSpace.ofModule
 
@@ -324,5 +323,459 @@ theorem standardGaussianBoundaryContent_le_of_convexBody_case_all {d : ℕ}
   · exact (standardGaussianBoundaryContent_le_one_of_interior_eq_empty hs hempty).trans hK
   · exact standardGaussianBoundaryContent_le_of_convexBody_case hs
       (nonempty_iff_ne_empty.mpr hempty) hbody
+
+/-- In dimensions at least two, the displayed Ball perimeter constant dominates the
+lower-dimensional boundary-content fallback used in the domain-completion reduction. -/
+lemma one_le_ofReal_ballGaussianPerimeterConstant {d : ℕ} (hd : 2 ≤ d) :
+    (1 : ℝ≥0∞) ≤ ENNReal.ofReal (ballGaussianPerimeterConstant d) := by
+  have hdR : (1 : ℝ) ≤ d := by
+    exact_mod_cast (show 1 ≤ d by omega)
+  have hpow : (1 : ℝ) ≤ (d : ℝ) ^ (1 / 4 : ℝ) :=
+    Real.one_le_rpow hdR (by norm_num)
+  have hK : (1 : ℝ) ≤ ballGaussianPerimeterConstant d := by
+    unfold ballGaussianPerimeterConstant
+    nlinarith
+  simpa using ENNReal.ofReal_le_ofReal hK
+
+/-- Ball's Gaussian boundary-content theorem reduces, without changing the public constant or
+the domain, to the compact full-dimensional convex-body projection theorem in dimension at least
+two. -/
+theorem standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_of_convexBody_case
+    {d : ℕ} (hd : 2 ≤ d) {s : Set (EuclideanSpace ℝ (Fin d))}
+    (hs : Convexity.IsConvexSet ℝ s)
+    (hbody : ∀ t : Set (EuclideanSpace ℝ (Fin d)),
+      Convexity.IsConvexSet ℝ t → (interior t).Nonempty → IsCompact t →
+        standardGaussianBoundaryContent t ≤
+          ENNReal.ofReal (ballGaussianPerimeterConstant d)) :
+    standardGaussianBoundaryContent s ≤
+      ENNReal.ofReal (ballGaussianPerimeterConstant d) :=
+  standardGaussianBoundaryContent_le_of_convexBody_case_all hs
+    (one_le_ofReal_ballGaussianPerimeterConstant hd) hbody
+
+private def ballAmbientHyperplaneProjection {d : ℕ}
+    (θ : EuclideanSpace ℝ (Fin d)) :
+    EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d) :=
+  ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin d)) -
+    InnerProductSpace.rankOne ℝ θ θ
+
+private lemma norm_rankOne_self_sub_rankOne_self_le {d : ℕ}
+    (θ φ : EuclideanSpace ℝ (Fin d)) :
+    ‖InnerProductSpace.rankOne ℝ θ θ - InnerProductSpace.rankOne ℝ φ φ‖ ≤
+      ‖θ - φ‖ * (‖θ‖ + ‖φ‖) := by
+  have hdecomp :
+      InnerProductSpace.rankOne ℝ θ θ - InnerProductSpace.rankOne ℝ φ φ =
+        InnerProductSpace.rankOne ℝ (θ - φ) θ +
+          InnerProductSpace.rankOne ℝ φ (θ - φ) := by
+    ext x
+    simp [InnerProductSpace.rankOne_apply]
+  rw [hdecomp]
+  calc
+    ‖InnerProductSpace.rankOne ℝ (θ - φ) θ +
+        InnerProductSpace.rankOne ℝ φ (θ - φ)‖ ≤
+      ‖InnerProductSpace.rankOne ℝ (θ - φ) θ‖ +
+        ‖InnerProductSpace.rankOne ℝ φ (θ - φ)‖ := norm_add_le _ _
+    _ = ‖θ - φ‖ * ‖θ‖ + ‖φ‖ * ‖θ - φ‖ := by
+      rw [InnerProductSpace.norm_rankOne, InnerProductSpace.norm_rankOne]
+    _ = ‖θ - φ‖ * (‖θ‖ + ‖φ‖) := by ring
+
+private lemma continuous_ballAmbientHyperplaneProjection {d : ℕ} :
+    Continuous (ballAmbientHyperplaneProjection (d := d)) := by
+  rw [continuous_iff_continuousAt]
+  intro φ
+  rw [Metric.continuousAt_iff]
+  intro ε hε
+  let M : ℝ := 2 * ‖φ‖ + 1
+  have hM : 0 < M := by dsimp only [M]; positivity
+  refine ⟨min 1 (ε / M), lt_min zero_lt_one (div_pos hε hM), ?_⟩
+  intro θ hθ
+  have hdistOne : dist θ φ < 1 := hθ.trans_le (min_le_left _ _)
+  have hnormθ : ‖θ‖ < ‖φ‖ + 1 := by
+    calc
+      ‖θ‖ ≤ ‖θ - φ‖ + ‖φ‖ := by
+        have := norm_add_le (θ - φ) φ
+        simpa using this
+      _ < 1 + ‖φ‖ := by
+        rw [dist_eq_norm] at hdistOne
+        linarith
+      _ = ‖φ‖ + 1 := by ring
+  have hdistDiv : dist θ φ < ε / M := hθ.trans_le (min_le_right _ _)
+  have hrank := norm_rankOne_self_sub_rankOne_self_le θ φ
+  have hfactor : ‖θ‖ + ‖φ‖ < M := by
+    dsimp only [M]
+    linarith
+  rw [dist_eq_norm]
+  unfold ballAmbientHyperplaneProjection
+  rw [sub_sub_sub_cancel_left]
+  calc
+    ‖InnerProductSpace.rankOne ℝ φ φ - InnerProductSpace.rankOne ℝ θ θ‖ =
+        ‖InnerProductSpace.rankOne ℝ θ θ - InnerProductSpace.rankOne ℝ φ φ‖ :=
+      norm_sub_rev _ _
+    _ ≤ ‖θ - φ‖ * (‖θ‖ + ‖φ‖) := hrank
+    _ ≤ ‖θ - φ‖ * M :=
+      mul_le_mul_of_nonneg_left hfactor.le (norm_nonneg _)
+    _ < (ε / M) * M := by
+      rw [← dist_eq_norm]
+      exact mul_lt_mul_of_pos_right hdistDiv hM
+    _ = ε := by field_simp
+
+private lemma ballAmbientHyperplaneProjection_apply {d : ℕ}
+    {θ : EuclideanSpace ℝ (Fin d)} (hθ : ‖θ‖ = 1)
+    (x : EuclideanSpace ℝ (Fin d)) :
+    ballAmbientHyperplaneProjection θ x =
+      (((ℝ ∙ θ)ᗮ).orthogonalProjectionOnto x : EuclideanSpace ℝ (Fin d)) := by
+  unfold ballAmbientHyperplaneProjection
+  rw [Submodule.orthogonalProjectionOnto_orthogonal]
+  simp [Submodule.starProjection_unit_singleton ℝ hθ,
+    InnerProductSpace.rankOne_apply]
+
+private lemma normDet_ballAmbientHyperplaneProjection_comp {d : ℕ}
+    {U : Type*} [NormedAddCommGroup U] [InnerProductSpace ℝ U]
+    [FiniteDimensional ℝ U]
+    {θ : EuclideanSpace ℝ (Fin d)} (hθ : ‖θ‖ = 1)
+    (L : U →ₗ[ℝ] EuclideanSpace ℝ (Fin d)) :
+    ((ballAmbientHyperplaneProjection θ).toLinearMap.comp L).normDet =
+      (((ℝ ∙ θ)ᗮ).orthogonalProjectionOnto.toLinearMap.comp L).normDet := by
+  let B := (ballAmbientHyperplaneProjection θ).toLinearMap.comp L
+  have hB (x : U) : B x ∈ (ℝ ∙ θ)ᗮ := by
+    change ballAmbientHyperplaneProjection θ (L x) ∈ (ℝ ∙ θ)ᗮ
+    rw [ballAmbientHyperplaneProjection_apply hθ]
+    exact Subtype.coe_prop _
+  have hmaps : B.codRestrict ((ℝ ∙ θ)ᗮ) hB =
+      ((ℝ ∙ θ)ᗮ).orthogonalProjectionOnto.toLinearMap.comp L := by
+    apply LinearMap.ext
+    intro x
+    apply Subtype.ext
+    exact ballAmbientHyperplaneProjection_apply hθ (L x)
+  rw [← LinearMap.normDet_codRestrict hB, hmaps]
+
+private theorem aemeasurable_ballBoundaryCoordinateProjectedChart_integrand
+    {d : ℕ} (hd : 2 ≤ d)
+    {C : Set (EuclideanSpace ℝ (Fin d))} (hcompact : IsCompact C)
+    (j : Fin d × Bool) :
+    AEMeasurable
+      (Function.uncurry fun
+        z : (ℝ ∙ ballBoundaryCoordinateDirection j.1)ᗮ ↦
+        fun θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1 ↦
+          ENNReal.ofReal
+              (((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto.toLinearMap.comp
+                (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+                  (ballBoundaryCoordinateChartDomain C j) z).toLinearMap).normDet *
+            ENNReal.ofReal
+              (ballRadialMajorant d
+                ‖ballBoundaryCoordinateProjectedChart C j θ z‖))
+      ((volume.restrict (ballBoundaryCoordinateChartDomain C j)).prod
+        (standardSphereHausdorffMeasure d)) := by
+  let U := (ℝ ∙ ballBoundaryCoordinateDirection j.1)ᗮ
+  let E := EuclideanSpace ℝ (Fin d)
+  let T : Set U := ballBoundaryCoordinateChartDomain C j
+  let φ : U → E := ballBoundaryCoordinateChart C j
+  let D : U → U →L[ℝ] E := fun z ↦ fderivWithin ℝ φ T z
+  let μ : Measure U := volume.restrict T
+  let ν : Measure (Metric.sphere (0 : E) 1) := standardSphereHausdorffMeasure d
+  have hT : MeasurableSet T :=
+    measurableSet_ballBoundaryCoordinateChartDomain hd hcompact j
+  have hφlip := lipschitzOnWith_ballBoundaryCoordinateChart hd hcompact.isClosed j
+  have hDinj : ∀ᵐ z ∂μ, Function.Injective (D z) := by
+    filter_upwards [ae_exists_unit_normal_ballBoundaryCoordinateChart hd hcompact j] with z hz
+    rcases hz with ⟨u, hu, hrange, hcancel, hprojection⟩
+    apply ((D z).toLinearMap.normDet_ne_zero_tfae.out 0 4).mp
+    intro hzero
+    rw [hzero, mul_zero] at hcancel
+    norm_num at hcancel
+  obtain ⟨t, htT, htmeas, hteq, htdiff, _htinj⟩ :=
+    exists_measurable_fullMeasure_differentiableWithinAt_injective
+      hT hφlip hDinj
+  have hD_t : AEMeasurable D (volume.restrict t) := by
+    apply aemeasurable_fderivWithin_general htmeas
+    intro z hz
+    exact (htdiff z hz).hasFDerivWithinAt.mono htT
+  have hD : AEMeasurable D μ := by
+    change AEMeasurable D (volume.restrict T)
+    rw [← Measure.restrict_congr_set hteq]
+    exact hD_t
+  have hφ : AEMeasurable φ μ :=
+    hφlip.continuousOn.aemeasurable hT
+  have hDprod : AEMeasurable (fun p : U × Metric.sphere (0 : E) 1 ↦ D p.1)
+      (μ.prod ν) :=
+    hD.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_fst
+  have hφprod : AEMeasurable (fun p : U × Metric.sphere (0 : E) 1 ↦ φ p.1)
+      (μ.prod ν) :=
+    hφ.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_fst
+  have hQ : Measurable (fun p : U × Metric.sphere (0 : E) 1 ↦
+      ballAmbientHyperplaneProjection (p.2 : E)) :=
+    (continuous_ballAmbientHyperplaneProjection.comp
+      (continuous_subtype_val.comp continuous_snd)).measurable
+  have hcompContinuous : Continuous fun
+      p : (E →L[ℝ] E) × (U →L[ℝ] E) ↦ p.1.comp p.2 :=
+    continuous_fst.clm_comp continuous_snd
+  have hQD : AEMeasurable (fun p : U × Metric.sphere (0 : E) 1 ↦
+      (ballAmbientHyperplaneProjection (p.2 : E)).comp (D p.1))
+      (μ.prod ν) :=
+    hcompContinuous.measurable.comp_aemeasurable
+      (hQ.aemeasurable.prodMk hDprod)
+  have happlyContinuous : Continuous fun p : (E →L[ℝ] E) × E ↦ p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hQφ : AEMeasurable (fun p : U × Metric.sphere (0 : E) 1 ↦
+      ballAmbientHyperplaneProjection (p.2 : E) (φ p.1))
+      (μ.prod ν) :=
+    happlyContinuous.measurable.comp_aemeasurable
+      (hQ.aemeasurable.prodMk hφprod)
+  have hJ : AEMeasurable (fun p : U × Metric.sphere (0 : E) 1 ↦
+      ENNReal.ofReal
+        ((ballAmbientHyperplaneProjection (p.2 : E)).comp
+          (D p.1)).toLinearMap.normDet) (μ.prod ν) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable
+      (continuous_normDet.measurable.comp_aemeasurable hQD)
+  have hM : AEMeasurable (fun p : U × Metric.sphere (0 : E) 1 ↦
+      ENNReal.ofReal
+        (ballRadialMajorant d
+          ‖ballAmbientHyperplaneProjection (p.2 : E) (φ p.1)‖))
+      (μ.prod ν) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable
+      (((continuous_ballRadialMajorant d).comp continuous_norm).measurable.comp_aemeasurable hQφ)
+  have hambient := hJ.mul hM
+  apply hambient.congr
+  filter_upwards with p
+  rcases p with ⟨z, θ⟩
+  have hθ : ‖(θ : E)‖ = 1 := by
+    simpa [Metric.mem_sphere] using θ.property
+  change
+    ENNReal.ofReal
+        ((ballAmbientHyperplaneProjection (θ : E)).toLinearMap.comp
+          (D z).toLinearMap).normDet *
+      ENNReal.ofReal
+        (ballRadialMajorant d
+          ‖ballAmbientHyperplaneProjection (θ : E) (φ z)‖) = _
+  rw [normDet_ballAmbientHyperplaneProjection_comp hθ]
+  rw [ballAmbientHyperplaneProjection_apply hθ]
+  rfl
+
+private theorem lintegral_lintegral_ballBoundaryCoordinateProjectedChart_swap
+    {d : ℕ} (hd : 2 ≤ d)
+    {C : Set (EuclideanSpace ℝ (Fin d))} (hcompact : IsCompact C)
+    (j : Fin d × Bool) :
+    (∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+      ∫⁻ θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+        ENNReal.ofReal
+            (((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto.toLinearMap.comp
+              (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+                (ballBoundaryCoordinateChartDomain C j) z).toLinearMap).normDet *
+          ENNReal.ofReal
+            (ballRadialMajorant d
+              ‖ballBoundaryCoordinateProjectedChart C j θ z‖)
+        ∂standardSphereHausdorffMeasure d ∂volume) =
+      ∫⁻ θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+        ∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+          ENNReal.ofReal
+              (((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto.toLinearMap.comp
+                (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+                  (ballBoundaryCoordinateChartDomain C j) z).toLinearMap).normDet *
+            ENNReal.ofReal
+              (ballRadialMajorant d
+                ‖ballBoundaryCoordinateProjectedChart C j θ z‖)
+          ∂volume ∂standardSphereHausdorffMeasure d := by
+  exact lintegral_lintegral_swap
+    (aemeasurable_ballBoundaryCoordinateProjectedChart_integrand hd hcompact j)
+
+private theorem lintegral_ballBoundaryCoordinateChart_gaussianDensity_le_sphereProjection
+    {d : ℕ} (hd : 2 ≤ d)
+    {C : Set (EuclideanSpace ℝ (Fin d))} (hcompact : IsCompact C)
+    (j : Fin d × Bool) :
+    (∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+        ENNReal.ofReal
+            (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+              (ballBoundaryCoordinateChartDomain C j) z).toLinearMap.normDet *
+          ENNReal.ofReal
+            (standardGaussianDensityReal (ballBoundaryCoordinateChart C j z)) ∂volume) ≤
+      (standardSphereHausdorffMeasure d univ)⁻¹ *
+        ∫⁻ θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+          ∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+            ENNReal.ofReal
+                (((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto.toLinearMap.comp
+                  (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+                    (ballBoundaryCoordinateChartDomain C j) z).toLinearMap).normDet *
+              ENNReal.ofReal
+                (ballRadialMajorant d
+                  ‖ballBoundaryCoordinateProjectedChart C j θ z‖)
+            ∂volume ∂standardSphereHausdorffMeasure d := by
+  let T := ballBoundaryCoordinateChartDomain C j
+  let φ := ballBoundaryCoordinateChart C j
+  let F := fun
+      z : (ℝ ∙ ballBoundaryCoordinateDirection j.1)ᗮ ↦
+      fun θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1 ↦
+        ENNReal.ofReal
+            (((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto.toLinearMap.comp
+              (fderivWithin ℝ φ T z).toLinearMap).normDet *
+          ENNReal.ofReal
+            (ballRadialMajorant d
+              ‖ballBoundaryCoordinateProjectedChart C j θ z‖)
+  have hF : AEMeasurable (Function.uncurry F)
+      ((volume.restrict T).prod (standardSphereHausdorffMeasure d)) := by
+    simpa only [T, φ, F] using
+      aemeasurable_ballBoundaryCoordinateProjectedChart_integrand hd hcompact j
+  have hFinner : AEMeasurable
+      (fun z ↦ ∫⁻ θ, F z θ ∂standardSphereHausdorffMeasure d)
+      (volume.restrict T) := hF.lintegral_prod_right
+  have hpoint : ∀ᵐ z ∂volume.restrict T,
+      ENNReal.ofReal
+          (fderivWithin ℝ φ T z).toLinearMap.normDet *
+        ENNReal.ofReal (standardGaussianDensityReal (φ z)) ≤
+      (standardSphereHausdorffMeasure d univ)⁻¹ *
+        ∫⁻ θ, F z θ ∂standardSphereHausdorffMeasure d := by
+    filter_upwards [ae_exists_unit_normal_ballBoundaryCoordinateChart hd hcompact j] with z hz
+    rcases hz with ⟨u, hu, hrange, hcancel, hprojection⟩
+    let J : ℝ := (fderivWithin ℝ φ T z).toLinearMap.normDet
+    let N : EuclideanSpace ℝ (Fin d) := J • u
+    have hJ : 0 ≤ J := LinearMap.normDet_nonneg _
+    have hnormN : ‖N‖ = J := by
+      dsimp only [N]
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hJ, hu, mul_one]
+    have hleft :
+        ENNReal.ofReal J * ENNReal.ofReal (standardGaussianDensityReal (φ z)) =
+          ENNReal.ofReal (standardGaussianDensityReal (φ z) * ‖N‖) := by
+      rw [hnormN, ENNReal.ofReal_mul (standardGaussianDensityReal_nonneg (φ z))]
+      ac_rfl
+    have hright :
+        (∫⁻ θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+          ENNReal.ofReal
+              (ballRadialMajorant d
+                ‖((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto (φ z)‖) *
+            ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N|
+          ∂standardSphereHausdorffMeasure d) =
+        ∫⁻ θ, F z θ ∂standardSphereHausdorffMeasure d := by
+      apply lintegral_congr
+      intro θ
+      have hθ : ‖(θ : EuclideanSpace ℝ (Fin d))‖ = 1 := by
+        simpa [Metric.mem_sphere] using θ.property
+      have hinnerN :
+          |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N| =
+            |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) u| * J := by
+        dsimp only [N]
+        rw [real_inner_smul_right, abs_mul, abs_of_nonneg hJ]
+        ring
+      have hproj := hprojection (θ : EuclideanSpace ℝ (Fin d)) hθ
+      dsimp only [F]
+      rw [hinnerN, ← hproj]
+      unfold ballBoundaryCoordinateProjectedChart
+      rw [mul_comm]
+    rw [hleft]
+    have hball :=
+      standardGaussianDensityReal_mul_norm_le_sphere_ballRadialMajorant_absInner
+        hd (φ z) N
+    rw [hright] at hball
+    exact hball
+  calc
+    (∫⁻ z in T,
+        ENNReal.ofReal (fderivWithin ℝ φ T z).toLinearMap.normDet *
+          ENNReal.ofReal (standardGaussianDensityReal (φ z)) ∂volume) ≤
+        ∫⁻ z in T,
+          (standardSphereHausdorffMeasure d univ)⁻¹ *
+            (∫⁻ θ, F z θ ∂standardSphereHausdorffMeasure d) ∂volume :=
+      lintegral_mono_ae hpoint
+    _ = (standardSphereHausdorffMeasure d univ)⁻¹ *
+        ∫⁻ z in T, ∫⁻ θ, F z θ ∂standardSphereHausdorffMeasure d ∂volume := by
+      rw [lintegral_const_mul'' _ hFinner]
+    _ = (standardSphereHausdorffMeasure d univ)⁻¹ *
+        ∫⁻ θ, ∫⁻ z in T, F z θ ∂volume
+          ∂standardSphereHausdorffMeasure d := by
+      rw [lintegral_lintegral_ballBoundaryCoordinateProjectedChart_swap
+        hd hcompact j]
+    _ = _ := by rfl
+
+/-- Ball's Gaussian perimeter estimate for the compact full-dimensional source domain of the
+projection argument. -/
+theorem standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_compactBody
+    {d : ℕ} (hd : 2 ≤ d) {C : Set (EuclideanSpace ℝ (Fin d))}
+    (hC : Convexity.IsConvexSet ℝ C) (hcompact : IsCompact C)
+    (hinterior : (interior C).Nonempty) :
+    standardGaussianBoundaryContent C ≤
+      ENNReal.ofReal (ballGaussianPerimeterConstant d) := by
+  let S : ℝ≥0∞ := standardSphereHausdorffMeasure d univ
+  let K : ℝ≥0∞ := ENNReal.ofReal (ballGaussianPerimeterConstant d)
+  let A : (j : Fin d × Bool) →
+      Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1 → ℝ≥0∞ := fun j θ ↦
+    ∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+      ENNReal.ofReal
+          (((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto.toLinearMap.comp
+            (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+              (ballBoundaryCoordinateChartDomain C j) z).toLinearMap).normDet *
+        ENNReal.ofReal
+          (ballRadialMajorant d
+            ‖ballBoundaryCoordinateProjectedChart C j θ z‖) ∂volume
+  have hA (j : Fin d × Bool) : AEMeasurable (A j)
+      (standardSphereHausdorffMeasure d) := by
+    exact (aemeasurable_ballBoundaryCoordinateProjectedChart_integrand
+      hd hcompact j).lintegral_prod_left
+  have hchart (j : Fin d × Bool) :
+      (∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+          ENNReal.ofReal
+              (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+                (ballBoundaryCoordinateChartDomain C j) z).toLinearMap.normDet *
+            ENNReal.ofReal
+              (standardGaussianDensityReal (ballBoundaryCoordinateChart C j z)) ∂volume) ≤
+        S⁻¹ * ∫⁻ θ, A j θ ∂standardSphereHausdorffMeasure d := by
+    simpa only [S, A] using
+      lintegral_ballBoundaryCoordinateChart_gaussianDensity_le_sphereProjection
+        hd hcompact j
+  have hfixed (θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1) :
+      (∑' j : Fin d × Bool, A j θ) ≤ K := by
+    have hθ : ‖(θ : EuclideanSpace ℝ (Fin d))‖ = 1 := by
+      simpa [Metric.mem_sphere] using θ.property
+    simpa only [A, K, ballGaussianPerimeterConstant] using
+      tsum_lintegral_ballBoundaryCoordinateProjectedChart_ballRadialMajorant_le
+        hd hC hcompact hinterior hθ
+  have hSne : S ≠ 0 := by
+    exact standardSphereHausdorffMeasure_apply_univ_ne_zero d (by omega)
+  have hStop : S ≠ ∞ := by
+    exact measure_ne_top (standardSphereHausdorffMeasure d) univ
+  unfold standardGaussianBoundaryContent
+  rw [lintegral_frontier_eq_tsum_ballBoundaryCoordinateCharts
+    hd hC hcompact hinterior
+      (fun x ↦ ENNReal.ofReal (standardGaussianDensityReal x))
+      measurable_standardGaussianDensityReal.ennreal_ofReal]
+  change (∑' j : Fin d × Bool,
+      ∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+        ENNReal.ofReal
+            (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+              (ballBoundaryCoordinateChartDomain C j) z).toLinearMap.normDet *
+          ENNReal.ofReal
+            (standardGaussianDensityReal (ballBoundaryCoordinateChart C j z)) ∂volume) ≤ K
+  calc
+    (∑' j : Fin d × Bool,
+        ∫⁻ z in ballBoundaryCoordinateChartDomain C j,
+          ENNReal.ofReal
+              (fderivWithin ℝ (ballBoundaryCoordinateChart C j)
+                (ballBoundaryCoordinateChartDomain C j) z).toLinearMap.normDet *
+            ENNReal.ofReal
+              (standardGaussianDensityReal (ballBoundaryCoordinateChart C j z)) ∂volume) ≤
+        ∑' j : Fin d × Bool,
+          S⁻¹ * ∫⁻ θ, A j θ ∂standardSphereHausdorffMeasure d := by
+      gcongr with j
+      exact hchart j
+    _ = S⁻¹ * ∑' j : Fin d × Bool,
+        ∫⁻ θ, A j θ ∂standardSphereHausdorffMeasure d :=
+      ENNReal.tsum_mul_left
+    _ = S⁻¹ * ∫⁻ θ, ∑' j : Fin d × Bool, A j θ
+        ∂standardSphereHausdorffMeasure d := by
+      rw [lintegral_tsum fun j ↦ hA j]
+    _ ≤ S⁻¹ * ∫⁻ _θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1, K
+        ∂standardSphereHausdorffMeasure d := by
+      gcongr with θ
+      exact hfixed θ
+    _ = S⁻¹ * (K * S) := by
+      rw [lintegral_const]
+    _ = K := by
+      rw [show S⁻¹ * (K * S) = (S⁻¹ * S) * K by ac_rfl,
+        ENNReal.inv_mul_cancel hSne hStop, one_mul]
+
+/-- Ball's boundary-content theorem for every convex set in dimension at least two. -/
+theorem standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant
+    {d : ℕ} (hd : 2 ≤ d) {s : Set (EuclideanSpace ℝ (Fin d))}
+    (hs : Convexity.IsConvexSet ℝ s) :
+    standardGaussianBoundaryContent s ≤
+      ENNReal.ofReal (ballGaussianPerimeterConstant d) := by
+  apply standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_of_convexBody_case hd hs
+  intro t ht htinterior htcompact
+  exact standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_compactBody hd ht htcompact htinterior
 
 end ProbabilityTheory

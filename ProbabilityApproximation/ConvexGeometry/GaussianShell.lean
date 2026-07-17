@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.Bentkus.GaussianDensityDerivatives
 import ProbabilityApproximation.Bentkus.SmoothingInequality
@@ -24,8 +24,8 @@ theorem.  Ball (1993), Theorem 4, printed pp. 415--419, proves the boundary-dens
 proof on printed pp. 2843--2845, identifies the supremum of those boundary integrals with both the
 outer- and inner-shell difference quotients by the coarea formula for signed distance.
 
-The declarations below prove the parts that do not require the missing codimension-one coarea
-theorem in Mathlib:
+The declarations below supply the signed-distance and boundary-profile infrastructure consumed by
+the completed one-dimensional coarea argument in `GaussianShellCoarea`:
 
 * standard Gaussian measure is dominated by Euclidean volume in every finite dimension;
 * convex frontiers therefore have zero standard-Gaussian measure;
@@ -33,8 +33,8 @@ theorem in Mathlib:
   zero, and negative fibers are identified with the correct parallel-set frontiers;
 * outer and inner shells are identified, up to null boundaries, with signed-distance slabs;
 * the outer and inner shell estimates are complete in dimensions zero and one;
-* Gaussian-weighted Hausdorff boundary profiles and a precise interval-integral lemma package the
-  remaining Ball/coarea composition.
+* Gaussian-weighted Hausdorff boundary profiles and precise interval-integral lemmas package the
+  Ball/coarea composition.
 
 The one-dimensional proof is independent of Ball's theorem.  It splits each shell into its two
 ordered boundary pieces, each of diameter at most `ε`; the standard Gaussian density is at most
@@ -48,11 +48,11 @@ noncomputable section
 
 namespace ProbabilityTheory
 
-local instance {d : ℕ} :
+local instance instConvexSpaceRealEuclideanSpaceFin_gaussianShell {d : ℕ} :
     Convexity.ConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.ConvexSpace.ofModule
 
-local instance {d : ℕ} :
+local instance instIsModuleConvexSpaceRealEuclideanSpaceFin_gaussianShell {d : ℕ} :
     Convexity.IsModuleConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.IsModuleConvexSpace.ofModule
 

@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ChenShao.NonuniformLargeGamma
 import ProbabilityApproximation.ChenShao.NonuniformAssembly
@@ -14,7 +14,7 @@ import ProbabilityApproximation.ChenShao.UniformBerryEsseen
 This module combines the bounded-threshold uniform estimate, the large-third-moment tail branch,
 and the comparison with the one-sided truncated sum.  Its composition theorem takes the central
 Chen--Shao estimate for the truncated sum at `z ≥ 2` and total third moment at most one as an
-explicit input; `NonuniformRelease.lean` supplies that input.
+explicit input; `NonuniformBerryEsseen.lean` supplies that input.
 -/
 
 open MeasureTheory ProbabilityTheory Real

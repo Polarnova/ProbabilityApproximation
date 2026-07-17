@@ -1,6 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ChenShao.Leaves
 import ProbabilityApproximation.ChenShao.TruncationComparison
@@ -21,12 +22,10 @@ import ProbabilityApproximation.ChenShao.ReflectedFamily
 import ProbabilityApproximation.ChenShao.NonuniformAssembly
 import ProbabilityApproximation.ChenShao.NonuniformLargeGamma
 import ProbabilityApproximation.ChenShao.NonuniformReduction
-import ProbabilityApproximation.ChenShao.NonuniformRelease
-import ProbabilityApproximation.ChenShao.ThirdMoment
-import ProbabilityApproximation.ChenShao.FourthMoment
-import ProbabilityApproximation.ChenShao.UniformBerryEsseen
-import ProbabilityApproximation.ChenShao.TruncatedUniform
 import ProbabilityApproximation.ChenShao.NonuniformBerryEsseen
+import ProbabilityApproximation.ChenShao.ThirdMoment
+import ProbabilityApproximation.ChenShao.UniformBerryEsseen
+import ProbabilityApproximation.ChenShao.NonuniformStein
 import ProbabilityApproximation.Stein.IndicatorSolution
 import ProbabilityApproximation.ConvexGeometry.ParallelSets
 import ProbabilityApproximation.ConvexGeometry.MetricProjection
@@ -46,6 +45,8 @@ import ProbabilityApproximation.ConvexGeometry.BallProjectionArea
 import ProbabilityApproximation.ConvexGeometry.BallRadialGammaBound
 import ProbabilityApproximation.ConvexGeometry.BallRadialMajorant
 import ProbabilityApproximation.ConvexGeometry.BallRadialMass
+import ProbabilityApproximation.ConvexGeometry.BallCauchyProjection
+import ProbabilityApproximation.ConvexGeometry.BallSphericalProjection
 import ProbabilityApproximation.ConvexGeometry.BallGaussianPerimeter
 import ProbabilityApproximation.Bentkus.GaussianCompanions
 import ProbabilityApproximation.Bentkus.GaussianCompanionMoments
@@ -63,25 +64,30 @@ import ProbabilityApproximation.Bentkus.GaussianIntegrationByParts
 import ProbabilityApproximation.Bentkus.GaussianDensityIntegrationByParts
 import ProbabilityApproximation.Bentkus.CutoffDerivativeGaussianIBP
 import ProbabilityApproximation.Bentkus.AngleCalculus
+import ProbabilityApproximation.Bentkus.RotationIntegration
+import ProbabilityApproximation.Bentkus.Induction.IdentityCovarianceReduction
+import ProbabilityApproximation.Bentkus.Induction.GaussianDensityComparison
+import ProbabilityApproximation.Bentkus.Induction.SplitGaussianShell
+import ProbabilityApproximation.Bentkus.Induction.SmallAngleEstimate
+import ProbabilityApproximation.Bentkus.Induction.LargeAngleEstimate
 import ProbabilityApproximation.Bentkus.Induction
 
 /-!
 # ProbabilityApproximation
 
-Standalone formalization of Berry–Esseen theorems (see `SPEC.md`).
+Standalone formalization of Berry–Esseen theorems (see `.agents/SPEC.md`).
 
-## Verified foundation
+## Principal theorems
 
 * `ProbabilityTheory.uniformBerryEsseen_thirdMoment` — uniform bound with constant `30`
-* `ProbabilityTheory.nonuniformBerryEsseen` — finite-third-moment nonuniform flagship
-* Mathlib-native Stein, concentration, truncation, and moment lemmas used by the release proofs
-
-## Open release target
-
-* `ProbabilityTheory.exists_bentkus_convex_set_constant` — multivariate convex-set flagship
+* `ProbabilityTheory.nonuniformBerryEsseen` — finite-third-moment nonuniform theorem
+* `ProbabilityTheory.exists_bentkus_convex_set_constant` — multivariate convex-set theorem
+* Mathlib-native scalar Stein, convex-geometric, Gaussian-analytic, induction, whitening, and
+  transport lemmas used by the release proofs
 
 Chen–Shao truncated theorems with constant `41/10` are optional strengthenings, not release blockers.
 
-Every declaration currently exported by this aggregate has a kernel-checked proof.  The remaining
-open flagship is not declared or associated with the Blueprint until its complete proof closes.
+Every declaration exported by this aggregate has a kernel-checked proof. The repository Blueprint
+records the curated mathematical proof DAG leading to the two principal endpoints while omitting
+proof-local bookkeeping.
 -/

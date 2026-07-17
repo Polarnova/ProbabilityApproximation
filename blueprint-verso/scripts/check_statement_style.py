@@ -11,27 +11,29 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = (
-    ROOT / "ProbabilityApproximationBlueprint" / "Scalar.lean",
-    ROOT / "ProbabilityApproximationBlueprint" / "ConvexGeometry.lean",
-    ROOT / "ProbabilityApproximationBlueprint" / "Flagships.lean",
+    ROOT / "ProbabilityApproximationBlueprint" / "NonuniformBerryEsseen.lean",
+    ROOT / "ProbabilityApproximationBlueprint" / "ConvexSetApproximation.lean",
 )
 EXPECTED_USES = {
     "indicator-stein-solution": (),
+    "nonuniform-stein-derivative-bounds": ("indicator-stein-solution",),
     "uniform-leave-one-out-concentration": (),
     "uniform-third-moment-berry-esseen": (
         "indicator-stein-solution", "uniform-leave-one-out-concentration"),
     "bennett-hoeffding-mgf": (),
     "exponential-leave-one-out-concentration": ("bennett-hoeffding-mgf",),
-    "one-sided-truncation-comparison": ("uniform-third-moment-berry-esseen",),
+    "one-sided-truncation-comparison": (),
     "upper-truncated-stein-exchange": (
         "indicator-stein-solution", "one-sided-truncation-comparison"),
-    "upper-truncated-residual-decomposition": ("upper-truncated-stein-exchange",),
+    "upper-truncated-residual-decomposition": (
+        "nonuniform-stein-derivative-bounds", "upper-truncated-stein-exchange"),
     "upper-truncated-r1-r3-bounds": (
         "bennett-hoeffding-mgf", "upper-truncated-residual-decomposition"),
     "upper-truncated-r2-expected-kernel": ("upper-truncated-residual-decomposition",),
     "upper-truncated-indicator-residual": (
         "exponential-leave-one-out-concentration", "upper-truncated-r2-expected-kernel"),
-    "stein-product-increment": ("indicator-stein-solution", "bennett-hoeffding-mgf"),
+    "stein-product-increment": (
+        "nonuniform-stein-derivative-bounds", "bennett-hoeffding-mgf"),
     "upper-truncated-product-residual": (
         "upper-truncated-r2-expected-kernel", "stein-product-increment"),
     "upper-truncated-central-decay": (
@@ -53,6 +55,9 @@ EXPECTED_USES = {
     "gaussian-companion-mixed-moment": (
         "gaussian-companions-and-transport", "gaussian-companion-second-moment-match"),
     "bentkus-rotation-cancellation": ("gaussian-companions-and-transport",),
+    "bentkus-rotation-fubini": (
+        "gaussian-companions-and-transport", "bentkus-rotation-cancellation",
+        "covariance-additivity-and-leave-one-out", "bentkus-smoothing-inequality"),
     "covariance-additivity-and-leave-one-out": ("gaussian-companions-and-transport",),
     "bentkus-whitening-covariance-identity": (),
     "bentkus-whitening-gaussian-pushforward": (
@@ -80,15 +85,23 @@ EXPECTED_USES = {
         "intrinsic-sphere-hausdorff-normalization",
         "ball-projection-jacobian-charts"),
     "ball-spherical-projection-average": (),
-    "ball-spherical-rearrangement": (),
+    "ball-spherical-rearrangement": ("ball-spherical-projection-average",),
     "ball-radial-gamma-peak": (),
     "ball-radial-majorant": ("ball-radial-gamma-peak",),
-    "gaussian-convex-shell": (
-        "gaussian-affine-codimension-one-slicing",
-        "gaussian-signed-distance-coarea-profiles",
+    "ball-spherical-density-majorization": (
+        "intrinsic-sphere-hausdorff-normalization",
         "ball-cauchy-projection-formula",
         "ball-spherical-rearrangement",
         "ball-radial-majorant"),
+    "ball-boundary-projection-area": (
+        "ball-projection-jacobian-charts", "ball-radial-majorant"),
+    "ball-gaussian-perimeter": (
+        "gaussian-affine-codimension-one-slicing",
+        "ball-spherical-density-majorization",
+        "ball-boundary-projection-area"),
+    "gaussian-convex-shell": (
+        "gaussian-signed-distance-coarea-profiles",
+        "ball-gaussian-perimeter"),
     "bentkus-smoothing-inequality": ("bentkus-smooth-cutoff",),
     "density-derivative-integral-bound": (),
     "gaussian-density-third-derivative": (),
@@ -100,6 +113,7 @@ EXPECTED_USES = {
     "gaussian-density-second-order-remainder": (
         "gaussian-density-third-derivative",),
     "bentkus-angle-integrals": (),
+    "bentkus-coordinate-piece-assembly": ("bentkus-angle-integrals",),
     "bentkus-parameter-closure": (),
     "bentkus-trivial-induction-branches": (
         "covariance-additivity-and-leave-one-out",),
@@ -111,21 +125,18 @@ EXPECTED_USES = {
         "density-derivative-integral-bound",
         "gaussian-density-ibp", "cutoff-derivative-shell-ibp",
         "bentkus-taylor-remainders", "gaussian-density-second-order-remainder",
-        "bentkus-angle-integrals",
+        "bentkus-angle-integrals", "bentkus-rotation-fubini",
+        "bentkus-coordinate-piece-assembly",
         "bentkus-parameter-closure",
         "bentkus-rotation-cancellation", "covariance-additivity-and-leave-one-out",
         "gaussian-companion-third-moment-comparison",
         "gaussian-companion-mixed-moment", "bentkus-trivial-induction-branches",
-        "bentkus-leave-one-out-whitening"),
+        "bentkus-leave-one-out-whitening", "bentkus-identity-covariance-contract"),
     "nonuniform-berry-esseen": ("scalar-release-reduction",),
     "bentkus-convex-set": (
         "bentkus-standardized-induction", "bentkus-whitening-one-set-transport"),
 }
-EXPECTED_OPEN = {
-    "gaussian-convex-shell",
-    "bentkus-standardized-induction",
-    "bentkus-convex-set",
-}
+EXPECTED_OPEN: set[str] = set()
 START = re.compile(
     r'^:::(definition|theorem|proposition|corollary|lemma_)\s+"([^"]+)"(.*)$'
 )
@@ -136,10 +147,8 @@ IMPLEMENTATION_TERMS = re.compile(
     r"formalized|compiled|source-open|kernel-checked)\b",
     re.IGNORECASE,
 )
-YEAR = re.compile(r"\b(?:19|20)\d{2}\b")
+CITATION = re.compile(r"\{Citations\.cite[pt]\s+[^}]+\}\[\]")
 PAGES = re.compile(r"\bprinted\s+pp?\.", re.IGNORECASE)
-TITLE = re.compile(r"\*[^*]{4,}\*")
-AUTHOR = re.compile(r"\b(?:Ball|Bentkus|Bikelis|Chen|Raič|Shao)\b")
 LOCATOR = re.compile(
     r"\b(?:Section|Theorem|Lemma|Proposition|equation|equations|condition)\b",
     re.IGNORECASE,
@@ -241,15 +250,13 @@ def main() -> None:
         if not is_open and (not has_lean or has_open_tag):
             errors.append(f"{location}: proved node lacks a declaration or is marked source-open")
         if (
-            YEAR.search(block.citation) is None
+            CITATION.search(block.citation) is None
             or PAGES.search(block.citation) is None
-            or TITLE.search(block.citation) is None
-            or AUTHOR.search(block.citation) is None
             or LOCATOR.search(block.citation) is None
         ):
             errors.append(
-                f"{location}: {block.identifier} lacks a complete author/title/year/locator/"
-                "printed-page citation"
+                f"{location}: {block.identifier} lacks an author-year citation, source locator, "
+                "or printed-page citation"
             )
 
     if errors:

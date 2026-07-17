@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ConvexGeometry.SmoothCutoff
 import Mathlib.MeasureTheory.Integral.Bochner.Set
@@ -28,11 +28,11 @@ noncomputable section
 
 namespace ProbabilityTheory
 
-local instance {d : ℕ} :
+local instance instConvexSpaceRealEuclideanSpaceFin_smoothingInequality {d : ℕ} :
     Convexity.ConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.ConvexSpace.ofModule
 
-local instance {d : ℕ} :
+local instance instIsModuleConvexSpaceRealEuclideanSpaceFin_smoothingInequality {d : ℕ} :
     Convexity.IsModuleConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.IsModuleConvexSpace.ofModule
 
@@ -160,6 +160,14 @@ def convexSetCutoff {d : ℕ} (s : Set (EuclideanSpace ℝ (Fin d))) (ε : ℝ) 
     EuclideanSpace ℝ (Fin d) → ℝ := by
   classical
   exact if s.Nonempty then bentkusCutoff (closure s) ε else 0
+
+/-- The total convex-set cutoff is unchanged when its defining set is replaced by its closure. -/
+@[simp]
+lemma convexSetCutoff_closure {d : ℕ} (s : Set (EuclideanSpace ℝ (Fin d))) (ε : ℝ) :
+    convexSetCutoff (closure s) ε = convexSetCutoff s ε := by
+  rcases s.eq_empty_or_nonempty with rfl | hs
+  · simp
+  · simp only [convexSetCutoff, if_pos hs, if_pos hs.closure, closure_closure]
 
 /-- The total convex-set cutoff is nonnegative. -/
 lemma convexSetCutoff_nonneg {d : ℕ} (s : Set (EuclideanSpace ℝ (Fin d))) (ε : ℝ)

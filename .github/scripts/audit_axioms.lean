@@ -6,12 +6,14 @@ open Lean Elab Command
 /-- Reject nonstandard axioms in the reviewed public release foundation.
 
 The project extends Mathlib's existing `ProbabilityTheory` namespace, so this audit deliberately
-uses an explicit registry rather than scanning every declaration with that prefix. Add a flagship
-to the registry only when its Blueprint node is closed. -/
+uses an explicit registry rather than scanning every declaration with that prefix. Add a reviewed
+public theorem to the registry only after its proof and public role have been audited. -/
 elab "#audit_probability_approximation" : command => do
   let declarations := #[
     ``ProbabilityTheory.uniformBerryEsseen_thirdMoment,
-    ``ProbabilityTheory.nonuniformBerryEsseen
+    ``ProbabilityTheory.nonuniformBerryEsseen,
+    ``ProbabilityTheory.exists_bentkus_identity_covariance_constant,
+    ``ProbabilityTheory.exists_bentkus_convex_set_constant
   ]
   let allowed := NameSet.ofList [``propext, ``Classical.choice, ``Quot.sound]
   let mut sorryOffenders := #[]

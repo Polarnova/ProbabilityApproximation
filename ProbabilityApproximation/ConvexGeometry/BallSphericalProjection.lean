@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ConvexGeometry.BallProjectionArea
 import ProbabilityApproximation.ConvexGeometry.BallCauchyProjection
@@ -617,7 +617,7 @@ theorem ballSphericalRearrangement_radialProfile
       measurePreserving_linearIsometryEquivUnitSphere_standardSphereProbability hd e)
     hF hf hr hu hv huv hα
 
-/-- Two unit directions with nonnegative inner product admit the acute-angle decomposition used
+/-- Two unit directions with nonnegative inner product yield the acute-angle decomposition used
 in Ball's rearrangement argument.  In dimension at least two the auxiliary direction can always
 be chosen unit and orthogonal to the first direction, including the coincident-vector case. -/
 theorem exists_orthogonal_unit_acuteAngle_decomposition
@@ -979,5 +979,195 @@ theorem ofReal_ballGaussianRadialDensity_le_normalizedHausdorff_lintegral
       ofReal_ballRadialProjectionTransform_le_normalizedHausdorff_lintegral
         hd (continuous_ballRadialMajorant d) (antitoneOn_ballRadialMajorant hd)
         (ballRadialMajorant_nonneg d) hr hu hw
+
+private lemma norm_orthogonalProjectionOnto_sq_eq_sub_inner_sq_sphericalProjection
+    {d : ℕ} {v x : EuclideanSpace ℝ (Fin d)} (hv : ‖v‖ = 1) :
+    ‖((ℝ ∙ v)ᗮ).orthogonalProjectionOnto x‖ ^ 2 =
+      ‖x‖ ^ 2 - inner ℝ x v ^ 2 := by
+  have hpyth := Submodule.norm_sq_eq_add_norm_sq_projection x (ℝ ∙ v)
+  have hspan : ‖(ℝ ∙ v).orthogonalProjectionOnto x‖ ^ 2 =
+      inner ℝ x v ^ 2 := by
+    change ‖(ℝ ∙ v).starProjection x‖ ^ 2 = _
+    rw [Submodule.starProjection_unit_singleton ℝ hv]
+    rw [norm_smul, Real.norm_eq_abs, hv, mul_one, sq_abs]
+    rw [real_inner_comm v x]
+  rw [hspan] at hpyth
+  linarith
+
+private lemma norm_orthogonalProjectionOnto_normalized_axis {d : ℕ}
+    {x θ : EuclideanSpace ℝ (Fin d)} (hx : x ≠ 0) (hθ : ‖θ‖ = 1) :
+    ‖((ℝ ∙ θ)ᗮ).orthogonalProjectionOnto x‖ =
+      ‖x‖ * Real.sqrt
+        (1 - |inner ℝ θ (‖x‖⁻¹ • x)| ^ 2) := by
+  have hxnorm : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  have hsq :=
+    norm_orthogonalProjectionOnto_sq_eq_sub_inner_sq_sphericalProjection
+      hθ (x := x)
+  have hinner :
+      inner ℝ x θ = ‖x‖ * inner ℝ (‖x‖⁻¹ • x) θ := by
+    rw [real_inner_smul_left]
+    field_simp
+  have hinnercomm :
+      inner ℝ (‖x‖⁻¹ • x) θ = inner ℝ θ (‖x‖⁻¹ • x) :=
+    real_inner_comm _ _
+  have habsSq :
+      |inner ℝ θ (‖x‖⁻¹ • x)| ^ 2 =
+        inner ℝ θ (‖x‖⁻¹ • x) ^ 2 := sq_abs _
+  have hinside : 0 ≤ 1 - |inner ℝ θ (‖x‖⁻¹ • x)| ^ 2 := by
+    have hu : ‖‖x‖⁻¹ • x‖ = 1 := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hxnorm),
+        inv_mul_cancel₀ hxnorm.ne']
+    have hc := abs_real_inner_le_norm θ (‖x‖⁻¹ • x)
+    rw [hθ, hu, one_mul] at hc
+    have hsqle : |inner ℝ θ (‖x‖⁻¹ • x)| ^ 2 ≤ (1 : ℝ) ^ 2 :=
+      (sq_le_sq₀ (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 1)).2 hc
+    nlinarith
+  rw [← sq_eq_sq₀ (norm_nonneg _)
+    (mul_nonneg (norm_nonneg x) (Real.sqrt_nonneg _))]
+  rw [mul_pow, Real.sq_sqrt hinside, hsq, hinner, hinnercomm, habsSq]
+  ring
+
+private lemma ballSphericalRadialProfile_normalized_eq_projection {d : ℕ}
+    {f : ℝ → ℝ} {x θ : EuclideanSpace ℝ (Fin d)}
+    (hx : x ≠ 0) (hθ : ‖θ‖ = 1) :
+    ballSphericalRadialProfile f ‖x‖
+        |inner ℝ θ (‖x‖⁻¹ • x)| =
+      f ‖((ℝ ∙ θ)ᗮ).orthogonalProjectionOnto x‖ := by
+  unfold ballSphericalRadialProfile
+  rw [norm_orthogonalProjectionOnto_normalized_axis hx hθ]
+
+/-- Ball's spherical projection inequality in the pointwise vector form used by the boundary
+chart area formula.  The vector `N` need not be normalized: its norm is absorbed into the
+absolute normal component under the spherical integral. -/
+theorem standardGaussianDensityReal_mul_norm_le_sphere_ballRadialMajorant_absInner
+    {d : ℕ} (hd : 2 ≤ d)
+    (x N : EuclideanSpace ℝ (Fin d)) :
+    ENNReal.ofReal (standardGaussianDensityReal x * ‖N‖) ≤
+      (standardSphereHausdorffMeasure d univ)⁻¹ *
+        ∫⁻ θ : sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+          ENNReal.ofReal
+              (ballRadialMajorant d
+                ‖((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto x‖) *
+            ENNReal.ofReal
+              |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N|
+          ∂standardSphereHausdorffMeasure d := by
+  by_cases hN : N = 0
+  · subst N
+    simp
+  have hNnorm : 0 < ‖N‖ := norm_pos_iff.mpr hN
+  let w : EuclideanSpace ℝ (Fin d) := ‖N‖⁻¹ • N
+  have hw : ‖w‖ = 1 := by
+    dsimp only [w]
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hNnorm),
+      inv_mul_cancel₀ hNnorm.ne']
+  let u : EuclideanSpace ℝ (Fin d) :=
+    if x = 0 then w else ‖x‖⁻¹ • x
+  have hu : ‖u‖ = 1 := by
+    dsimp only [u]
+    split
+    · exact hw
+    · rename_i hx
+      have hxnorm : 0 < ‖x‖ := norm_pos_iff.mpr hx
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hxnorm),
+        inv_mul_cancel₀ hxnorm.ne']
+  have hprofile (θ : sphere (0 : EuclideanSpace ℝ (Fin d)) 1) :
+      ballSphericalRadialProfile (ballRadialMajorant d) ‖x‖
+          |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) u| =
+        ballRadialMajorant d
+          ‖((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto x‖ := by
+    have hθ : ‖(θ : EuclideanSpace ℝ (Fin d))‖ = 1 := by
+      simpa [Metric.mem_sphere] using θ.property
+    dsimp only [u]
+    split
+    · rename_i hx
+      subst x
+      simp [ballSphericalRadialProfile]
+    · rename_i hx
+      exact ballSphericalRadialProfile_normalized_eq_projection hx hθ
+  have hbase := ofReal_ballGaussianRadialDensity_le_normalizedHausdorff_lintegral
+    hd (norm_nonneg x) hu hw
+  let G : sphere (0 : EuclideanSpace ℝ (Fin d)) 1 → ℝ≥0∞ := fun θ ↦
+    ENNReal.ofReal
+        (ballSphericalRadialProfile (ballRadialMajorant d) ‖x‖
+          |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) u|) *
+      ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) w|
+  have hG : Measurable G := by
+    dsimp only [G]
+    exact (ENNReal.measurable_ofReal.comp
+      ((continuous_ballSphericalRadialProfile
+        (continuous_ballRadialMajorant d) ‖x‖).measurable.comp
+          ((continuous_subtype_val.inner continuous_const).abs.measurable))).mul
+      (ENNReal.measurable_ofReal.comp
+        ((continuous_subtype_val.inner continuous_const).abs.measurable))
+  have hwinner (θ : sphere (0 : EuclideanSpace ℝ (Fin d)) 1) :
+      ENNReal.ofReal ‖N‖ *
+          ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) w| =
+        ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N| := by
+    rw [← ENNReal.ofReal_mul (norm_nonneg N)]
+    congr 1
+    dsimp only [w]
+    rw [real_inner_smul_right, abs_mul, abs_of_pos (inv_pos.mpr hNnorm)]
+    field_simp
+  have hscaleIntegral :
+      ENNReal.ofReal ‖N‖ *
+          (∫⁻ θ, G θ ∂standardSphereHausdorffMeasure d) =
+        ∫⁻ θ : sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+          ENNReal.ofReal
+              (ballRadialMajorant d
+                ‖((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto x‖) *
+            ENNReal.ofReal
+              |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N|
+          ∂standardSphereHausdorffMeasure d := by
+    rw [← lintegral_const_mul _ hG]
+    apply lintegral_congr
+    intro θ
+    dsimp only [G]
+    rw [show ENNReal.ofReal ‖N‖ *
+        (ENNReal.ofReal
+            (ballSphericalRadialProfile (ballRadialMajorant d) ‖x‖
+              |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) u|) *
+          ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) w|) =
+        ENNReal.ofReal
+            (ballSphericalRadialProfile (ballRadialMajorant d) ‖x‖
+              |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) u|) *
+          (ENNReal.ofReal ‖N‖ *
+            ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) w|) by ac_rfl]
+    rw [hwinner, hprofile]
+  have hscaled := mul_le_mul_left' hbase (ENNReal.ofReal ‖N‖)
+  change ENNReal.ofReal ‖N‖ *
+      ENNReal.ofReal
+        (ballGaussianNormalization d * Real.exp (-(‖x‖ ^ 2) / 2)) ≤
+    ENNReal.ofReal ‖N‖ *
+      ((standardSphereHausdorffMeasure d univ)⁻¹ * ∫⁻ θ, G θ
+        ∂standardSphereHausdorffMeasure d) at hscaled
+  have hdensity : standardGaussianDensityReal x =
+      ballGaussianNormalization d * Real.exp (-(‖x‖ ^ 2) / 2) := by
+    unfold standardGaussianDensityReal ballGaussianNormalization
+    rw [mul_comm 2 Real.pi]
+  calc
+    ENNReal.ofReal (standardGaussianDensityReal x * ‖N‖) =
+        ENNReal.ofReal ‖N‖ *
+          ENNReal.ofReal
+            (ballGaussianNormalization d * Real.exp (-(‖x‖ ^ 2) / 2)) := by
+      rw [ENNReal.ofReal_mul (standardGaussianDensityReal_nonneg x), hdensity]
+      ac_rfl
+    _ ≤ ENNReal.ofReal ‖N‖ *
+        ((standardSphereHausdorffMeasure d univ)⁻¹ * ∫⁻ θ, G θ
+          ∂standardSphereHausdorffMeasure d) := hscaled
+    _ = (standardSphereHausdorffMeasure d univ)⁻¹ *
+        ∫⁻ θ : sphere (0 : EuclideanSpace ℝ (Fin d)) 1,
+          ENNReal.ofReal
+              (ballRadialMajorant d
+                ‖((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto x‖) *
+            ENNReal.ofReal
+              |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N|
+          ∂standardSphereHausdorffMeasure d := by
+      rw [show ENNReal.ofReal ‖N‖ *
+          ((standardSphereHausdorffMeasure d univ)⁻¹ *
+            ∫⁻ θ, G θ ∂standardSphereHausdorffMeasure d) =
+          (standardSphereHausdorffMeasure d univ)⁻¹ *
+            (ENNReal.ofReal ‖N‖ *
+              ∫⁻ θ, G θ ∂standardSphereHausdorffMeasure d) by ac_rfl,
+        hscaleIntegral]
 
 end ProbabilityTheory

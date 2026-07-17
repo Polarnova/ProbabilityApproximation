@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Asher Yan with Codex
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import Lake
 
@@ -14,8 +14,13 @@ package ProbabilityApproximationBlueprint where
   precompileModules := false
   leanOptions := #[⟨`experimental.module, true⟩]
 
+input_file referencesBib where
+  path := "ProbabilityApproximationBlueprint/references.bib"
+  text := true
+
 @[default_target]
 lean_lib ProbabilityApproximationBlueprint where
+  extraDepTargets := #[`referencesBib]
 
 lean_exe «blueprint-gen» where
   root := `ProbabilityApproximationBlueprintMain

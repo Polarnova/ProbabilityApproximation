@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.Bentkus.SmoothingInequality
 import ProbabilityApproximation.Bentkus.GaussianDensityIntegrationByParts
@@ -23,11 +23,11 @@ noncomputable section
 
 namespace ProbabilityTheory
 
-local instance {d : ℕ} :
+local instance instConvexSpaceRealEuclideanSpaceFin_cutoffDerivativeGaussianIBP {d : ℕ} :
     Convexity.ConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.ConvexSpace.ofModule
 
-local instance {d : ℕ} :
+local instance instIsModuleConvexSpaceRealEuclideanSpaceFin_cutoffDerivativeGaussianIBP {d : ℕ} :
     Convexity.IsModuleConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.IsModuleConvexSpace.ofModule
 

@@ -1,9 +1,10 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ConvexGeometry.GaussianShell
+import ProbabilityApproximation.ConvexGeometry.BallGaussianPerimeter
 import ProbabilityApproximation.ConvexGeometry.ScalarCoarea
 
 /-!
@@ -152,5 +153,76 @@ theorem stdGaussian_shell_pair_le_ball_of_boundaryContent {d : ℕ}
       (measure_le_of_lintegral_Ioc
         (stdGaussian (EuclideanSpace ℝ (Fin d)))
         (s \ convexInnerParallel s ε) hK hInnerCoarea hInnerBound)
+
+/-- A dimension-at-least-two Gaussian boundary-content estimate for convex sets implies the
+Bentkus shell bound for every convex set, including the empty set, the whole space, and dimensions
+zero and one. -/
+theorem stdGaussian_shell_pair_le_ball_of_boundaryContent_all {d : ℕ}
+    {s : Set (EuclideanSpace ℝ (Fin d))}
+    (hs : Convexity.IsConvexSet ℝ s) {ε : ℝ} (hε : 0 ≤ ε)
+    (hboundary : 2 ≤ d → ∀ t : Set (EuclideanSpace ℝ (Fin d)),
+      Convexity.IsConvexSet ℝ t →
+        standardGaussianBoundaryContent t ≤
+          ENNReal.ofReal (ballGaussianPerimeterConstant d)) :
+    (stdGaussian (EuclideanSpace ℝ (Fin d))).real
+          (Metric.cthickening ε (closure s) \ s) ≤
+        ballGaussianPerimeterConstant d * ε ∧
+      (stdGaussian (EuclideanSpace ℝ (Fin d))).real
+          (s \ convexInnerParallel s ε) ≤
+        ballGaussianPerimeterConstant d * ε := by
+  by_cases hs_empty : s = ∅
+  · subst s
+    constructor <;> simp [ballGaussianPerimeterConstant] <;> positivity
+  by_cases hs_univ : s = univ
+  · subst s
+    constructor <;> simp [convexInnerParallel_univ, ballGaussianPerimeterConstant] <;>
+      positivity
+  by_cases hd0 : d = 0
+  · subst d
+    exact ⟨stdGaussian_outer_shell_finZero_le_ball s ε,
+      stdGaussian_inner_shell_finZero_le_ball s ε⟩
+  by_cases hd1 : d = 1
+  · subst d
+    exact ⟨stdGaussian_outer_shell_finOne_le_ball hs hε,
+      stdGaussian_inner_shell_finOne_le_ball hs hε⟩
+  have hd : 2 ≤ d := by omega
+  exact stdGaussian_shell_pair_le_ball_of_boundaryContent
+    (nonempty_iff_ne_empty.mpr hs_empty) hs_univ hs hε (hboundary hd)
+
+/-- A compact full-dimensional convex-body boundary-content estimate in dimensions at least two
+implies the Bentkus shell bound for every convex set and every finite dimension. -/
+theorem stdGaussian_shell_pair_le_ball_of_convexBody_boundaryContent {d : ℕ}
+    {s : Set (EuclideanSpace ℝ (Fin d))}
+    (hs : Convexity.IsConvexSet ℝ s) {ε : ℝ} (hε : 0 ≤ ε)
+    (hbody : 2 ≤ d → ∀ t : Set (EuclideanSpace ℝ (Fin d)),
+      Convexity.IsConvexSet ℝ t → (interior t).Nonempty → IsCompact t →
+        standardGaussianBoundaryContent t ≤
+          ENNReal.ofReal (ballGaussianPerimeterConstant d)) :
+    (stdGaussian (EuclideanSpace ℝ (Fin d))).real
+          (Metric.cthickening ε (closure s) \ s) ≤
+        ballGaussianPerimeterConstant d * ε ∧
+      (stdGaussian (EuclideanSpace ℝ (Fin d))).real
+          (s \ convexInnerParallel s ε) ≤
+        ballGaussianPerimeterConstant d * ε :=
+  stdGaussian_shell_pair_le_ball_of_boundaryContent_all hs hε
+    fun hd _t ht ↦
+      standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_of_convexBody_case
+        hd ht (hbody hd)
+
+/-- Ball's explicit outer and inner Gaussian shell bounds for every finite-dimensional convex set.
+The constant is `4 * d ^ (1 / 4)`, including the empty set, the whole space, unbounded and
+lower-dimensional convex sets, and dimensions zero and one. -/
+theorem stdGaussian_shell_pair_le_ball {d : ℕ}
+    {s : Set (EuclideanSpace ℝ (Fin d))}
+    (hs : Convexity.IsConvexSet ℝ s) {ε : ℝ} (hε : 0 ≤ ε) :
+    (stdGaussian (EuclideanSpace ℝ (Fin d))).real
+          (Metric.cthickening ε (closure s) \ s) ≤
+        ballGaussianPerimeterConstant d * ε ∧
+      (stdGaussian (EuclideanSpace ℝ (Fin d))).real
+          (s \ convexInnerParallel s ε) ≤
+        ballGaussianPerimeterConstant d * ε :=
+  stdGaussian_shell_pair_le_ball_of_boundaryContent_all hs hε
+    fun hd _t ht ↦
+      standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant hd ht
 
 end ProbabilityTheory

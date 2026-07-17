@@ -2,53 +2,70 @@
 
 ## Required reading and sources of truth
 
-Read `SPEC.md` before planning, formalizing, or reviewing either release theorem. The specification
-freezes the public signatures, representation choices, proof-source routing, and the distinction
-between release blockers and optional Chen--Shao strengthenings.
+Read `.agents/SPEC.md` before planning, formalizing, or reviewing either principal theorem. The
+specification records the public signatures, representation choices, proof-source routing, and the
+distinction between the completed theorem surface and optional Chen--Shao strengthenings.
 
 The project has three maintained sources of truth:
 
 1. The cited papers determine the complete mathematical statements and proof obligations.
 2. Production declarations under `ProbabilityApproximation/**/*.lean` determine formal statements
    and kernel-checked proofs.
-3. Verso sources under `blueprint-verso/ProbabilityApproximationBlueprint/**/*.lean` present a
-   curated mathematical dependency graph, including both release flagships and the important
-   intermediate results that explain their proofs.
+3. Verso sources under `blueprint-verso/ProbabilityApproximationBlueprint/**/*.lean` present the
+   curated mathematical milestone DAG and associate its nodes with compiled production
+   declarations.
 
 Never silently weaken a theorem, add an assumption, change a normalization, or replace its domain.
 Any deliberate generalization or representation bridge must be documented in the public
 declaration and outside the mathematical statement block in the Blueprint.
 
-## Release surface
+## Principal theorems
 
-The library has exactly two release flagship results:
+The library has two principal results:
 
 - `ProbabilityTheory.nonuniformBerryEsseen`;
 - `ProbabilityTheory.exists_bentkus_convex_set_constant`.
 
-They are mathematically parallel: there is no dependency edge between the scalar and multivariate
-routes. A one-dimensional specialization of Bentkus gives a uniform convex-set bound; it does not
-supply the threshold decay in the scalar nonuniform theorem.
+Both declarations are proved and kernel-checked. They are mathematically parallel: there is no
+dependency edge between the scalar and multivariate routes. A one-dimensional specialization of
+Bentkus gives a uniform convex-set bound; it does not supply the threshold decay in the scalar
+nonuniform theorem.
 
-The repository Blueprint may expose a curated subset of mathematically recognizable intermediate
-results: the Stein equation, concentration and truncation milestones, the residual decomposition,
-the metric-projection/distance calculus, the Bentkus cutoff and smoothing inequality, Gaussian
-companions, canonical probability-space transport, the low-order rotation cancellation, and the
-Gaussian density derivative/contraction bound, covariance additivity and leave-one-out identity,
-the Gaussian-companion second/third/mixed moment comparisons, covariance-square-root whitening,
-signed-distance eikonal and level-frontier geometry, and outer/inner shell-slab identities, together
-with the Lipschitz--Schwartz integration-by-parts bound, the trivial small-cardinality and
-large-summand induction branches, leave-one-out whitening, normalized affine codimension-one
-slicing, Ball's supporting-normal projection charts and exact Jacobian cancellation, the
-rotation-invariant spherical moments, the radial Gaussian/Gamma peak, the Gaussian specialization
-of integration by parts, the shell-localized cutoff derivative, the two Taylor remainder estimates,
-the integrated second-order Gaussian-density remainder, the scalar parameter closure, and the major
-perimeter/nonlinear-coarea and nontrivial replacement steps. Do not expose proof-local integrability,
-coercion, measurability, or algebraic bookkeeping merely because its formal proof is substantial.
+The Bentkus implementation has three mathematical layers:
+
+1. The convex-geometric layer develops signed distance, parallel sets, Ball's supporting-normal
+   projection argument, the Gaussian perimeter estimate, and the resulting outer/inner shell bound.
+2. The standardized probabilistic layer proves the identity-total-covariance replacement induction,
+   including Gaussian companions, rotation, smoothing, Taylor remainders, leave-one-out
+   normalization, and parameter closure.
+3. The public transport layer applies covariance-square-root whitening, Gaussian pushforward, and
+   convex-event transport to obtain `exists_bentkus_convex_set_constant` for positive-definite total
+   covariance.
+
+The repository Blueprint is organized as two mathematical chapters.
+`NonuniformBerryEsseen.lean` develops the half-line Stein equation, concentration, one-sided
+truncation, residual estimates, and reflection before stating the nonuniform theorem.
+`ConvexSetApproximation.lean` develops convex distance, signed-distance coarea, Ball's Gaussian
+perimeter theorem, shell bounds, Gaussian replacement, the identity-covariance induction, and
+whitening before stating Bentkus's theorem. `references.bib` is the sole bibliography database;
+`BibTeX.lean` parses it, `Sources.lean` registers its citation keys, `Citations.lean` links each
+author--year citation to its bibliography entry in HTML and PDF, and `References.lean`
+automatically renders the complete reference list.
+
+This curated graph is not a declaration dump. A node must express a recognizable mathematical
+result, group a coherent theorem cluster, and materially explain the route to a release theorem.
+Proof-local measurability, integrability, coercion, reindexing, and algebraic bookkeeping remain
+outside the graph even when their Lean proofs are long. The scalar and multivariate routes remain
+parallel: there is no dependency edge between the two principal theorems.
+
+FABL has a narrower consumer boundary. Its Chapter 5 Blueprint should import only the two external
+theorem interfaces, not reproduce this repository's internal proof DAG.
 
 The exact `41 / 10` truncated uniform theorem and the finite-second-moment nonuniform Chen--Shao
-theorem are optional strengthenings. They do not block the two frozen release targets and do not
-create additional Blueprint nodes.
+theorem are optional strengthenings. They do not block the two frozen release targets. If completed,
+review them under the same node-admission rule: associate them with an existing milestone when they
+express the same mathematical result, and add a node only when they contribute an independently
+recognizable dependency to the proof architecture.
 
 ## Representation contract
 
@@ -77,6 +94,9 @@ Before adding a declaration:
 The `jonwashburn/riemann` repository is reference-only proof prior art for Gaussian calculus. It is
 not a dependency, and none of its types or namespaces may leak into public declarations.
 
+The repository pins Lean and Mathlib at version 4.32.0. Change the toolchain or dependency revision
+only as an intentional, separately verified upgrade.
+
 ## Proof and module policy
 
 - Production Lean must contain no `sorry`, `admit`, project-defined `axiom`, `unsafe`, or
@@ -88,6 +108,9 @@ not a dependency, and none of its types or namespaces may leak into public decla
   belong at the repository edge.
 - Organize modules by complete mathematical role. Keep single-use helpers with their theorem
   cluster and avoid `Core`, `Common`, `Utils`, numbered fragments, and thin forwarding modules.
+- The Bentkus replacement proof is divided by mathematical stage under `Bentkus/Induction/`.
+  Cross-stage helpers live in the narrow `ProbabilityTheory.BentkusInduction` implementation
+  namespace; keep helpers used by only one stage module-private.
 - The root `ProbabilityApproximation.lean` must import every production module that belongs to the
   verified library.
 - Module documentation must distinguish proved results, active gaps, and optional future work
@@ -101,22 +124,22 @@ if another task depends on the last green build artifact.
 
 Every Blueprint node has a complete human-readable mathematical statement containing its domains,
 hypotheses, quantifiers, normalizations, and conclusion. Source and representation commentary stays
-outside statement blocks. Each node carries precise source prose naming authors, title, year,
-section/theorem/lemma/equation, and printed page where the source permits it.
+outside statement blocks. Bibliographic metadata is defined once in `references.bib`; do not
+duplicate it in Lean declarations. `BibTeX.lean` must parse the file and generate the registered
+Verso declarations, while theorem notes use `Citations.citet` and `Citations.citep` with precise
+section, theorem, lemma, equation, and printed-page locators where the source permits them. These
+roles render linked author--year text in HTML and PDF. `References.lean` automatically renders all
+registered entries at the end of the document. Do not repeat full authors, titles, venues, and years
+in theorem notes or reintroduce citation marginalia and PDF footnotes.
 
-An unfinished theorem has no `lean :=` association and carries the `source-open` tag. Never attach
-a placeholder declaration or an unrelated weaker theorem to manufacture a formalized status. Add
-an association and remove `source-open` only after the production declaration passes its narrow
-build and fidelity review. The strict manifest baseline is derived from the curated sources and is
-validated by `scripts/validate_manifest.py`; update that validator in the same change whenever a
-node, declaration association, or reviewed dependency edge changes. Do not maintain a parallel
-status ledger.
-
-The scalar nonuniform flagship is associated with its proved declaration. The Bentkus whitening
-and one-set transport are formalized, but the flagship and its genuinely unfinished
-dimension-at-least-two Gaussian-perimeter/nonlinear-coarea and standardized-replacement
-dependencies remain source-open. Never invent an edge between the scalar and multivariate routes
-to make the graph connected.
+Formalization status is derived from real compiled declaration associations. Associate a node only
+with exact production declarations after their narrow build and fidelity review; never use a
+placeholder declaration, project-defined analytic axiom, or unrelated weaker theorem to manufacture
+status. The strict completed baseline is 65 statements, 345 unique declaration associations,
+97 reviewed dependency edges, and zero open nodes. It is validated by
+`scripts/validate_manifest.py`; update the style and manifest validators in the same change whenever
+a node, association, or reviewed edge changes. Do not maintain a parallel status ledger, and never
+invent an edge between the scalar and multivariate routes to make the graph connected.
 
 Use the official Verso Blueprint UI and default `blueprint` theme. Do not replace its declaration
 status, dependency, summary, or graph controls. Generated HTML, manifests, preview caches, and graph
@@ -149,9 +172,9 @@ During Blueprint editing, build the statement module before rendering the site:
 
 ```bash
 cd blueprint-verso
-lake build +ProbabilityApproximationBlueprint.Scalar
-lake build +ProbabilityApproximationBlueprint.ConvexGeometry
-lake build +ProbabilityApproximationBlueprint.Flagships
+lake build +ProbabilityApproximationBlueprint.NonuniformBerryEsseen
+lake build +ProbabilityApproximationBlueprint.ConvexSetApproximation
+lake build +ProbabilityApproximationBlueprint.References
 ```
 
 `site.sh build` runs the statement-style check, Blueprint library build, HTML render, strict
@@ -164,8 +187,8 @@ formula layout changes materially.
 - Never commit source PDFs, `.lake/`, temporary proof files, `.DS_Store`, browser QA output, or
   generated Blueprint `_out/` artifacts.
 - Track production and Verso sources, toolchain files, Lake configuration and manifests, CI,
-  validation scripts, README, AGENTS, SPEC, and LICENSE.
+  validation scripts, README, AGENTS, `.agents/SPEC.md`, and LICENSE.
 - Do not stage, commit, push, add a remote, or rewrite history unless the user explicitly requests
   it.
-- Before a release commit, inspect the full staged file list and verify that every flagship status
-  agrees across production Lean, Blueprint, manifest expectations, README, and AGENTS.
+- Before a release commit, inspect the full staged file list and verify that theorem status agrees
+  across production Lean, Blueprint, manifest expectations, README, and AGENTS.

@@ -1,7 +1,6 @@
 # ProbabilityApproximation formalization specification
 
-Status: engineering agreement; release theorem statements frozen; scalar release proved; Bentkus
-proof active.
+Status: engineering agreement; release theorem statements frozen; both principal theorems proved.
 
 Baseline: Lean `v4.32.0`, Mathlib `v4.32.0`.
 
@@ -14,7 +13,7 @@ an internal `FABL/Chapter05/ProbabilityLemmas` implementation directory. The mat
 are general probability infrastructure and should be developed independently, reviewed on their
 own terms, and eventually offered upstream to Mathlib.
 
-The library has exactly two release-blocking flagship targets:
+The library has exactly two principal targets:
 
 1. The finite-third-moment nonuniform Berry--Esseen theorem used by O'Donnell's Chapter 5.
 2. Bentkus's complete non-i.i.d. finite-dimensional Berry--Esseen theorem over all measurable
@@ -60,18 +59,26 @@ The project does not initially aim to formalize:
 FABL must not import this library until the relevant theorem is proved, the external library has a
 versioned revision, and the consumer import has passed an axiom audit.
 
-When integration happens, this external project contributes exactly two Blueprint-visible support
-nodes to FABL:
+ProbabilityApproximation's own Blueprint records the curated internal proof architecture. Its
+65 mathematical nodes cover the recognizable Stein, concentration, truncation, residual,
+convex-geometric, Gaussian-perimeter, shell, rotation, induction, and whitening milestones leading
+to the release theorems. It does not expose every production declaration: proof-local
+measurability, integrability, coercion, reindexing, and algebraic bookkeeping remain below the
+Blueprint boundary.
+
+FABL is a downstream consumer and has a deliberately narrower boundary. When integration happens,
+FABL receives exactly these two Blueprint-visible external support nodes:
 
 - `ProbabilityTheory.nonuniformBerryEsseen`;
 - `ProbabilityTheory.exists_bentkus_convex_set_constant`.
 
-The Blueprint must not expose the Stein solution, concentration estimates, Gaussian perimeter,
-smoothing cutoff, Taylor bookkeeping, rotation identity, induction estimates, or whitening
-lemmas as separate nodes. Those are proof implementation. Other genuine Chapter 5 book items
-remain visible in the normal chapter inventory; this rule concerns only the internal dependency
-closure of these two imported theorems. The stronger truncated Chen--Shao theorem may later share
-the scalar node if completed, but it must not block or replace the book-facing declaration.
+FABL does not reproduce the external repository's internal DAG. Other genuine Chapter 5 book items
+remain visible in FABL's normal chapter inventory; this two-node rule concerns only the imported
+ProbabilityApproximation interface. The stronger truncated Chen--Shao theorem may later share the
+scalar node if completed, but it must not block or replace the book-facing declaration. If its
+formal proof reveals an independently recognizable mathematical milestone, the external
+ProbabilityApproximation Blueprint may instead admit that milestone under its normal curation rule;
+FABL's two-node import boundary remains unchanged.
 
 If the exact book statement is a specialization, FABL should prove a thin local corollary from the
 external theorem. The Blueprint may associate both the complete external theorem and the thin
@@ -132,7 +139,7 @@ Its possible contribution is narrow:
 It does not supply convex geometry, Ball's perimeter theorem, a coarea bridge, Bentkus's cutoff,
 probability-space enlargement, Chen--Shao concentration, or Bentkus's induction. Any useful proof
 must be ported to current Mathlib objects behind a Mathlib-native theorem statement. No Riemann
-type or namespace may leak into either flagship theorem.
+type or namespace may leak into either principal theorem.
 
 ### 3.3 Important covariance distinction
 
@@ -340,7 +347,14 @@ ProbabilityApproximation/
   ConvexGeometry/
     ... parallel sets, cutoff, coarea, and Ball perimeter modules ...
   Bentkus/
-    ... companions, Gaussian calculus, induction, and whitening modules ...
+    ... companions, Gaussian calculus, and whitening modules ...
+    Induction/
+      IdentityCovarianceReduction.lean
+      GaussianDensityComparison.lean
+      SplitGaussianShell.lean
+      SmallAngleEstimate.lean
+      LargeAngleEstimate.lean
+    Induction.lean
 ```
 
 The layout rules are:
@@ -353,7 +367,13 @@ The layout rules are:
 - Do not expose constants named only `C₁`, `R3`, `aux_7`, or by equation number.
 - If a proof cluster must cross module boundaries, give it a mathematical namespace and a stable
   statement; otherwise keep the cluster in one cohesive file.
-- The public facade should emphasize the two flagship theorems and the proved uniform theorem. It
+- The implementation namespace `ProbabilityTheory.BentkusInduction` contains only the cross-stage
+  contracts needed by the five proof-bearing induction modules. The six Blueprint-visible
+  Gaussian-remainder and theorem endpoints remain in `ProbabilityTheory` with stable public names.
+- `ProbabilityApproximation.Bentkus.Induction` is the stable consumer entry point and owns the
+  angle assembly, smooth/shell composition, ordinary induction closure, and both existential
+  endpoints; it is not a duplicate theorem facade.
+- The public facade should emphasize the two principal theorems and the proved uniform theorem. It
   should not advertise proof scaffolding.
 
 ## 7. Chen--Shao proof plan
@@ -509,8 +529,9 @@ Gaussian shell estimates
 γ_d(A ∖ A^-ε) ≤ 4 d^(1/4) ε.
 ```
 
-The main anticipated Mathlib gap is the required finite-dimensional coarea/area argument. Isolate
-the smallest sufficient theorem cluster so it can be reviewed and upstreamed independently.
+Mathlib does not presently provide this exact signed-distance shell theorem as one declaration.
+Keep the finite-dimensional area/projection input and the one-dimensional signed-distance coarea
+argument isolated as independently reviewable theorem clusters suitable for upstreaming.
 
 ### 8.3 Smooth convex cutoff
 
@@ -556,7 +577,7 @@ third-moment comparison needed by the paper.
 Do not assume the user's probability space already supports independent Gaussian variables or a
 uniform angle. Move the original family to a canonical law/product space, take products with the
 Gaussian laws and the angle law, and transport the final statement back. No atomless or
-"sufficiently rich probability space" hypothesis may enter the flagship theorem.
+"sufficiently rich probability space" hypothesis may enter the principal theorem.
 
 ### 8.6 Rotation and non-i.i.d. induction
 
@@ -707,7 +728,8 @@ Recommended sequence:
   constant-`30` theorem.
 - **A4 -- accepted uniform theorem:** `uniformBerryEsseen_thirdMoment` with constant `30` (complete).
 - **A5 -- nonuniform concentration:** finite-third-moment form of the required large-threshold estimates.
-- **A6 -- scalar flagship:** `nonuniformBerryEsseen`, including atom-safe negative thresholds.
+- **A6 -- scalar principal theorem:** `nonuniformBerryEsseen`, including atom-safe negative
+  thresholds.
 - **A7 -- Chapter 5 specialization:** normalized weighted Rademacher sums and Exercise 5.31(d).
 - **A8 -- optional strengthening:** Chen--Shao Proposition 3.2 and Theorems 2.1--2.2 with
   truncated moments.
@@ -744,7 +766,7 @@ Recommended sequence:
 | Risk | Required response |
 |---|---|
 | Coarea/area formula missing from Mathlib | Isolate the finite-dimensional theorem actually needed; prepare it for upstream review before Bentkus assembly. |
-| Ball only treats convex bodies and `d ≥ 2` | Prove all extension cases explicitly; never strengthen the flagship assumptions. |
+| Ball only treats convex bodies and `d ≥ 2` | Prove all extension cases explicitly; never strengthen the principal theorem's assumptions. |
 | Individual covariance is singular | Use PSD Gaussian companions; never add per-summand `PosDef`. |
 | Original probability space cannot host auxiliaries | Move to canonical product laws; never assume atomless or rich source spaces. |
 | Bochner integral is written without integrability | Stop and close the `MemLp`/integrability leaf before continuing. |
@@ -762,23 +784,23 @@ weaken a target statement, add a density assumption, or leave speculative public
 
 ## 12. Verification and completion gates
 
-A flagship theorem is complete only when all of the following pass:
+A principal theorem is complete only when all of the following pass:
 
 1. The frozen signature elaborates without modification.
 2. The proof contains no `sorry`, `admit`, project `axiom`, `unsafe`, or `native_decide`.
 3. The package root imports every production module.
 4. A clean `lake build` succeeds under the pinned stable Lean/Mathlib version.
-5. `#print axioms` for both flagship theorems shows only the accepted foundational axioms already
+5. `#print axioms` for both principal theorems shows only the accepted foundational axioms already
    used by Mathlib.
 6. An independent statement audit checks quantifier order, moment strength, CDF boundary,
    covariance convention, set measurability, convexity, whitening, and constant scope.
-7. The scalar flagship proves O'Donnell's finite-third-moment nonuniform bound, and its weighted
+7. The scalar principal theorem proves O'Donnell's finite-third-moment nonuniform bound, and its weighted
    Rademacher specialization is available to FABL.
 8. The Bentkus general-covariance result is proved from the normalized theorem by a verified
    whitening transport.
 9. The project has no dependency on FABL or the Riemann repository.
 10. A clean FABL consumer imports the external facade and its Blueprint exposes only the two
-    flagship probability-approximation nodes.
+    principal probability-approximation nodes.
 
 The release handoff must state the exact dependency revision, clone/update commands, public import
 path, two declaration names, and the results of the build, forbidden-token, and axiom audits.

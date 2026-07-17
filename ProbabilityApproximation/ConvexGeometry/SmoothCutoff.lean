@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.ConvexGeometry.SquaredDistance
 import Mathlib.Analysis.Asymptotics.Lemmas
@@ -25,11 +25,11 @@ noncomputable section
 
 namespace ProbabilityTheory
 
-local instance {d : ℕ} :
+local instance instConvexSpaceRealEuclideanSpaceFin_smoothCutoff {d : ℕ} :
     Convexity.ConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.ConvexSpace.ofModule
 
-local instance {d : ℕ} :
+local instance instIsModuleConvexSpaceRealEuclideanSpaceFin_smoothCutoff {d : ℕ} :
     Convexity.IsModuleConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
   Convexity.IsModuleConvexSpace.ofModule
 
@@ -254,6 +254,13 @@ lemma bentkusProfileDeriv_lipschitz (t u : ℝ) :
 def bentkusCutoff {d : ℕ} (s : Set (EuclideanSpace ℝ (Fin d))) (ε : ℝ)
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   bentkusProfile (Metric.infDist x s / ε)
+
+/-- The Bentkus distance cutoff is unchanged when its defining set is replaced by its closure. -/
+@[simp]
+lemma bentkusCutoff_closure {d : ℕ} (s : Set (EuclideanSpace ℝ (Fin d))) (ε : ℝ) :
+    bentkusCutoff (closure s) ε = bentkusCutoff s ε := by
+  funext x
+  simp only [bentkusCutoff, Metric.infDist_closure]
 
 /-- The Fréchet derivative field of the Bentkus distance cutoff. On the set it is zero; outside
 the set it is the scalar-profile derivative times the normalized metric-projection residual. -/

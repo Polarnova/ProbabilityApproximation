@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.Bentkus.Rotation
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
@@ -452,7 +452,9 @@ private lemma integral_norm_pow_comp_measurePreserving
         ((by fun_prop : Measurable (fun x : E ↦ ‖x‖ ^ k)).aestronglyMeasurable)).symm
     _ = ∫ x, ‖x‖ ^ k ∂ν := by rw [hf.map_eq]
 
-private lemma integral_norm_pow_replacementOriginal_eq
+/-- The original coordinate on Bentkus's canonical replacement space preserves every raw
+norm moment for which the integral is formed. -/
+lemma integral_norm_pow_replacementOriginal_eq
     {n d : ℕ} {Ω : Type*} [MeasurableSpace Ω]
     {μ : Measure Ω} [IsProbabilityMeasure μ]
     {X : Fin n → Ω → EuclideanSpace ℝ (Fin d)}

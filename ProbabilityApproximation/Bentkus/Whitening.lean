@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 ProbabilityApproximation contributors.
+Copyright (c) 2026 Asher Yan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ProbabilityApproximation contributors
+Authors: Asher Yan with ChatGPT 5.6
 -/
 import ProbabilityApproximation.Bentkus.CovarianceAlgebra
 import Mathlib.Analysis.Matrix.Order
@@ -23,6 +23,8 @@ open scoped MatrixOrder RealInnerProductSpace ENNReal
 noncomputable section
 
 namespace ProbabilityTheory
+
+universe u
 
 local instance whiteningConvexSpace {d : ℕ} :
     Convexity.ConvexSpace ℝ (EuclideanSpace ℝ (Fin d)) :=
@@ -384,5 +386,84 @@ theorem bentkus_convex_set_whitening_reduction
     stdGaussian_apply_bentkusWhitenedSet S hS A] at hbound
   simpa only [bentkusWhitenedSummand, bentkusWhiteningCLM,
     bentkusWhiteningMatrix] using hbound
+
+/-- A dimension-free identity-covariance Bentkus bound transports to the corresponding bound for
+an arbitrary positive-definite total covariance.  This packages the whitening reduction for the
+complete theorem interface while keeping the probabilistic induction entirely in standardized
+coordinates. -/
+theorem bentkus_convex_set_bound_of_identity_covariance_bound
+    (C : ℝ) (hC : BentkusIdentityCovarianceBound.{u} C)
+    {d n : ℕ} (hd : 0 < d)
+    {Ω : Type u} [MeasurableSpace Ω]
+    (μ : Measure Ω) [IsProbabilityMeasure μ]
+    (X : Fin n → Ω → EuclideanSpace ℝ (Fin d))
+    (S : Matrix (Fin d) (Fin d) ℝ)
+    (hX : ∀ i, MemLp (X i) 3 μ)
+    (h_indep : iIndepFun X μ)
+    (hX0 : ∀ i, ∫ ω, X i ω ∂μ = 0)
+    (hS : S.PosDef)
+    (hcov : ∀ x y,
+      covarianceBilin (μ.map (fun ω ↦ ∑ i, X i ω)) x y = x ⬝ᵥ S *ᵥ y)
+    (A : Set (EuclideanSpace ℝ (Fin d)))
+    (hA : MeasurableSet A) (hAconv : Convexity.IsConvexSet ℝ A) :
+    |((μ.map (fun ω ↦ ∑ i, X i ω)) A).toReal -
+        (multivariateGaussian 0 S A).toReal| ≤
+      C * (d : ℝ) ^ (1 / 4 : ℝ) *
+        ∑ i, ∫ ω,
+          ‖(toEuclideanCLM (𝕜 := ℝ) (CFC.sqrt S)⁻¹) (X i ω)‖ ^ 3 ∂μ := by
+  let W := bentkusWhitenedSummand S X
+  let B := bentkusWhitenedSet S hS A
+  have hW3 : ∀ i, MemLp (W i) 3 μ := by
+    intro i
+    simpa only [W] using memLp_bentkusWhitenedSummand S hX i
+  have hWindep : iIndepFun W μ := by
+    simpa only [W] using iIndepFun_bentkusWhitenedSummand S h_indep
+  have hW0 : ∀ i, ∫ ω, W i ω ∂μ = 0 := by
+    intro i
+    simpa only [W] using integral_bentkusWhitenedSummand_eq_zero S hX hX0 i
+  have hWcov : ∀ x y,
+      covarianceBilin (μ.map (fun ω ↦ ∑ i, W i ω)) x y = inner ℝ x y := by
+    intro x y
+    simpa only [W] using
+      covarianceBilin_map_sum_bentkusWhitenedSummand_eq_inner
+        S hS hX hcov x y
+  have hBm : MeasurableSet B := by
+    simpa only [B] using measurableSet_bentkusWhitenedSet S hS hA
+  have hBconv : Convexity.IsConvexSet ℝ B := by
+    simpa only [B] using isConvexSet_bentkusWhitenedSet S hS hAconv
+  have hbound := hC hd μ W hW3 hWindep hW0 hWcov B hBm hBconv
+  exact bentkus_convex_set_whitening_reduction C μ X S hS hX A (by
+    simpa only [W, B] using hbound)
+
+/-- An absolute identity-covariance constant yields Bentkus's full positive-definite covariance
+theorem by whitening. -/
+theorem exists_bentkus_convex_set_constant_of_identity_covariance_bound
+    (hidentity : ∃ C : ℝ, 0 < C ∧ BentkusIdentityCovarianceBound.{u} C) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {d n : ℕ} (_hd : 0 < d)
+        {Ω : Type u} [MeasurableSpace Ω]
+        (μ : Measure Ω) [IsProbabilityMeasure μ]
+        (X : Fin n → Ω → EuclideanSpace ℝ (Fin d))
+        (S : Matrix (Fin d) (Fin d) ℝ),
+        (∀ i, MemLp (X i) 3 μ) →
+        iIndepFun X μ →
+        (∀ i, ∫ ω, X i ω ∂μ = 0) →
+        S.PosDef →
+        (∀ x y,
+          covarianceBilin (μ.map (fun ω ↦ ∑ i, X i ω)) x y =
+            x ⬝ᵥ S *ᵥ y) →
+        ∀ A : Set (EuclideanSpace ℝ (Fin d)),
+          MeasurableSet A →
+          Convexity.IsConvexSet ℝ A →
+          |((μ.map (fun ω ↦ ∑ i, X i ω)) A).toReal -
+              (multivariateGaussian 0 S A).toReal| ≤
+            C * (d : ℝ) ^ (1 / 4 : ℝ) *
+              ∑ i, ∫ ω,
+                ‖(toEuclideanCLM (𝕜 := ℝ) (CFC.sqrt S)⁻¹) (X i ω)‖ ^ 3 ∂μ := by
+  obtain ⟨C, hC, hidentity⟩ := hidentity
+  refine ⟨C, hC, ?_⟩
+  intro d n hd Ω _ μ _ X S hX h_indep hX0 hS hcov A hA hAconv
+  exact bentkus_convex_set_bound_of_identity_covariance_bound
+    C hidentity hd μ X S hX h_indep hX0 hS hcov A hA hAconv
 
 end ProbabilityTheory

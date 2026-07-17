@@ -10,7 +10,8 @@ from pathlib import Path
 
 
 EXPECTED_LABELS = {
-    "indicator-stein-solution", "uniform-leave-one-out-concentration",
+    "indicator-stein-solution", "nonuniform-stein-derivative-bounds",
+    "uniform-leave-one-out-concentration",
     "uniform-third-moment-berry-esseen", "bennett-hoeffding-mgf",
     "exponential-leave-one-out-concentration", "one-sided-truncation-comparison",
     "upper-truncated-stein-exchange", "upper-truncated-residual-decomposition",
@@ -22,7 +23,8 @@ EXPECTED_LABELS = {
     "bentkus-smooth-cutoff", "gaussian-companions-and-transport",
     "gaussian-fourth-moment-control", "gaussian-companion-second-moment-match",
     "gaussian-companion-third-moment-comparison", "gaussian-companion-mixed-moment",
-    "bentkus-rotation-cancellation", "covariance-additivity-and-leave-one-out",
+    "bentkus-rotation-cancellation", "bentkus-rotation-fubini",
+    "covariance-additivity-and-leave-one-out",
     "bentkus-whitening-covariance-identity",
     "bentkus-whitening-gaussian-pushforward",
     "bentkus-identity-covariance-contract",
@@ -38,24 +40,23 @@ EXPECTED_LABELS = {
     "ball-spherical-projection-average",
     "ball-spherical-rearrangement", "ball-radial-gamma-peak",
     "ball-radial-majorant",
+    "ball-spherical-density-majorization",
+    "ball-boundary-projection-area", "ball-gaussian-perimeter",
     "gaussian-convex-shell",
     "bentkus-smoothing-inequality",
     "density-derivative-integral-bound", "gaussian-density-third-derivative",
     "gaussian-density-ibp", "cutoff-derivative-shell-ibp",
     "bentkus-taylor-remainders", "gaussian-density-second-order-remainder",
-    "bentkus-angle-integrals",
+    "bentkus-angle-integrals", "bentkus-coordinate-piece-assembly",
     "bentkus-parameter-closure",
     "bentkus-trivial-induction-branches",
     "bentkus-leave-one-out-whitening",
     "bentkus-standardized-induction",
     "nonuniform-berry-esseen", "bentkus-convex-set",
 }
-EXPECTED_OPEN = {
-    "gaussian-convex-shell",
-    "bentkus-standardized-induction", "bentkus-convex-set",
-}
-EXPECTED_DECLARATIONS = 289
-EXPECTED_EDGES = 81
+EXPECTED_OPEN: set[str] = set()
+EXPECTED_DECLARATIONS = 345
+EXPECTED_EDGES = 97
 
 
 def fail(message: str) -> None:
@@ -78,12 +79,23 @@ def main() -> None:
         if preview.get("targetKind") == "block" and preview.get("facet") == "statement"
     ]
     lean_decls = [preview for preview in previews if preview.get("targetKind") == "leanDecl"]
+    citations = [preview for preview in previews if preview.get("targetKind") == "citation"]
     if data.get("vbpInternalSchemaVersion") != 2:
         fail("unexpected Blueprint schema version")
     if len(blocks) != len(EXPECTED_LABELS):
         fail(f"expected {len(EXPECTED_LABELS)} statement blocks, found {len(blocks)}")
-    if len(previews) != len(blocks) + len(lean_decls):
-        fail("manifest contains previews other than statements and associated Lean declarations")
+    if len(previews) != len(blocks) + len(lean_decls) + len(citations):
+        fail(
+            "manifest contains previews other than statements, citations, "
+            "and associated Lean declarations"
+        )
+    if any(
+        preview.get("facet") != "statement"
+        or not isinstance(preview.get("authoredLabel"), str)
+        or not preview.get("authoredLabel")
+        for preview in citations
+    ):
+        fail("invalid bibliography citation preview")
 
     labels = [block.get("authoredLabel") for block in blocks]
     if set(labels) != EXPECTED_LABELS:
@@ -118,10 +130,9 @@ def main() -> None:
         fail("invalid statement metadata: " + ", ".join(sorted(malformed)))
 
     declaration_records = [decl for associated in block_decls.values() for decl in associated]
-    declarations = [
-        decl.get("canonical") if isinstance(decl, dict) else decl
-        for decl in declaration_records
-    ]
+    if any(not isinstance(decl, dict) for decl in declaration_records):
+        fail("associated declaration record is not structured metadata")
+    declarations = [decl.get("canonical") for decl in declaration_records]
     if any(not isinstance(decl, str) or not decl for decl in declarations):
         fail("associated declaration record lacks a canonical name")
     if len(declarations) != EXPECTED_DECLARATIONS:
@@ -130,6 +141,31 @@ def main() -> None:
         fail("a Lean declaration is associated with more than one mathematical node")
     if len(lean_decls) != EXPECTED_DECLARATIONS:
         fail(f"expected {EXPECTED_DECLARATIONS} Lean declaration previews, found {len(lean_decls)}")
+    block_preview_keys = [
+        key for block in blocks for key in block.get("leanCodePreviewKeys", [])
+    ]
+    lean_preview_keys = [preview.get("key") for preview in lean_decls]
+    if Counter(block_preview_keys) != Counter(lean_preview_keys):
+        fail("statement declaration-preview links are not a bijection")
+    missing = [
+        decl.get("canonical") for decl in declaration_records if not decl.get("present")
+    ]
+    if missing:
+        fail("missing external declarations: " + ", ".join(missing))
+    unproved = [
+        decl.get("canonical")
+        for decl in declaration_records
+        if decl.get("provedStatus") != "proved"
+    ]
+    if unproved:
+        fail("unproved external declarations: " + ", ".join(unproved))
+    unrendered = [
+        decl.get("canonical")
+        for decl in declaration_records
+        if "ok" not in decl.get("render", {})
+    ]
+    if unrendered:
+        fail("unrendered external declarations: " + ", ".join(unrendered))
     if any(block.get("leanCodePreviewKeys") for block in blocks if block["authoredLabel"] in EXPECTED_OPEN):
         fail("open statements unexpectedly reference Lean declaration previews")
 
@@ -162,10 +198,23 @@ def main() -> None:
     invalid_statuses = []
     for block in blocks:
         node = nodes_by_key[block["key"]]
-        if node.get("statementStatus") not in {"ready", "blocked", "formalized"}:
+        if block_decls[block["authoredLabel"]]:
+            valid = (
+                node.get("statementStatus") == "formalized"
+                and node.get("proofStatus") in {
+                    "formalized",
+                    "formalizedWithAncestors",
+                }
+            )
+        else:
+            valid = (
+                node.get("statementStatus") in {"ready", "blocked"}
+                and node.get("proofStatus") in {"ready", "none"}
+            )
+        if not valid:
             invalid_statuses.append(block["authoredLabel"])
     if invalid_statuses:
-        fail("invalid statement status: " + ", ".join(sorted(invalid_statuses)))
+        fail("invalid statement/proof status: " + ", ".join(sorted(invalid_statuses)))
 
     print(
         f"manifest ok: {len(EXPECTED_LABELS)} statements "
