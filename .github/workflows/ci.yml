@@ -76,12 +76,12 @@ jobs:
             fontspec
             memoir
             sourcecodepro
-            sourcesanspro
-            sourceserifpro
+            sourcesans
+            sourceserif
             dejavu
             fancyvrb
             fvextra
-            xparse
+            l3packages
             tcolorbox
             hyperref
             ulem
