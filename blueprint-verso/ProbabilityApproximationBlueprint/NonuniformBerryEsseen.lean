@@ -20,7 +20,7 @@ open ProbabilityApproximationBlueprint.Sources
 
 #doc (Manual) "Nonuniform Berry--Esseen bounds" =>
 
-Let $`\Phi(x)=\mathbb P[Z\le x]` for a standard normal random variable $`Z`.  In this
+Let $`\Phi(x)=\Pr(Z\le x)` for a standard normal random variable $`Z`.  In this
 section $`I` is finite, $`(\Omega,\mathcal F,\mathbb P)` is a probability space, and
 $`(X_i)_{i\in I}` is an independent measurable real-valued family.  We write
 $`W=\sum_iX_i` and $`\gamma=\sum_i\mathbb E|X_i|^3` whenever the moments exist.
@@ -78,7 +78,7 @@ $$`
 `
 Finally, for a finite sum $`W=\sum_iX_i` of measurable square-integrable variables,
 $$`
-\mathbb P[W\le x]-\Phi(x)
+\Pr(W\le x)-\Phi(x)
 =\mathbb E f'_x(W)-\mathbb E[Wf_x(W)].
 `
 :::
@@ -99,7 +99,7 @@ $`\mathbb EX_i=0`, $`\mathbb E X_i^2<\infty`, and
 $`\sum_i\operatorname{Var}(X_i)=1`.  If $`\gamma<\infty`, then, for
 $`W^{(i)}=W-X_i`, every $`i\in I`, and all $`a\le b`,
 $$`
-\mathbb P[a\le W^{(i)}\le b]
+\Pr(a\le W^{(i)}\le b)
 \le \sqrt2\,(b-a)+2(\sqrt2+1)\gamma.
 `
 :::
@@ -114,7 +114,7 @@ paper's $`1.5` and $`3.3\delta` constants under its extra small-truncation hypot
 $`\mathbb EX_i=0`, $`\mathbb E|X_i|^3<\infty`, and
 $`\sum_i\operatorname{Var}(X_i)=1`.  Then, for every $`x\in\mathbb R`,
 $$`
-\left|\mathbb P[W\le x]-\Phi(x)\right|\le30\gamma.
+\left|\Pr(W\le x)-\Phi(x)\right|\le30\gamma.
 `
 :::
 
@@ -140,7 +140,7 @@ $$`
 `
 Consequently, for every $`x\in\mathbb R`,
 $$`
-\mathbb P\!\left[\sum_{j\in J}\eta_j\ge x\right]
+\Pr\left(\sum_{j\in J}\eta_j\ge x\right)
 \le
 \exp\!\left(-tx+\frac{e^{t\alpha}-1-t\alpha}{\alpha^2}B^2\right).
 `
@@ -159,7 +159,7 @@ $`\mathbb EX_j=0`, $`\mathbb E X_j^2<\infty`,
 $`\sum_j\operatorname{Var}(X_j)=1`, and $`\gamma<\infty`.  Then, for every
 $`i\in I` and all $`a\le b`,
 $$`
-\mathbb P[a\le\bar W^{(i)}\le b]
+\Pr(a\le\bar W^{(i)}\le b)
 \le e^{-a/2}\bigl(24(b-a)+48\gamma\bigr).
 `
 :::
@@ -178,13 +178,13 @@ $`\sum_i\operatorname{Var}(X_i)=1`, and $`\gamma\le1`.  Put
 $`\bar X_i=X_i\mathbf1_{\{X_i\le1\}}` and $`\bar W=\sum_i\bar X_i`.
 For every $`z\ge2`,
 $$`
-\mathbb P[W>z]
-\le \mathbb P[\bar W>z]+\frac{45\gamma}{1+z^3},
+\Pr(W>z)
+\le \Pr(\bar W>z)+\frac{45\gamma}{1+z^3},
 `
 and hence
 $$`
-|\mathbb P[W\le z]-\Phi(z)|
-\le |\mathbb P[\bar W\le z]-\Phi(z)|+\frac{45\gamma}{1+z^3}.
+|\Pr(W\le z)-\Phi(z)|
+\le |\Pr(\bar W\le z)-\Phi(z)|+\frac{45\gamma}{1+z^3}.
 `
 :::
 
@@ -235,7 +235,7 @@ If $`\mathbb EX_i=0`, $`\sum_i\operatorname{Var}(X_i)=1`, and
 $`\gamma<\infty`, then $`0\le q\le\gamma`; moreover, without the centering and
 variance assumptions needed for that bound, the exact identity
 $$`
-\mathbb P[\bar W\le z]-\Phi(z)=R_1+R_2+R_3
+\Pr(\bar W\le z)-\Phi(z)=R_1+R_2+R_3
 `
 holds whenever the coordinates have finite second moments.
 :::
@@ -272,7 +272,7 @@ Using $`f'_z(w)=wf_z(w)+\mathbf1_{\{w\le z\}}-\Phi(z)` splits this exactly as
 $`R_2=R_{2,1}+R_{2,2}`, where
 $$`
 R_{2,1}=\sum_i\int
-\bigl(\mathbb P[\bar W\le z]-\mathbb P[\bar W^{(i)}+t\le z]\bigr)K_i(t)\,dt
+\bigl(\Pr(\bar W\le z)-\Pr(\bar W^{(i)}+t\le z)\bigr)K_i(t)\,dt
 `
 and
 $$`
@@ -349,7 +349,7 @@ such that, for every finite independent measurable family with
 $`\mathbb EX_i=0`, $`\mathbb E|X_i|^3<\infty`, and
 $`\sum_i\operatorname{Var}(X_i)=1`, for every $`z\ge2`,
 $$`
-\left|\mathbb P[\bar W\le z]-\Phi(z)\right|
+\left|\Pr(\bar W\le z)-\Phi(z)\right|
 \le A e^{-z/2}\gamma.
 `
 :::
@@ -368,7 +368,7 @@ all finite families.  Then there is an absolute
 $`C=270+54A>0` such that every centered independent family with finite third moments
 and unit total variance satisfies, for all $`x\in\mathbb R`,
 $$`
-\left|\mathbb P[W\le x]-\Phi(x)\right|
+\left|\Pr(W\le x)-\Phi(x)\right|
 \le\frac{C\gamma}{1+|x|^3}.
 `
 :::
@@ -399,7 +399,7 @@ W=\sum_{i\in I}X_i,
 `
 for every $`x\in\mathbb R` one has
 $$`
-\left|\mathbb P[W\le x]-\Phi(x)\right|
+\left|\Pr(W\le x)-\Phi(x)\right|
 \le
 \frac{C\gamma}{1+|x|^3},
 `

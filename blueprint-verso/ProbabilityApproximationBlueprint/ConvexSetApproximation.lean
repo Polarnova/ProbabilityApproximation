@@ -421,10 +421,10 @@ $$`
 For a fixed constant $`C`, the identity-covariance contract asserts that every such
 normalized family and every measurable convex $`B\subseteq\mathbb R^d` satisfy
 $$`
-\left|\mathbb P\!\left[\sum_i\widehat X_i\in B\right]-
-N(0,I_d)(B)\right|
+\left|\Pr\left(\sum_i\widehat X_i\in B\right)-\gamma_d(B)\right|
 \le C d^{1/4}\sum_i\mathbb E\|\widehat X_i\|^3.
 `
+Here $`\gamma_d` denotes standard Gaussian measure on $`\mathbb R^d`.
 :::
 
 This is the standardized estimate (3.1) and the rescaling paragraph immediately after it
@@ -434,16 +434,17 @@ induction must supply; it does not assume that induction has been proved.
 
 :::theorem "bentkus-whitening-one-set-transport" (lean := "ProbabilityTheory.bentkusWhitenedSet, ProbabilityTheory.isConvexSet_bentkusWhitenedSet, ProbabilityTheory.map_sum_apply_bentkusWhitenedSet, ProbabilityTheory.stdGaussian_apply_bentkusWhitenedSet, ProbabilityTheory.bentkus_convex_set_whitening_reduction, ProbabilityTheory.bentkus_convex_set_bound_of_identity_covariance_bound, ProbabilityTheory.exists_bentkus_convex_set_constant_of_identity_covariance_bound") (uses := "bentkus-whitening-gaussian-pushforward, bentkus-identity-covariance-contract") (tags := "bentkus, whitening, convex-set-transport, source-bentkus-2004, fidelity-exact-one-set-reduction")
 *One-set transport from the standardized estimate.* Let $`S` be positive definite,
-$`T=S^{-1/2}`, $`W=\sum_iX_i`, and $`B=T(A)`.  An invertible linear map preserves
-convexity, and the two event identities are
+$`T=S^{-1/2}`, $`W=\sum_iX_i`, and $`B=T(A)`.  Write $`\gamma_S` for centered
+Gaussian measure with covariance $`S`.  An invertible linear map preserves convexity, and the two
+event identities are
 $$`
-\mathbb P[TW\in B]=\mathbb P[W\in A],
+\Pr(TW\in B)=\Pr(W\in A),
 \qquad
-N(0,I_d)(B)=N(0,S)(A).
+\gamma_{I_d}(B)=\gamma_S(A).
 `
 Consequently, any identity-covariance bound at the single set $`B` transports to
 $$`
-\left|\mathbb P[W\in A]-N(0,S)(A)\right|
+\left|\Pr(W\in A)-\gamma_S(A)\right|
 \le C d^{1/4}\sum_i\mathbb E\|S^{-1/2}X_i\|^3.
 `
 :::
@@ -532,7 +533,8 @@ the convex-frontier null set explicitly.
 $$`
 \phi_d(x)=(2\pi)^{-d/2}e^{-\|x\|^2/2}.
 `
-Then $`N(0,I_d)=\phi_d\,\lambda_d` and $`\int\phi_d\,d\lambda_d=1`.  If
+Then $`\gamma_d=\phi_d\,\lambda_d` is standard Gaussian measure and
+$`\int\phi_d\,d\lambda_d=1`.  If
 $`v\ne0`, $`p\in\mathbb R^d`, and
 $$`
 H_t=p+tv+v^\perp,
@@ -545,7 +547,7 @@ $$`
   &=\|v\|\int_{\mathbb R}\mathcal H^{d-1}(B\cap H_t)\,dt,\\
 \int_{\mathbb R^d}w\,d\lambda_d
   &=\|v\|\int_{\mathbb R}\int_{H_t}w\,d\mathcal H^{d-1}\,dt,\\
-N(0,I_d)(B)
+\gamma_d(B)
   &=\|v\|\int_{\mathbb R}\int_{B\cap H_t}\phi_d\,d\mathcal H^{d-1}\,dt.
 \end{aligned}
 `
@@ -1313,7 +1315,7 @@ d^3\le n\beta^2.
 If $`d>0`, $`M\ge0`, and $`n\le d^3M^2`, then $`1\le M\beta`; hence, for every
 probability measure $`\nu` on $`\mathbb R^d` and every set $`A`,
 $$`
-\left|\mathbb P\!\left[\sum_iX_i\in A\right]-\nu(A)\right|\le M\beta.
+\left|\Pr\left(\sum_iX_i\in A\right)-\nu(A)\right|\le M\beta.
 `
 Separately, if one summand satisfies
 $`\mathbb E\|X_k\|^2\ge\tfrac14`, then
@@ -1398,7 +1400,7 @@ $`S=\operatorname{Cov}(W)` is positive definite, and let $`G` be a centered Gaus
 random vector with covariance matrix $`S`. Then for every measurable convex set
 $`A\subseteq\mathbb R^d`,
 $$`
-\left|\mathbb P[W\in A]-\mathbb P[G\in A]\right|
+\left|\Pr(W\in A)-\Pr(G\in A)\right|
 \le
 C d^{1/4}\sum_{i=1}^n
 \mathbb E\left\|S^{-1/2}X_i\right\|^3.

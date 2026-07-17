@@ -21,28 +21,37 @@ open ProbabilityApproximationBlueprint.Sources
 ProbabilityApproximation formalizes two quantitative central limit theorems in
 [Lean 4](https://github.com/leanprover/lean4) and
 [Mathlib](https://github.com/leanprover-community/mathlib4).  The first is a nonuniform
-Berry--Esseen theorem for independent centered real summands: after normalizing the total variance
-to one, the distribution-function error at $`x` is bounded by
+Berry--Esseen theorem for independent centered real summands.  With $`W=\sum_iX_i`, unit total
+variance, and $`\beta_3=\sum_i\mathbb E|X_i|^3`, there is a universal constant $`C>0`
+such that
 $$`
-\frac{C\sum_i\mathbb E|X_i|^3}{1+|x|^3}.
+\left|\Pr(W\le x)-\Phi(x)\right|
+\le\frac{C\beta_3}{1+|x|^3},
+\qquad x\in\mathbb R.
 `
 The proof follows the Stein-equation, concentration, one-sided-truncation, residual, and reflection
 argument of {Citations.citet chenShao2005}[].
 
-The second is Bentkus's multivariate Lyapunov bound.  For independent centered random vectors with
-positive-definite total covariance $`S`, it controls every measurable convex event by
+The second is Bentkus's multivariate Lyapunov bound.  For independent centered random vectors, put
+$`W=\sum_iX_i`, $`\Sigma=\operatorname{Cov}(W)`, and
+$`\beta=\sum_i\mathbb E\lVert\Sigma^{-1/2}X_i\rVert_2^3`.  If $`\Sigma` is positive
+definite and $`Z\sim\mathcal N_d(0,\Sigma)`, then
 $$`
-C d^{1/4}\sum_i\mathbb E\|S^{-1/2}X_i\|^3.
+\sup_{A\in\mathcal C_d}\left|\Pr(W\in A)-\Pr(Z\in A)\right|
+\le C d^{1/4}\beta,
 `
+where $`\mathcal C_d` is the class of Borel convex subsets of $`\mathbb R^d`.
 Its proof combines convex-distance smoothing, signed-distance coarea, Ball's Gaussian perimeter
 estimate, Gaussian replacement, an identity-covariance induction, and covariance-square-root
 whitening {Citations.citep ball1993 bentkus2004}[].
 
-The chapters below present these arguments in mathematical order.  Their 65 theorem nodes are
-associated with 345 kernel-checked Lean declarations and connected by 97 reviewed proof
-dependencies.  Local measurability, integrability, coercion, and algebraic lemmas remain in the
-Lean implementation rather than interrupting the exposition.  The site is generated with
+The chapters below present these arguments in mathematical order.  Proof-local measurability,
+integrability, coercion, and algebraic lemmas remain in the Lean implementation rather than
+interrupting the exposition.  The site is generated with
 [Verso Blueprint](https://github.com/leanprover/verso-blueprint).
+
+For continuous reading or offline reference, download the
+[complete book as a PDF](berry-esseen-bounds.pdf).
 
 {include 0 ProbabilityApproximationBlueprint.NonuniformBerryEsseen}
 

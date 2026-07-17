@@ -1,0 +1,189 @@
+name: Update Mathlib
+
+on:
+  schedule:
+    - cron: "17 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-mathlib
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Lean
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: false
+          use-mathlib-cache: false
+          use-github-cache: false
+
+      - name: Select the latest stable Mathlib release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          latest="$(gh api repos/leanprover-community/mathlib4/releases/latest \
+            --jq '.tag_name')"
+          current="$(sed -n \
+            '/name = "mathlib"/,/rev = /s/^rev = "\(.*\)"/\1/p' \
+            lakefile.toml)"
+          [[ "$latest" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          if [[ "$latest" = "$current" ]]; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! gh api "repos/leanprover/verso-blueprint/git/ref/heads/$latest" \
+            >/dev/null 2>&1; then
+            echo "Verso Blueprint is not ready for $latest."
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          branch="automation/mathlib-$latest"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "An update branch for $latest already exists."
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "needed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Update pins and verify published caches
+        if: steps.release.outputs.needed == 'true'
+        id: prepare
+        env:
+          LATEST: ${{ steps.release.outputs.latest }}
+        run: |
+          set -euo pipefail
+          version="$(python3 .github/scripts/bump_mathlib.py "$LATEST")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          lake update
+          if ! lake exe cache get; then
+            echo "Mathlib cache for $LATEST is not ready."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          (
+            cd blueprint-verso
+            lake update
+            lake exe cache get
+          ) || {
+            echo "Blueprint dependencies for $LATEST are not ready."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Open the upgrade pull request
+        if: steps.prepare.outputs.ready == 'true'
+        id: pull_request
+        env:
+          BRANCH: ${{ steps.release.outputs.branch }}
+          GH_TOKEN: ${{ github.token }}
+          LATEST: ${{ steps.release.outputs.latest }}
+          VERSION: ${{ steps.prepare.outputs.version }}
+        run: |
+          set -euo pipefail
+          git switch -c "$BRANCH"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config commit.gpgsign false
+          git add \
+            lakefile.toml lake-manifest.json lean-toolchain \
+            blueprint-verso/lakefile.lean \
+            blueprint-verso/lake-manifest.json \
+            blueprint-verso/lean-toolchain
+          git commit -m "chore: update Lean and Mathlib to $LATEST"
+          git push --set-upstream origin "$BRANCH"
+          pr_url="$(gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: update Lean and Mathlib to $LATEST" \
+            --label dependencies \
+            --body "Updates Lean, Mathlib, and Verso Blueprint to **$LATEST** and advances ProbabilityApproximation to **v$VERSION**. The published Mathlib caches were fetched before this pull request was opened. A dedicated full CI run determines whether this upgrade is merged and released.")"
+          echo "url=$pr_url" >> "$GITHUB_OUTPUT"
+          echo "number=${pr_url##*/}" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Run the complete validation workflow
+        if: steps.pull_request.outputs.url != ''
+        id: validation
+        env:
+          BRANCH: ${{ steps.release.outputs.branch }}
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ steps.pull_request.outputs.sha }}
+        run: |
+          set -uo pipefail
+          echo "passed=false" >> "$GITHUB_OUTPUT"
+          if ! gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH"; then
+            exit 0
+          fi
+          run_id=""
+          for _ in $(seq 1 30); do
+            run_id="$(gh run list \
+              --repo "$GITHUB_REPOSITORY" \
+              --workflow ci.yml \
+              --branch "$BRANCH" \
+              --event workflow_dispatch \
+              --limit 10 \
+              --json databaseId,headSha \
+              --jq ".[] | select(.headSha == \"$HEAD_SHA\") | .databaseId" \
+              | head -n 1)"
+            if [[ -n "$run_id" ]]; then
+              break
+            fi
+            sleep 2
+          done
+          if [[ -z "$run_id" ]]; then
+            exit 0
+          fi
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          if gh run watch "$run_id" --repo "$GITHUB_REPOSITORY" --exit-status; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Mark an upgrade that needs repair
+        if: steps.validation.outputs.passed == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.pull_request.outputs.number }}
+          RUN_ID: ${{ steps.validation.outputs.run_id }}
+        run: |
+          gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label needs-fix
+          gh pr comment "$PR" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "The full Lean and Blueprint validation failed. Repair this pull request without weakening theorem statements or proof audits: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$RUN_ID"
+          exit 1
+
+      - name: Confirm a validated upgrade
+        if: steps.validation.outputs.passed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.pull_request.outputs.number }}
+        run: |
+          gh pr comment "$PR" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body "The complete Lean and Blueprint validation passed. The successful-CI release workflow will merge and publish this upgrade."
+
+      - name: Preserve the repair signal after an automation error
+        if: failure() && steps.pull_request.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.pull_request.outputs.number }}
+        run: gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label needs-fix

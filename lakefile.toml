@@ -1,6 +1,8 @@
 name = "ProbabilityApproximation"
-version = "0.1.0"
+version = "0.9.0"
 defaultTargets = ["ProbabilityApproximation"]
+releaseRepo = "https://github.com/Polarnova/ProbabilityApproximation"
+preferReleaseBuild = true
 
 [leanOptions]
 pp.unicode.fun = true

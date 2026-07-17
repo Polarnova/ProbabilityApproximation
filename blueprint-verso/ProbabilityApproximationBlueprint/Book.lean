@@ -17,24 +17,30 @@ open ProbabilityApproximationBlueprint.Sources
 
 #doc (Manual) "Berry–Esseen Bounds for Independent Sums" =>
 
-This volume gives kernel-checked proofs of two quantitative central limit theorems.  For centered
-independent real summands of unit total variance it proves the nonuniform estimate
+This volume develops two quantitative central limit theorems.  Let $`X_1,\ldots,X_n` be
+independent centered real random variables with unit total variance, and put
+$`W=\sum_iX_i` and $`\beta_3=\sum_i\mathbb E|X_i|^3`.  The nonuniform
+Berry--Esseen theorem gives a universal constant $`C>0` such that
 $$`
-\left|\mathbb P\!\left[\sum_iX_i\le x\right]-\Phi(x)\right|
-\le\frac{C\sum_i\mathbb E|X_i|^3}{1+|x|^3}.
+\left|\Pr(W\le x)-\Phi(x)\right|
+\le\frac{C\beta_3}{1+|x|^3},
+\qquad x\in\mathbb R.
 `
-For centered independent random vectors with positive-definite total covariance $`S`, it proves
-Bentkus's bound over all measurable convex sets,
+For independent centered random vectors in $`\mathbb R^d`, put $`W=\sum_iX_i`,
+$`\Sigma=\operatorname{Cov}(W)`, and
+$`\beta=\sum_i\mathbb E\lVert\Sigma^{-1/2}X_i\rVert_2^3`.  If $`\Sigma` is
+positive definite and $`Z\sim\mathcal N_d(0,\Sigma)`, Bentkus's theorem gives a universal
+constant $`C>0` such that
 $$`
-\left|\mathbb P\!\left[\sum_iX_i\in A\right]-N(0,S)(A)\right|
-\le C d^{1/4}\sum_i\mathbb E\|S^{-1/2}X_i\|^3.
+\sup_{A\in\mathcal C_d}\left|\Pr(W\in A)-\Pr(Z\in A)\right|
+\le C d^{1/4}\beta,
 `
+where $`\mathcal C_d` is the class of Borel convex subsets of $`\mathbb R^d`.
 
 The exposition develops the proofs from their mathematical prerequisites: Stein's equation,
 concentration and truncation for the scalar theorem; convex distance, Gaussian boundary measure,
 Ball's perimeter estimate, Gaussian replacement, induction, and whitening for the multivariate
-theorem.  The 65-node dependency graph groups 345 kernel-checked declarations into these
-mathematical milestones.
+theorem.
 
 {include 0 ProbabilityApproximationBlueprint.NonuniformBerryEsseen}
 

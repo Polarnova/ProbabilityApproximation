@@ -1,0 +1,98 @@
+name: Merge Dependency Update
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: merge-dependency-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Locate an eligible dependency pull request
+        id: candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          pr="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/pulls" \
+            --jq '[.[] | select(
+              .state == "open" and
+              .base.ref == "main" and
+              (.head.ref | startswith("automation/mathlib-v")) and
+              any(.labels[]; .name == "dependencies")
+            )][0].number // empty')"
+          if [[ -z "$pr" ]]; then
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          encoded="$(gh api \
+            "repos/$GITHUB_REPOSITORY/contents/lakefile.toml?ref=$HEAD_SHA" \
+            --jq '.content')"
+          package_version="$(printf '%s' "$encoded" \
+            | base64 --decode \
+            | sed -n 's/^version = "\(.*\)"/\1/p')"
+          [[ "$package_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          echo "eligible=true" >> "$GITHUB_OUTPUT"
+          echo "pr=$pr" >> "$GITHUB_OUTPUT"
+          echo "version=$package_version" >> "$GITHUB_OUTPUT"
+
+      - name: Merge, tag, and start the release
+        if: steps.candidate.outputs.eligible == 'true'
+        id: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.candidate.outputs.pr }}
+          VERSION: ${{ steps.candidate.outputs.version }}
+        run: |
+          set -euo pipefail
+          gh pr edit "$PR" \
+            --repo "$GITHUB_REPOSITORY" \
+            --remove-label needs-fix 2>/dev/null || true
+          gh pr merge "$PR" \
+            --repo "$GITHUB_REPOSITORY" \
+            --squash \
+            --delete-branch \
+            --subject "chore: update Lean and Mathlib (v$VERSION)"
+          merge_sha="$(gh pr view "$PR" \
+            --repo "$GITHUB_REPOSITORY" \
+            --json mergeCommit \
+            --jq '.mergeCommit.oid')"
+          tag="v$VERSION"
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" \
+            >/dev/null 2>&1; then
+            echo "Tag $tag already exists." >&2
+            exit 1
+          fi
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+            -f ref="refs/tags/$tag" \
+            -f sha="$merge_sha"
+          gh workflow run release.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref "$tag" \
+            -f tag="$tag"
+
+      - name: Mark a publication failure for repair
+        if: failure() && steps.candidate.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.candidate.outputs.pr }}
+        run: gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --add-label needs-fix

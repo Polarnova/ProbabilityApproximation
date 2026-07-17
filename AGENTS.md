@@ -94,8 +94,10 @@ Before adding a declaration:
 The `jonwashburn/riemann` repository is reference-only proof prior art for Gaussian calculus. It is
 not a dependency, and none of its types or namespaces may leak into public declarations.
 
-The repository pins Lean and Mathlib at version 4.32.0. Change the toolchain or dependency revision
-only as an intentional, separately verified upgrade.
+The current release pins Lean and Mathlib at version 4.32.0. Toolchain upgrades are proposed by the
+`Update Mathlib` workflow only after the matching Mathlib and Verso Blueprint revisions and caches
+are available. Every upgrade advances the package patch version and must pass the complete
+production and Blueprint validation before automatic merge.
 
 ## Proof and module policy
 
@@ -178,9 +180,25 @@ lake build +ProbabilityApproximationBlueprint.References
 ```
 
 `site.sh build` runs the statement-style check, Blueprint library build, HTML render, strict
-manifest validator, and `vbp check`. Inspect generated HTML through `site.sh serve`, not `file://`.
-Run `./scripts/site.sh pdf` and inspect the rendered book whenever mathematical prose or displayed
-formula layout changes materially.
+manifest validator, `vbp check`, and PDF render. It installs the PDF into the HTML publication at
+the stable `berry-esseen-bounds.pdf` path. Inspect generated HTML through `site.sh serve`, not
+`file://`, and inspect the rendered book whenever mathematical prose or displayed formula layout
+changes materially. `site.sh pdf` remains available for a PDF-only rebuild.
+
+## Release and dependency maintenance
+
+- The package follows pre-1.0 semantic versioning and begins its public release line at `v0.9.0`.
+- Release tags and their GitHub assets are immutable. A Lean or Mathlib upgrade always creates a new
+  package version.
+- `release.yml` validates the tag against `lakefile.toml`, rebuilds and audits the production
+  library, and publishes Lake release archives for Linux x86-64 and macOS arm64.
+- `update-mathlib.yml` checks the latest stable Mathlib release daily, waits until both the Mathlib
+  and Blueprint dependency caches are usable, updates all pins and manifests, and opens a
+  `dependencies` pull request.
+- A failed upgrade is labeled `needs-fix` without naming or assuming a repair agent. Any repaired
+  upgrade is merged automatically when the complete `CI` workflow succeeds.
+- `merge-dependency-update.yml` restricts automatic merge, version tagging, and release dispatch to
+  open `automation/mathlib-v*` pull requests carrying the `dependencies` label.
 
 ## Version-control boundaries
 

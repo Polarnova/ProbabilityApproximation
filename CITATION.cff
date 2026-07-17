@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this formalization, please cite the software and the original mathematical sources."
+title: "ProbabilityApproximation: Berry–Esseen Bounds for Independent Sums"
+type: software
+authors:
+  - family-names: Yan
+    given-names: Asher
+version: 0.9.0
+date-released: 2026-07-17
+repository-code: "https://github.com/Polarnova/ProbabilityApproximation"
+url: "https://probability.polarnova.site"
+license: Apache-2.0
+abstract: >-
+  A Lean 4 and Mathlib formalization of nonuniform Berry–Esseen bounds via
+  Stein's method and Bentkus's dimension-dependent multivariate Gaussian
+  approximation over measurable convex sets.
+keywords:
+  - Lean 4
+  - Mathlib
+  - formalized mathematics
+  - probability theory
+  - Berry–Esseen theorem
+  - central limit theorem
+  - Stein's method
+  - multivariate normal approximation
+  - convex geometry

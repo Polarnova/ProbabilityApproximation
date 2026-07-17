@@ -44,6 +44,10 @@ build_site() {
 
 build_pdf() {
   build_library
+  render_pdf
+}
+
+render_pdf() {
   echo "Rendering the book PDF..."
   "$lake_cmd" lean ProbabilityApproximationBookMain.lean -- --run \
     ProbabilityApproximationBookMain.lean --output "$book_output" --without-html-multi --pdf
@@ -52,12 +56,19 @@ build_pdf() {
   cp "$book_output/pdf/main.pdf" "$output/pdf/main.pdf"
 }
 
+build_publication() {
+  build_site
+  render_pdf
+  cp "$book_output/pdf/main.pdf" "$output/html-multi/berry-esseen-bounds.pdf"
+  test -f "$output/html-multi/berry-esseen-bounds.pdf"
+}
+
 case "${1:-build}" in
   build)
-    build_site
+    build_publication
     ;;
   serve)
-    build_site
+    build_publication
     exec python3 -m http.server --directory "$output/html-multi" "${PORT:-8000}"
     ;;
   pdf)
