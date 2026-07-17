@@ -19,7 +19,7 @@ Read the [interactive Blueprint](https://probability.polarnova.site), or downloa
 ### Nonuniform Berry–Esseen bound
 
 Let $X_1,\ldots,X_n$ be independent real-valued random variables satisfying
-$\mathbb E X_i=0$, $\sum_{i=1}^n\operatorname{Var}(X_i)=1$, and
+$\mathbb E X_i=0$, $\sum_{i=1}^n\mathrm{Var}(X_i)=1$, and
 $\beta_3:=\sum_{i=1}^n\mathbb E|X_i|^3<\infty$. For
 $W:=\sum_{i=1}^n X_i$, there is a universal constant $C>0$ such that
 
@@ -35,7 +35,7 @@ Here $\Phi$ denotes the standard normal distribution function.
 
 Let $X_1,\ldots,X_n$ be independent centered random vectors in $\mathbb R^d$, set
 $W:=\sum_{i=1}^n X_i$, and suppose that
-$\Sigma:=\operatorname{Cov}(W)$ is positive definite. If
+$\Sigma:=\mathrm{Cov}(W)$ is positive definite. If
 $Z\sim\mathcal N_d(0,\Sigma)$ and
 $\beta:=\sum_{i=1}^n\mathbb E\lVert\Sigma^{-1/2}X_i\rVert_2^3<\infty$, then there is a universal
 constant $C>0$ such that
