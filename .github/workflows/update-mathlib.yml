@@ -117,9 +117,11 @@ jobs:
             --title "chore: update Lean and Mathlib to $LATEST" \
             --label dependencies \
             --body "Updates Lean, Mathlib, and Verso Blueprint to **$LATEST** and advances ProbabilityApproximation to **v$VERSION**. The published Mathlib caches were fetched before this pull request was opened. A dedicated full CI run determines whether this upgrade is merged and released.")"
-          echo "url=$pr_url" >> "$GITHUB_OUTPUT"
-          echo "number=${pr_url##*/}" >> "$GITHUB_OUTPUT"
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          {
+            echo "url=$pr_url"
+            echo "number=${pr_url##*/}"
+            echo "sha=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Run the complete validation workflow
         if: steps.pull_request.outputs.url != ''
