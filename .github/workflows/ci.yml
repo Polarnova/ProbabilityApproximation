@@ -64,6 +64,32 @@ jobs:
           key: probability-blueprint-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json', 'lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
             probability-blueprint-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json', 'lake-manifest.json') }}-
+      - name: Install TeX Live for the Blueprint PDF
+        uses: zauguin/install-texlive@v4
+        with:
+          texlive_version: 2026
+          packages: |
+            scheme-small
+            latex-bin
+            luatex
+            latexmk
+            fontspec
+            memoir
+            sourcecodepro
+            sourcesanspro
+            sourceserifpro
+            dejavu
+            fancyvrb
+            fvextra
+            xparse
+            tcolorbox
+            hyperref
+            ulem
+            newunicodechar
+            mathtools
+            amsmath
+            amsfonts
+            xcolor
       - name: Build and validate Verso Blueprint
         working-directory: blueprint-verso
         run: ./scripts/site.sh build
