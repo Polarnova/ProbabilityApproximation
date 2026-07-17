@@ -79,8 +79,23 @@ jobs:
           use-mathlib-cache: true
           use-github-cache: false
 
-      - name: Build release library
-        run: lake build ProbabilityApproximation
+      - name: Build release library as a dependency
+        run: |
+          set -euo pipefail
+          consumer_dir="$RUNNER_TEMP/probability-release-consumer"
+          mkdir -p "$consumer_dir"
+          cp lean-toolchain "$consumer_dir/lean-toolchain"
+          {
+            echo 'name = "ProbabilityApproximationReleaseConsumer"'
+            echo 'version = "0.0.0"'
+            echo
+            echo '[[require]]'
+            echo 'name = "ProbabilityApproximation"'
+            printf 'path = "%s"\n' "$GITHUB_WORKSPACE"
+          } > "$consumer_dir/lakefile.toml"
+          lake -d="$consumer_dir" update
+          lake -d="$consumer_dir" exe cache get
+          lake --no-cache -d="$consumer_dir" build ProbabilityApproximation
 
       - name: Audit release
         run: |
