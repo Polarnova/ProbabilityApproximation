@@ -83,6 +83,7 @@ jobs:
             fvextra
             l3packages
             tcolorbox
+            tikzfill
             hyperref
             ulem
             newunicodechar
