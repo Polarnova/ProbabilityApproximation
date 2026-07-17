@@ -84,6 +84,11 @@ jobs:
             l3packages
             tcolorbox
             tikzfill
+            pdfcol
+            incgraph
+            listingsutf8
+            iftex
+            ifluatex
             hyperref
             ulem
             newunicodechar
