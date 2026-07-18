@@ -1,7 +1,7 @@
 # ProbabilityApproximation: Berry–Esseen Bounds for Independent Sums
 
 [![CI](https://github.com/Polarnova/ProbabilityApproximation/actions/workflows/ci.yml/badge.svg)](https://github.com/Polarnova/ProbabilityApproximation/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/Polarnova/ProbabilityApproximation?include_prereleases)](https://github.com/Polarnova/ProbabilityApproximation/releases)
+[![Release](https://img.shields.io/github/v/release/Polarnova/ProbabilityApproximation)](https://github.com/Polarnova/ProbabilityApproximation/releases)
 [![Lean 4](https://img.shields.io/badge/Lean-4.32.0-blue)](https://lean-lang.org/)
 [![Blueprint](https://img.shields.io/badge/Verso-Blueprint-5b4b8a)](https://probability.polarnova.site)
 [![License](https://img.shields.io/github/license/Polarnova/ProbabilityApproximation)](LICENSE)

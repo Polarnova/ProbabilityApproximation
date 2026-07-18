@@ -53,7 +53,7 @@ jobs:
               --verify-tag \
               --title "ProbabilityApproximation $TAG" \
               --generate-notes \
-              --prerelease
+              --latest
           fi
 
   build:
