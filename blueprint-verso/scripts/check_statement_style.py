@@ -39,7 +39,7 @@ EXPECTED_USES = {
     "upper-truncated-central-decay": (
         "upper-truncated-r1-r3-bounds", "upper-truncated-indicator-residual",
         "upper-truncated-product-residual"),
-    "scalar-release-reduction": (
+    "nonuniform-reflection-reduction": (
         "uniform-third-moment-berry-esseen", "one-sided-truncation-comparison",
         "upper-truncated-central-decay"),
     "convex-parallel-sets": (),
@@ -132,7 +132,7 @@ EXPECTED_USES = {
         "gaussian-companion-third-moment-comparison",
         "gaussian-companion-mixed-moment", "bentkus-trivial-induction-branches",
         "bentkus-leave-one-out-whitening", "bentkus-identity-covariance-contract"),
-    "nonuniform-berry-esseen": ("scalar-release-reduction",),
+    "nonuniform-berry-esseen": ("nonuniform-reflection-reduction",),
     "bentkus-convex-set": (
         "bentkus-standardized-induction", "bentkus-whitening-one-set-transport"),
 }

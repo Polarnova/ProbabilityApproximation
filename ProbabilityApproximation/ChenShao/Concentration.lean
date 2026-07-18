@@ -1089,7 +1089,7 @@ def kernelMass (δ ξ : ℝ) : ℝ := |ξ| * min δ |ξ|
 lemma kernelMass_nonneg {δ : ℝ} (hδ : 0 ≤ δ) (ξ : ℝ) : 0 ≤ kernelMass δ ξ :=
   mul_nonneg (abs_nonneg _) (le_min hδ (abs_nonneg _))
 
-lemma kernelMass_le_mul_abs {δ ξ : ℝ} (hδ : 0 ≤ δ) :
+lemma kernelMass_le_mul_abs {δ ξ : ℝ} (_hδ : 0 ≤ δ) :
     kernelMass δ ξ ≤ δ * |ξ| := by
   unfold kernelMass
   exact (mul_le_mul_of_nonneg_left (min_le_left δ |ξ|) (abs_nonneg _)).trans_eq (mul_comm _ _)
@@ -1100,6 +1100,7 @@ lemma measurable_kernelMass (δ : ℝ) : Measurable (kernelMass δ) :=
 lemma continuous_kernelMass (δ : ℝ) : Continuous (kernelMass δ) :=
   continuous_abs.mul (continuous_const.min continuous_abs)
 
+omit [IsProbabilityMeasure μ] in
 lemma memLp_kernelMass {Y : Ω → ℝ} (hY : MemLp Y 2 μ) {δ : ℝ} (hδ : 0 ≤ δ)
     (hYmeas : AEStronglyMeasurable Y μ) :
     MemLp (fun ω => kernelMass δ (Y ω)) 2 μ := by
@@ -1114,6 +1115,7 @@ lemma memLp_kernelMass {Y : Ω → ℝ} (hY : MemLp Y 2 μ) {δ : ℝ} (hδ : 0 
     _ = ‖δ * |Y ω|‖ := by
         rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hδ, abs_abs]
 
+omit [IsProbabilityMeasure μ] in
 /-- Hölder/CS for real L² products: `|∫ f g| ≤ √(∫ f²) √(∫ g²)`. -/
 lemma abs_integral_mul_le_sqrt_sq {f g : Ω → ℝ}
     (hf : MemLp f 2 μ) (hg : MemLp g 2 μ) :
@@ -1170,7 +1172,7 @@ lemma abs_covariance_le_sqrt_variance {Y Z : Ω → ℝ}
 def kernelMassSum (δ : ℝ) (X : ι → Ω → ℝ) : Ω → ℝ :=
   fun ω => ∑ j, kernelMass δ (X j ω)
 
-omit [DecidableEq ι] in
+omit [IsProbabilityMeasure μ] [DecidableEq ι] in
 lemma memLp_kernelMassSum (hX : ∀ j, MemLp (X j) 2 μ) (hXmeas : ∀ j, Measurable (X j))
     {δ : ℝ} (hδ : 0 ≤ δ) :
     MemLp (kernelMassSum δ X) 2 μ :=
@@ -1203,6 +1205,7 @@ lemma variance_kernelMass_le
     _ ≤ δ ^ 2 * ∫ ω, (Y ω) ^ 2 ∂μ := h2
     _ = δ ^ 2 * variance Y μ := by rw [hEX2]
 
+omit [DecidableEq ι] in
 set_option maxHeartbeats 800000 in
 lemma variance_kernelMassSum_le
     (hX : ∀ j, MemLp (X j) 2 μ) (hXmeas : ∀ j, Measurable (X j))
@@ -1233,10 +1236,11 @@ def thirdMomentSum (X : ι → Ω → ℝ) (μ : Measure Ω) : ℝ :=
   ∑ i : ι, ∫ ω, |X i ω| ^ 3 ∂μ
 
 omit [IsProbabilityMeasure μ] [DecidableEq ι] in
-lemma thirdMomentSum_nonneg (hX : ∀ i, Integrable (fun ω => |X i ω| ^ 3) μ) :
+lemma thirdMomentSum_nonneg (_hX : ∀ i, Integrable (fun ω => |X i ω| ^ 3) μ) :
     0 ≤ thirdMomentSum (X := X) μ :=
-  Finset.sum_nonneg fun i _ => integral_nonneg fun _ => pow_nonneg (abs_nonneg _) _
+  Finset.sum_nonneg fun _ _ => integral_nonneg fun _ => pow_nonneg (abs_nonneg _) _
 
+omit [DecidableEq ι] in
 /-- `E[S] ≥ 1 - γ/(4δ)` for `S = ∑ |Xⱼ| min(δ,|Xⱼ|)` and `γ = ∑ E|Xⱼ|³`. -/
 lemma integral_kernelMassSum_ge
     (hX : ∀ j, MemLp (X j) 2 μ) (hXmeas : ∀ j, Measurable (X j))
@@ -1325,7 +1329,7 @@ lemma abs_stein_exchange_le
         |∫ ω, X i ω * concRamp a b δ (leaveOneOut X i ω - X i ω) ∂μ| :=
       abs_sub _ _
     _ ≤ ((b - a) / 2 + δ) * ∫ ω, |leaveOneOut X i ω| ∂μ +
-        ((b - a) / 2 + δ) * ∫ ω, |X i ω| ∂μ := by gcongr <;> first | exact h1' | exact h2
+        ((b - a) / 2 + δ) * ∫ ω, |X i ω| ∂μ := by gcongr
     _ = ((b - a) / 2 + δ) *
         (∫ ω, |leaveOneOut X i ω| ∂μ + ∫ ω, |X i ω| ∂μ) := by ring
     _ ≤ ((b - a) / 2 + δ) * √2 := by gcongr
@@ -1337,6 +1341,7 @@ lemma abs_stein_exchange_le
 def leaveOneOutInterval (X : ι → Ω → ℝ) (i : ι) (a b : ℝ) : Ω → ℝ :=
   fun ω => if a ≤ leaveOneOut X i ω ∧ leaveOneOut X i ω ≤ b then (1 : ℝ) else 0
 
+omit [MeasurableSpace Ω] in
 lemma leaveOneOutInterval_eq_indicator (X : ι → Ω → ℝ) (i : ι) (a b : ℝ) :
     leaveOneOutInterval X i a b =
       ({ω | a ≤ leaveOneOut X i ω ∧ leaveOneOut X i ω ≤ b}).indicator fun _ => (1 : ℝ) := by
@@ -1353,10 +1358,12 @@ lemma measurable_leaveOneOutInterval
   exact (measurableSet_le measurable_const (measurable_leaveOneOut hXmeas i)).inter
     (measurableSet_le (measurable_leaveOneOut hXmeas i) measurable_const)
 
+omit [MeasurableSpace Ω] in
 lemma leaveOneOutInterval_nonneg (X : ι → Ω → ℝ) (i : ι) (a b : ℝ) (ω : Ω) :
     0 ≤ leaveOneOutInterval X i a b ω := by
   unfold leaveOneOutInterval; split_ifs <;> norm_num
 
+omit [MeasurableSpace Ω] in
 lemma leaveOneOutInterval_le_one (X : ι → Ω → ℝ) (i : ι) (a b : ℝ) (ω : Ω) :
     leaveOneOutInterval X i a b ω ≤ 1 := by
   unfold leaveOneOutInterval; split_ifs <;> norm_num
@@ -1376,6 +1383,7 @@ lemma measurableSet_leaveOneOutInterval
   (measurableSet_le measurable_const (measurable_leaveOneOut hXmeas i)).inter
     (measurableSet_le (measurable_leaveOneOut hXmeas i) measurable_const)
 
+omit [IsProbabilityMeasure μ] in
 lemma integral_leaveOneOutInterval
     (hXmeas : ∀ j, Measurable (X j)) (i : ι) (a b : ℝ) :
     ∫ ω, leaveOneOutInterval X i a b ω ∂μ =
@@ -1555,7 +1563,7 @@ lemma integral_indicator_kernelMass_ge
 lemma stein_exchange_ge_half_prob
     (hX : ∀ j, MemLp (X j) 2 μ) (hXmeas : ∀ j, Measurable (X j))
     (h_indep : iIndepFun X μ) (h_mean : ∀ j, ∫ ω, X j ω ∂μ = 0)
-    (hvar : ∑ j, variance (X j) μ = 1)
+    (_hvar : ∑ j, variance (X j) μ = 1)
     (i : ι) {a b δ : ℝ} (hδ : 0 ≤ δ) (hab : a ≤ b)
     (hES : (1 : ℝ) / 2 ≤ ∫ ω, kernelMassSum δ X ω ∂μ)
     (hVS : variance (kernelMassSum δ X) μ ≤ δ ^ 2) :
@@ -1613,7 +1621,7 @@ lemma concentration_leaveOneOut
   · -- Main: γ > 0 from total variance 1
     have hγpos : 0 < γ := by
       by_contra hne
-      push_neg at hne
+      push Not at hne
       have hγeq : γ = 0 := le_antisymm hne hγ0
       have hterm : ∀ j, ∫ ω, |X j ω| ^ 3 ∂μ = 0 := by
         intro j

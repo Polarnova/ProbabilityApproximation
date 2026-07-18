@@ -12,7 +12,7 @@ import Mathlib.Geometry.Convex.Set
 # Whitening for the Bentkus covariance reduction
 
 This module proves the linear-algebra and measure-transport facts used to pass from Bentkus's
-identity-covariance theorem to the frozen theorem with arbitrary positive-definite total covariance.
+identity-covariance theorem to arbitrary positive-definite total covariance.
 For a covariance matrix `S`, the whitening map is `(CFC.sqrt S)⁻¹`; in particular it is not `S⁻¹`.
 Only the total covariance is inverted.  Individual summand covariance matrices may remain singular.
 -/
@@ -221,7 +221,7 @@ lemma integral_bentkusWhitenedSummand_eq_zero
   rw [ContinuousLinearMap.integral_comp_comm _ ((hX i).integrable (by norm_num)),
     h_mean i, map_zero]
 
-/-- Under the frozen covariance hypothesis, the whitened sum has identity covariance. -/
+/-- Under the stated covariance hypothesis, the whitened sum has identity covariance. -/
 theorem covarianceBilin_map_sum_bentkusWhitenedSummand_eq_inner
     {n d : ℕ} {Ω : Type*} [MeasurableSpace Ω]
     {μ : Measure Ω} [IsProbabilityMeasure μ]
@@ -388,9 +388,8 @@ theorem bentkus_convex_set_whitening_reduction
     bentkusWhiteningMatrix] using hbound
 
 /-- A dimension-free identity-covariance Bentkus bound transports to the corresponding bound for
-an arbitrary positive-definite total covariance.  This packages the whitening reduction for the
-complete theorem interface while keeping the probabilistic induction entirely in standardized
-coordinates. -/
+an arbitrary positive-definite total covariance by applying the probabilistic estimate in
+standardized coordinates. -/
 theorem bentkus_convex_set_bound_of_identity_covariance_bound
     (C : ℝ) (hC : BentkusIdentityCovarianceBound.{u} C)
     {d n : ℕ} (hd : 0 < d)

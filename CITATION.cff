@@ -1,14 +1,16 @@
 cff-version: 1.2.0
-message: "If you use this formalization, please cite the software and the original mathematical sources."
+message: >-
+  If you use this Lean formalization, cite this software release and the
+  original mathematical source for each theorem used.
 title: "ProbabilityApproximation: Berry–Esseen Bounds for Independent Sums"
 type: software
 authors:
   - family-names: Yan
     given-names: Asher
-version: 0.9.0
+version: 0.9.5
 date-released: 2026-07-17
 repository-code: "https://github.com/Polarnova/ProbabilityApproximation"
-url: "https://probability.polarnova.site"
+url: "https://github.com/Polarnova/ProbabilityApproximation/releases/tag/v0.9.5"
 license: Apache-2.0
 abstract: >-
   A Lean 4 and Mathlib formalization of nonuniform Berry–Esseen bounds via
@@ -24,3 +26,64 @@ keywords:
   - Stein's method
   - multivariate normal approximation
   - convex geometry
+references:
+  - type: article
+    authors:
+      - family-names: Bikelis
+        given-names: A.
+    title: "On estimates of the remainder term in the central limit theorem"
+    year: 1966
+    doi: "10.15388/LMJ.1966.19732"
+  - type: book
+    authors:
+      - family-names: Federer
+        given-names: Herbert
+    title: "Geometric Measure Theory"
+    year: 1969
+    doi: "10.1007/978-3-642-62010-2"
+  - type: article
+    authors:
+      - family-names: Ball
+        given-names: Keith
+    title: "The reverse isoperimetric problem for Gaussian measure"
+    year: 1993
+    doi: "10.1007/BF02573986"
+  - type: article
+    authors:
+      - family-names: Chen
+        given-names: Louis H. Y.
+      - family-names: Shao
+        given-names: Qi-Man
+    title: "A non-uniform Berry–Esseen bound via Stein's method"
+    year: 2001
+    doi: "10.1007/PL00008782"
+  - type: generic
+    authors:
+      - family-names: Chen
+        given-names: Louis H. Y.
+      - family-names: Shao
+        given-names: Qi-Man
+    title: "Stein's method for normal approximation"
+    year: 2005
+    url: "https://blog.nus.edu.sg/louischen/files/2019/01/IMS4-pp-1-59-2hma1np.pdf"
+  - type: article
+    authors:
+      - family-names: Bentkus
+        given-names: Vidmantas
+    title: "On the dependence of the Berry–Esseen bound on dimension"
+    year: 2003
+    doi: "10.1016/S0378-3758(02)00094-0"
+  - type: article
+    authors:
+      - family-names: Bentkus
+        given-names: Vidmantas
+    title: "A Lyapunov-type bound in R^d"
+    year: 2004
+    url: "https://www.mathnet.ru/eng/tvp230"
+  - type: article
+    authors:
+      - family-names: Raič
+        given-names: Martin
+    title: "A multivariate Berry–Esseen theorem with explicit constants"
+    year: 2019
+    doi: "10.3150/18-BEJ1072"

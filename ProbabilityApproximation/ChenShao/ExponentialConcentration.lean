@@ -612,6 +612,7 @@ lemma sum_neg_integral_upperTruncateOne_erase_le_thirdMomentSum {X : I → Ω �
         fun j hj hnot ↦ integral_nonneg fun ω ↦ pow_nonneg (abs_nonneg _) _
     _ = thirdMomentSum X μ := rfl
 
+omit [DecidableEq I] in
 lemma thirdMomentSum_pos_of_variance_sum_eq_one {X : I → Ω → ℝ}
     (hX_mem : ∀ j, MemLp (X j) 2 μ) (hX_mean : ∀ j, ∫ ω, X j ω ∂μ = 0)
     (hvar : ∑ j, variance (X j) μ = 1)
@@ -746,6 +747,7 @@ lemma measurable_upperTruncatedKernelMassSum {X : I → Ω → ℝ}
   Finset.measurable_fun_sum _ fun j _ ↦
     (measurable_kernelMass δ).comp (measurable_upperTruncateOne.comp (hX_meas j))
 
+omit [IsProbabilityMeasure μ] in
 lemma memLp_upperTruncatedKernelMassSum {X : I → Ω → ℝ}
     (hX_meas : ∀ j, Measurable (X j)) (hX_mem : ∀ j, MemLp (X j) 2 μ)
     {δ : ℝ} (hδ : 0 ≤ δ) (i : I) : MemLp (upperTruncatedKernelMassSum δ X i) 2 μ := by
@@ -880,7 +882,10 @@ lemma integral_upperTruncatedKernelMassSum_ge_half {X : I → Ω → ℝ}
   have hγ : 0 ≤ γ := hγpos.le
   have hfull := integral_kernelMassSum_ge hX_mem hX_meas hX_mean hvar h3 hγpos
   have hfull34 : (3 : ℝ) / 4 ≤ ∫ ω, kernelMassSum γ X ω ∂μ := by
-    convert hfull using 1 <;> field_simp [hγpos.ne'] <;> ring
+    convert hfull using 1
+    all_goals
+      field_simp [hγpos.ne']
+      ring
   have hKi : ∫ ω, kernelMass γ (X i ω) ∂μ ≤ γ := by
     have hK := (memLp_kernelMass (hX_mem i) hγ (hX_meas i).aestronglyMeasurable).integrable
       (by norm_num)
@@ -1005,11 +1010,13 @@ lemma measurable_exponentialIntervalWeight {W : Ω → ℝ} (hW : Measurable W) 
   exact Measurable.ite
     ((measurableSet_Icc.preimage hW)) ((hW.div_const 2).exp) measurable_const
 
+omit [MeasurableSpace Ω] in
 lemma exponentialIntervalWeight_nonneg (a b : ℝ) (W : Ω → ℝ) (ω : Ω) :
     0 ≤ exponentialIntervalWeight a b W ω := by
   simp only [exponentialIntervalWeight]
   split_ifs <;> positivity
 
+omit [MeasurableSpace Ω] in
 lemma exponentialIntervalWeight_le_exp (a b : ℝ) (W : Ω → ℝ) (ω : Ω) :
     exponentialIntervalWeight a b W ω ≤ Real.exp (W ω / 2) := by
   simp only [exponentialIntervalWeight]
@@ -1017,6 +1024,7 @@ lemma exponentialIntervalWeight_le_exp (a b : ℝ) (W : Ω → ℝ) (ω : Ω) :
   · exact le_rfl
   · exact (Real.exp_pos (W ω / 2)).le
 
+omit [MeasurableSpace Ω] in
 lemma sq_exponentialIntervalWeight_le_exp (a b : ℝ) (W : Ω → ℝ) (ω : Ω) :
     exponentialIntervalWeight a b W ω ^ 2 ≤ Real.exp (W ω) := by
   simp only [exponentialIntervalWeight]
@@ -1027,6 +1035,7 @@ lemma sq_exponentialIntervalWeight_le_exp (a b : ℝ) (W : Ω → ℝ) (ω : Ω)
     ring
   · simpa using (Real.exp_pos (W ω)).le
 
+omit [IsProbabilityMeasure μ] in
 lemma memLp_exponentialIntervalWeight {W : Ω → ℝ} (hW : Measurable W)
     (hG : MemLp (fun ω ↦ Real.exp (W ω / 2)) 2 μ) (a b : ℝ) :
     MemLp (exponentialIntervalWeight a b W) 2 μ := by
@@ -1540,7 +1549,7 @@ lemma weightedKernelMass_integral_le_exchange {X : I → Ω → ℝ}
             simp only [H, exponentialIntervalWeight, if_pos hw]]
           rw [← mul_assoc, ← Real.exp_add]
           congr 1
-          ring
+          ring_nf
         _ ≤ Real.exp (1 / 2) * Q ω := hmul
     · have hQ0 : 0 ≤ Q ω := by
         exact Finset.sum_nonneg fun j hj ↦

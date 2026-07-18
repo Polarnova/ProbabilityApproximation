@@ -10,7 +10,7 @@ import ProbabilityApproximation.ChenShao.UniformBerryEsseen
 
 This module contains the analytic Stein-solution facts used by the one-sided-truncation proof:
 closed forms for the derivative, its two tail bounds, and the integrated Stein identity for a
-finite sum.  The scalar release theorem is assembled in `NonuniformBerryEsseen.lean`.
+finite sum.
 -/
 
 open MeasureTheory ProbabilityTheory Real Set Filter

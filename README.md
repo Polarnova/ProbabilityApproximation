@@ -67,14 +67,14 @@ The library also develops reusable foundations for probability, analysis, and co
 
 ## Using the library
 
-The current release is `v0.9.0`, built with Lean and Mathlib `v4.32.0`. Add the tagged package to a
+The current release is `v0.9.5`, built with Lean and Mathlib `v4.32.0`. Add the tagged package to a
 downstream `lakefile.toml`:
 
 ```toml
 [[require]]
 name = "ProbabilityApproximation"
 git = "https://github.com/Polarnova/ProbabilityApproximation.git"
-rev = "v0.9.0"
+rev = "v0.9.5"
 ```
 
 Then update and build:
@@ -115,23 +115,8 @@ lake build ProbabilityApproximation
 
 The [Verso Blueprint](https://github.com/leanprover/verso-blueprint) presents both proofs as a
 mathematical text with complete statements, source citations, Lean declarations, and dependency
-graphs:
-
-```bash
-cd blueprint-verso
-lake exe cache get
-./scripts/site.sh serve
-```
-
-Then open [http://localhost:8000/](http://localhost:8000/). The site build also generates the
-downloadable book; `./scripts/site.sh pdf` performs a PDF-only rebuild.
-
-## Releases and compatibility
-
-Releases follow semantic versioning while the public API is pre-1.0. Tags and release archives are
-immutable. Every Lean or Mathlib upgrade advances the package version, reruns the production and
-Blueprint audits, and publishes new platform-specific Lake archives. Downstream projects should pin
-an exact release tag.
+graphs. The same text is available as a
+[downloadable PDF](https://probability.polarnova.site/berry-esseen-bounds.pdf).
 
 ## Contributing
 
@@ -140,9 +125,13 @@ conventions.
 
 ## Citation
 
-GitHub can export a ready-to-use citation from [`CITATION.cff`](CITATION.cff). Academic work should
-also cite the original Chen--Shao or Bentkus result used; complete bibliographic records appear
-below and in the Blueprint.
+If you use the Lean formalization, cite the specific software release through GitHub's
+**Cite this repository** menu or [`CITATION.cff`](CITATION.cff). Cite the original mathematical
+source as well: Bikelis (1966) for the classical finite-third-moment nonuniform bound,
+Chen--Shao (2001) for the stronger truncated-moment theorem, Chen--Shao (2005) for the proof
+presentation used here, or Bentkus (2004) for the multivariate convex-set theorem. Work using the
+auxiliary geometric or explicit-constant results should additionally cite the corresponding source
+listed below.
 
 ## Authors
 
@@ -150,6 +139,9 @@ Asher Yan with ChatGPT 5.6.
 
 ## References
 
+- A. Bikelis,
+  [*On estimates of the remainder term in the central limit theorem*](https://doi.org/10.15388/LMJ.1966.19732),
+  *Lithuanian Mathematical Journal* 6(3) (1966), 323--346.
 - Herbert Federer,
   [*Geometric Measure Theory*](https://doi.org/10.1007/978-3-642-62010-2),
   Springer, Grundlehren der mathematischen Wissenschaften 153 (1969).

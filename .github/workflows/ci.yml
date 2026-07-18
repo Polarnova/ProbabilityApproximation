@@ -29,7 +29,7 @@ jobs:
           restore-keys: |
             probability-approximation-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
       - name: Build production library
-        run: lake build ProbabilityApproximation
+        run: lake --wfail build ProbabilityApproximation
       - name: Forbidden token audit
         run: ./.github/scripts/forbidden_tokens.sh
       - name: Axiom audit

@@ -163,7 +163,7 @@ During proof work, build the narrowest affected production module. Before handof
 repository root:
 
 ```bash
-lake build ProbabilityApproximation
+lake --wfail build ProbabilityApproximation
 ./.github/scripts/forbidden_tokens.sh
 ./.github/scripts/audit_axioms.sh
 cd blueprint-verso
@@ -190,6 +190,7 @@ changes materially. `site.sh pdf` remains available for a PDF-only rebuild.
 - The package follows pre-1.0 semantic versioning and begins its public release line at `v0.9.0`.
 - Release tags and their GitHub assets are immutable. A Lean or Mathlib upgrade always creates a new
   package version.
+- Downstream projects must pin an exact release tag rather than track `main`.
 - `release.yml` validates the tag against `lakefile.toml`, rebuilds and audits the production
   library, and publishes Lake release archives for Linux x86-64 and macOS arm64.
 - `update-mathlib.yml` checks the latest stable Mathlib release daily, waits until both the Mathlib

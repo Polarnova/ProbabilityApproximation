@@ -57,6 +57,7 @@ def standardGaussianDensityD3 (x h k l : E) : ℝ :=
       inner ℝ k l * inner ℝ x h) *
     standardGaussianDensity E x
 
+omit [FiniteDimensional ℝ E] in
 private lemma hasFDerivAt_gaussianExponent (x : E) :
     HasFDerivAt (fun y : E ↦ -‖y‖ ^ 2 / 2) (-(innerSL ℝ x)) x := by
   have h := (hasStrictFDerivAt_norm_sq x).hasFDerivAt.const_mul (-1 / 2 : ℝ)
@@ -95,6 +96,7 @@ lemma fderiv_standardGaussianDensity_apply (x h : E) :
     smul_eq_mul]
   ring
 
+omit [FiniteDimensional ℝ E] in
 private lemma hasFDerivAt_inner_right (x h : E) :
     HasFDerivAt (fun y : E ↦ inner ℝ y h) (innerSL ℝ h) x := by
   have heq : (fun y : E ↦ inner ℝ y h) = fun y ↦ inner ℝ h y := by
@@ -190,6 +192,7 @@ lemma continuous_standardGaussianDensityD3 (h k l : E) :
   · fun_prop
   · exact continuous_standardGaussianDensity
 
+omit [FiniteDimensional ℝ E] in
 /-- The cubic Hermite contraction in (3.21) is continuous. -/
 lemma continuous_gaussianThirdHermiteContraction (w g : E) :
     Continuous (fun x : E ↦ gaussianThirdHermiteContraction x w g) := by
@@ -205,6 +208,7 @@ lemma measurable_standardGaussianDensityD3 (h k l : E) :
     Measurable (fun x : E ↦ standardGaussianDensityD3 x h k l) :=
   (continuous_standardGaussianDensityD3 h k l).measurable
 
+omit [FiniteDimensional ℝ E] in
 /-- The cubic Hermite contraction is Borel measurable. -/
 lemma measurable_gaussianThirdHermiteContraction (w g : E) :
     Measurable (fun x : E ↦ gaussianThirdHermiteContraction x w g) :=
@@ -441,8 +445,8 @@ private lemma integral_abs_inner_mul_abs_inner_sq_stdGaussian_le
 /-- Dimension-free integral bound for Bentkus's third-derivative contraction.
 
 The coefficient is an absolute constant: it depends only on the fourth moment of a one-dimensional
-standard Gaussian.  This is the precise formal counterpart of the estimate following equations
-(3.21)--(3.23) on original pages 405--406 of Bentkus (2004). -/
+standard Gaussian. This is the estimate following equations (3.21)--(3.23) on original
+pages 405--406 of Bentkus (2004). -/
 theorem integral_abs_gaussianThirdHermiteContraction_le (w g : E) :
     ∫ x : E, |gaussianThirdHermiteContraction x w g| ∂stdGaussian E ≤
       (3 + √standardGaussianFourthMoment) * ‖w‖ ^ 2 * ‖g‖ := by

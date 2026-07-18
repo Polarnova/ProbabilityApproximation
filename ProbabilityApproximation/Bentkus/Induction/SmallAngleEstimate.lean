@@ -319,13 +319,11 @@ private lemma bentkus_smallAngle_shift_relations
   have hv : L vO = -s • G := by
     dsimp only [L, vO]
     simp only [_root_.smul_apply, map_neg, map_smul, hPB, smul_smul]
-    congr 1
     field_simp [hθ]
     simp only [neg_smul]
   have hw : L wO = -p • O := by
     dsimp only [L, wO]
     simp only [_root_.smul_apply, map_neg, map_smul, hPB, smul_smul]
-    congr 1
     field_simp [hθ, hs]
     simp only [neg_smul]
   refine ⟨hv, hw, ?_⟩
@@ -454,7 +452,7 @@ private theorem bentkus_smallAngle_zeroOrder_pair_cancel
     (hX0 : ∀ i, ∫ ω, X i ω ∂μ = 0)
     (k : Fin (n + 1))
     (B : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d))
-    (α : ℝ) (hsin : 0 < Real.sin α)
+    (α : ℝ) (_hsin : 0 < Real.sin α)
     (A : Set (EuclideanSpace ℝ (Fin d))) (ε : ℝ)
     (a u : EuclideanSpace ℝ (Fin d))
     (L : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d)) :
@@ -549,21 +547,23 @@ private theorem bentkus_smallAngle_zeroOrder_pair_cancel
     ell.integrable_comp hOint
   have hellGint : Integrable (fun ω ↦ ell (G ω)) ρ :=
     ell.integrable_comp hGint
+  have hshiftO : Measurable (fun y : EuclideanSpace ℝ (Fin d) ↦
+      u + -((1 / θ) • B y)) :=
+    measurable_const.add
+      (B.continuous.measurable.const_smul (1 / θ)).neg
+  have hshiftG : Measurable (fun x : EuclideanSpace ℝ (Fin d) ↦
+      u + -((p / (θ * s)) • B x)) :=
+    measurable_const.add
+      (B.continuous.measurable.const_smul (p / (θ * s))).neg
   have hindO :
       (fun ω ↦ ell (O ω)) ⟂ᵢ[ρ] densityO := by
     have hcomp := hOG.comp ell.continuous.measurable
-      (continuous_standardGaussianDensity.measurable.comp (by
-        change Measurable (fun y : EuclideanSpace ℝ (Fin d) ↦
-          u + -((1 / θ) • B y))
-        fun_prop))
+      (continuous_standardGaussianDensity.measurable.comp hshiftO)
     convert hcomp using 1 <;> funext ω <;> rfl
   have hindG :
       (fun ω ↦ ell (G ω)) ⟂ᵢ[ρ] densityG := by
     have hcomp := hOG.symm.comp ell.continuous.measurable
-      (continuous_standardGaussianDensity.measurable.comp (by
-        change Measurable (fun x : EuclideanSpace ℝ (Fin d) ↦
-          u + -((p / (θ * s)) • B x))
-        fun_prop))
+      (continuous_standardGaussianDensity.measurable.comp hshiftG)
     convert hcomp using 1 <;> funext ω <;> rfl
   have hellO0 : ∫ ω, ell (O ω) ∂ρ = 0 := by
     rw [ell.integral_comp_comm hOint, hO0, map_zero]
@@ -1371,7 +1371,7 @@ private lemma bentkus_smallAngle_original_factor_le
     (hθ : 0 < θ) (hs : 0 < s) (hs1 : s ≤ 1)
     (hp : 0 ≤ p) (hp1 : p ≤ 1)
     (ht : 0 ≤ t) (ht1 : t ≤ 1)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hell : 0 ≤ ell)
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (_hell : 0 ≤ ell)
     (hv0 : 0 ≤ v) (hw0 : 0 ≤ w)
     (hθinv : 1 / θ ≤ 2)
     (hell_le : ell ≤ θ * s)
@@ -1415,7 +1415,7 @@ private lemma bentkus_smallAngle_gaussian_factor_le
     (hθ : 0 < θ) (hs : 0 < s) (hs1 : s ≤ 1)
     (hp : 0 ≤ p) (hp1 : p ≤ 1)
     (ht : 0 ≤ t) (ht1 : t ≤ 1)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hell : 0 ≤ ell)
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (_hell : 0 ≤ ell)
     (hv0 : 0 ≤ v) (hw0 : 0 ≤ w)
     (hθinv : 1 / θ ≤ 2)
     (hell_le : ell ≤ θ * s)
@@ -2289,7 +2289,7 @@ private theorem bentkus_smallAngle_D2_remainderKernels_integrable
     (hidentity : ∀ x y,
       covarianceBilin (μ.map (fun ω ↦ ∑ i, X i ω)) x y = inner ℝ x y)
     (k : Fin (n + 1)) (hk : (∫ ω, ‖X k ω‖ ^ 2 ∂μ) < 1 / 4)
-    (α : ℝ) (hsin : 0 < Real.sin α)
+    (α : ℝ) (_hsin : 0 < Real.sin α)
     (A : Set (EuclideanSpace ℝ (Fin d)))
     (hAconv : Convexity.IsConvexSet ℝ A) {ε : ℝ} (hε : 0 < ε)
     :
@@ -3356,7 +3356,7 @@ private lemma integrable_prod_parametric_mul_standardGaussianDensity_add
     {d : ℕ} {Θ : Type*} [MeasurableSpace Θ] {μ : Measure Θ} [SFinite μ]
     {φ : Θ × EuclideanSpace ℝ (Fin d) → ℝ} (hφm : Measurable φ)
     {b : Θ → EuclideanSpace ℝ (Fin d)} (hbm : Measurable b)
-    {D : Θ → ℝ} (hD : ∀ z, 0 ≤ D z)
+    {D : Θ → ℝ} (_hD : ∀ z, 0 ≤ D z)
     (hφ : ∀ z u, |φ (z, u)| ≤ D z)
     (hDint : Integrable D μ) :
     Integrable (fun p : Θ × EuclideanSpace ℝ (Fin d) ↦

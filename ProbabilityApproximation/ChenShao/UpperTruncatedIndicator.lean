@@ -129,6 +129,7 @@ private lemma integral_upperTruncatedIndicator_eq_integral_leaveOneOutCdf
   rw [integral_indicator_sumX_eq_cdf hYmeas z,
     cdf_sumX_eq_integral_leaveOneOutCdf hYmeas hYindep i z]
 
+omit [IsProbabilityMeasure μ] in
 private lemma integral_upperTruncatedLeaveOneOut_shift_indicator_eq_cdf
     [DecidableEq ι]
     (hXmeas : ∀ i, Measurable (X i)) (i : ι) (z t : ℝ) :
@@ -223,6 +224,7 @@ lemma integral_abs_cube_upperTruncatedFamily_le
         abs_upperTruncateOne_le_abs (X i ω)
     gcongr
 
+omit [Fintype ι] in
 /-- Exact first absolute moment of the expected forward kernel of an upper-truncated coordinate. -/
 lemma integral_abs_mul_upperTruncatedExpectedKernel
     [DecidableEq ι]
@@ -235,6 +237,7 @@ lemma integral_abs_mul_upperTruncatedExpectedKernel
     (measurable_upperTruncatedFamily hXmeas i)
     (integrable_abs_cube_upperTruncatedFamily hXmeas h3 i)
 
+omit [Fintype ι] in
 /-- The coordinate absolute first moment times expected-kernel mass is controlled by its absolute
 third moment. -/
 lemma integral_abs_upperTruncatedFamily_mul_integral_upperTruncatedExpectedKernel_le

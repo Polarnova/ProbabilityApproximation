@@ -45,13 +45,9 @@ Its proof combines convex-distance smoothing, signed-distance coarea, Ball's Gau
 estimate, Gaussian replacement, an identity-covariance induction, and covariance-square-root
 whitening {Citations.citep ball1993 bentkus2004}[].
 
-The chapters below present these arguments in mathematical order.  Proof-local measurability,
-integrability, coercion, and algebraic lemmas remain in the Lean implementation rather than
-interrupting the exposition.  The site is generated with
-[Verso Blueprint](https://github.com/leanprover/verso-blueprint).
-
-For continuous reading or offline reference, download the
-[complete book as a PDF](berry-esseen-bounds.pdf).
+The chapters below present the scalar and multivariate arguments in mathematical order. For
+continuous reading and offline use, the complete text is also available as a
+[PDF](berry-esseen-bounds.pdf).
 
 {include 0 ProbabilityApproximationBlueprint.NonuniformBerryEsseen}
 

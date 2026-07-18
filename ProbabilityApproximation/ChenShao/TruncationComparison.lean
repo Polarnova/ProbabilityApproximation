@@ -8,7 +8,7 @@ import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Tactic
 
 /-!
-# Truncated-moment comparison (SPEC §4.3)
+# Truncated-moment comparison
 
 Elementary real inequalities used to derive the finite-third-moment nonuniform
 Berry–Esseen corollary from the truncated Chen–Shao theorem.

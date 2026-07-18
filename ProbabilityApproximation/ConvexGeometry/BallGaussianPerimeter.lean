@@ -538,7 +538,10 @@ private theorem aemeasurable_ballBoundaryCoordinateProjectedChart_integrand
   filter_upwards with p
   rcases p with ⟨z, θ⟩
   have hθ : ‖(θ : E)‖ = 1 := by
-    simpa [Metric.mem_sphere] using θ.property
+    have hθ := θ.property
+    change dist (θ : E) 0 = 1 at hθ
+    rw [dist_zero_right] at hθ
+    exact hθ
   change
     ENNReal.ofReal
         ((ballAmbientHyperplaneProjection (θ : E)).toLinearMap.comp
@@ -646,7 +649,10 @@ private theorem lintegral_ballBoundaryCoordinateChart_gaussianDensity_le_sphereP
       apply lintegral_congr
       intro θ
       have hθ : ‖(θ : EuclideanSpace ℝ (Fin d))‖ = 1 := by
-        simpa [Metric.mem_sphere] using θ.property
+        have hθ := θ.property
+        change dist (θ : EuclideanSpace ℝ (Fin d)) 0 = 1 at hθ
+        rw [dist_zero_right] at hθ
+        exact hθ
       have hinnerN :
           |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) N| =
             |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) u| * J := by
@@ -720,7 +726,10 @@ theorem standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_compact
   have hfixed (θ : Metric.sphere (0 : EuclideanSpace ℝ (Fin d)) 1) :
       (∑' j : Fin d × Bool, A j θ) ≤ K := by
     have hθ : ‖(θ : EuclideanSpace ℝ (Fin d))‖ = 1 := by
-      simpa [Metric.mem_sphere] using θ.property
+      have hθ := θ.property
+      change dist (θ : EuclideanSpace ℝ (Fin d)) 0 = 1 at hθ
+      rw [dist_zero_right] at hθ
+      exact hθ
     simpa only [A, K, ballGaussianPerimeterConstant] using
       tsum_lintegral_ballBoundaryCoordinateProjectedChart_ballRadialMajorant_le
         hd hC hcompact hinterior hθ

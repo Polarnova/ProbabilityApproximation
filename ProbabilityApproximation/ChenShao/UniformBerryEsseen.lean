@@ -7,70 +7,13 @@ import ProbabilityApproximation.ChenShao.Concentration
 import ProbabilityApproximation.Stein.IndicatorSolution
 
 /-!
-# Uniform Berry–Esseen (Chen–Shao 2001, Theorem 2.1)
+# Uniform Berry–Esseen bound
 
-Target (SPEC §4.1):
-
-```
-|F(x) - Φ(x)| ≤ (41/10) · truncMomentSum
-```
-
-## Status
-
-### Complete infrastructure used here
-
-* `truncMomentSum` / `thirdMomentSum` and nonnegativity (`Concentration`)
-* Leave-one-out concentration with third moments:
-  `concentration_leaveOneOut` — CGS Lemma 3.1 form
-  `P(a ≤ W⁽ⁱ⁾ ≤ b) ≤ √2(b-a) + 2(√2+1)γ`
-* Stein solution: closed forms, nonnegativity, Mills upper bound
-* Full `|w f_z(w)| ≤ 1`, `|f_z| ≤ √(2π)/2`, `|f_z'| ≤ 2`
-* FTC for `steinSolution` and Lipschitz control from `|f'| ≤ 2`
-* Pointwise kernel exchange
-  `ξ (f_z(w) - f_z(w-ξ)) = ∫ K_ξ(t) f_z'(w+t) dt`
-* Stein identity for independent mean-zero sums:
-  `E[W f_z(W)] = ∑_i E[∫ K_i(t) f_z'(W+t) dt]` (`stein_identity_sum`)
-* Residual increment bound with constant factor `2|W'| + √(2π)/2`
-
-### Complete lemmas in this file
-
-* Large truncated-moment branch (constant `41/10`, threshold `10/41`)
-* Comparison `truncMomentSum ≤ thirdMomentSum`
-* Forward kernel `kernelDensityFwd` (CGS leave-one-out form) with
-  `∫ K = ξ²`, `∫ |t|K = |ξ|³/2`, `∫ (|ξ|+|t|)K = (3/2)|ξ|³`
-* Forward exchange `ξ(f(w+ξ)-f(w)) = ∫ K_fwd f'(w+t)`
-* Leave-one-out Stein identity
-  `E[W f_z(W)] = ∑_i E[∫ K_fwd(Xᵢ,t) f_z'(W⁽ⁱ⁾+t) dt]`
-* Residual majorant infrastructure (`abs_mul_steinSolution_sub_le`,
-  `integral_abs_add_mul_kernelDensityFwd`)
-* Large third-moment branch with explicit constant `30`
-  (`thirdMomentBerryEsseenConstant`, `abs_cdf_sub_le_thirdMomentSum_of_large`)
-* Pointwise Stein expand under forward kernel:
-  `∫ K f' = ∫ K (W'+t)f + ∫ K 1_{W'+t≤z} − Φ ξ²`
-  (`integral_kernelFwd_mul_steinSolutionDeriv_expand`)
-* Pointwise integrated residual majorant:
-  `|∫ ((W'+ξ)f − (W'+t)f) K| ≤ (2|W'| + √(2π)/2)(3/2)|ξ|³`
-  (`abs_integral_residual_kernelFwd_le`)
-* Independence residual majorant sum ≤ `(3/2)(2+√(2π)/2) γ ≤ 6γ`
-  (`sum_expected_residual_majorant_le`, `residualMajorantCoeff_le_six`)
-* Unconditional max form `|F−Φ| ≤ 30 max(γ, 1/30)`
-* Young product form `(E|Y|)(E Y²) ≤ E|Y|³` (`integral_abs_mul_integral_sq_le`)
-* Residual bound `|∑ E[kernelIndicatorMass] − Φ| ≤ 6γ` (`abs_sum_EB_sub_Phi_le`)
-* Concentration upgrade `|F − ∑ E[B]| ≤ concentrationUpgradeCoeff · γ`
-  (`abs_cdf_sub_sum_EB_le`, CGS (3.30) form)
-* **Release uniform theorem** `uniformBerryEsseen_thirdMoment`: `|F−Φ| ≤ 30γ` for all `γ`
-  (triangle: concentration + residual ≤ (coeff+6)γ ≤ 30γ). SPEC accepts constant `30`.
-
-### Optional truncated strengthening
-
-The large branch `abs_cdf_sub_le_truncMomentSum_of_large` records the elementary part of the exact
-truncated theorem.  The pure-linear theorem at `41/10` is not claimed: it needs Chen–Shao §4
-(R₁–R₄ and Proposition 3.2), and is not a release dependency.
-
-### Downstream status
-
-The finite-third-moment nonuniform release theorem is proved in the later one-sided-truncation
-modules and exported as `nonuniformBerryEsseen`.
+This module proves a uniform Berry–Esseen bound with constant `30` for independent centered finite
+families of unit total variance and finite absolute third moments. The proof uses the half-line
+Stein equation, a forward exchange kernel, leave-one-out concentration, and an integrated residual
+estimate. It also records the elementary large-error branch of Chen--Shao's truncated-moment bound
+with constant `41 / 10`.
 -/
 
 open MeasureTheory ProbabilityTheory Real Set Filter
@@ -105,6 +48,7 @@ lemma abs_cdf_sub_le_truncMomentSum_of_large
             mul_le_mul_of_nonneg_left hlarge h41
   exact h1.trans hge
 
+omit [IsProbabilityMeasure μ] in
 /-- Under third-moment integrability, the truncated moment sum is dominated by
 the full third-moment sum. -/
 lemma truncMomentSum_le_thirdMomentSum
@@ -196,6 +140,7 @@ lemma mul_steinSolution_sub_eq_integral_kernel (z w ξ : ℝ) :
 
 variable [DecidableEq ι]
 
+omit [DecidableEq ι] in
 /-- Integrability of `W · f_z(W)`. -/
 lemma integrable_sumX_mul_steinSolution
     (hX : ∀ i, MemLp (X i) 2 μ) (hXmeas : ∀ i, Measurable (X i)) (z : ℝ) :
@@ -217,6 +162,7 @@ lemma integrable_sumX_mul_steinSolution
         gcongr
       _ = (sqrt (2 * π) / 2) * |sumX X ω| := mul_comm _ _
 
+omit [IsProbabilityMeasure μ] in
 /-- Mean-zero leaf: `E[Xᵢ f_z(W⁽ⁱ⁾)] = 0`. -/
 lemma integral_X_mul_steinSolution_leaveOneOut_eq_zero
     (hXmeas : ∀ k, Measurable (X k)) (h_indep : iIndepFun X μ)
@@ -225,10 +171,11 @@ lemma integral_X_mul_steinSolution_leaveOneOut_eq_zero
   integral_X_mul_comp_leaveOneOut hXmeas h_indep i (h_mean i) (steinSolution z)
     (continuous_steinSolution z).aestronglyMeasurable
 
+omit [IsProbabilityMeasure μ] in
 /-- Exchange leaf for a single coordinate:
 `E[Xᵢ (f_z(W) - f_z(W⁽ⁱ⁾))] = E[∫ K_i(t) f_z'(W + t) dt]`. -/
 lemma integral_X_mul_steinSolution_sub_eq_kernel
-    (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
+    (_hX : ∀ k, MemLp (X k) 2 μ) (_hXmeas : ∀ k, Measurable (X k))
     (i : ι) (z : ℝ) :
     ∫ ω, X i ω * (steinSolution z (sumX X ω) - steinSolution z (leaveOneOut X i ω)) ∂μ =
       ∫ ω, (∫ t : ℝ,
@@ -803,17 +750,13 @@ lemma integral_abs_add_mul_kernelDensityFwd (ξ : ℝ) :
 
 /-! ### Explicit constant and large-error branch -/
 
-/-- Explicit third-moment constant (CGS path with `|f'|≤2`, `|f|≤√(2π)/2`).
-
-Breakdown targeting constant `30`:
-* Stein residual ≤ `(3/2)(2 + √(2π)/2) γ ≈ 4.88 γ`
-* Concentration upgrade ≤ `(3.5√2 + 2) γ ≈ 6.95 γ` (CGS (3.30))
-* Safety margin for formalization gaps in comparison constants → `30`. -/
+/-- The universal constant in the third-moment uniform Berry--Esseen bound. -/
 def thirdMomentBerryEsseenConstant : ℝ := 30
 
 lemma thirdMomentBerryEsseenConstant_pos : 0 < thirdMomentBerryEsseenConstant := by
   norm_num [thirdMomentBerryEsseenConstant]
 
+omit [DecidableEq ι] in
 /-- Large-error third-moment branch: if `γ ≥ 1/30` then `|F-Φ| ≤ 30 γ`. -/
 lemma abs_cdf_sub_le_thirdMomentSum_of_large
     (hX : ∀ i, Measurable (X i))
@@ -891,7 +834,8 @@ lemma expected_residual_majorant_one
           = ((3 : ℝ) * EW + 3 / 2 * M) * EX3 := by ring
       _ ≤ ((2 + M) * (3 / 2)) * EX3 := mul_le_mul_of_nonneg_right hle hEX0
       _ = (2 + M) * (3 / 2) * EX3 := by ring
-  convert hmain using 1 <;> ring
+  convert hmain using 1
+  all_goals ring
 
 lemma sum_expected_residual_majorant_le
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
@@ -1114,15 +1058,18 @@ lemma measurable_kernelDensityFwd_left (t : ℝ) : Measurable (fun ξ => kernelD
 noncomputable def expectedKernelFwd (i : ι) (t : ℝ) : ℝ :=
   ∫ ω, kernelDensityFwd (X i ω) t ∂μ
 
+omit [Fintype ι] [IsProbabilityMeasure μ] [DecidableEq ι] in
 lemma expectedKernelFwd_nonneg (i : ι) (t : ℝ) :
     0 ≤ expectedKernelFwd (X := X) (μ := μ) i t :=
   integral_nonneg fun _ => kernelDensityFwd_nonneg _ _
 
+omit [Fintype ι] [DecidableEq ι] in
 lemma measurable_kernelDensityFwd_pair (i : ι) (hXmeas : Measurable (X i)) :
     Measurable fun p : Ω × ℝ => kernelDensityFwd (X i p.1) p.2 :=
   measurable_uncurry_kernelDensityFwd.comp
     ((hXmeas.comp measurable_fst).prodMk measurable_snd)
 
+omit [Fintype ι] [IsProbabilityMeasure μ] [DecidableEq ι] in
 /-- The uncurry `(ω, t) ↦ K(Xᵢ(ω), t)` is integrable on `μ.prod volume`. -/
 lemma integrable_uncurry_kernelDensityFwd (i : ι)
     (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i)) :
@@ -1146,6 +1093,7 @@ lemma integrable_uncurry_kernelDensityFwd (i : ι)
     rw [heq]
     exact hX.integrable_sq
 
+omit [Fintype ι] [DecidableEq ι] in
 lemma integral_expectedKernelFwd (i : ι)
     (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i)) :
     ∫ t : ℝ, expectedKernelFwd (X := X) (μ := μ) i t =
@@ -1167,6 +1115,7 @@ lemma integral_expectedKernelFwd (i : ι)
     _ = ∫ ω, (∫ t, kernelDensityFwd (X i ω) t) ∂μ := hprod
     _ = ∫ ω, (X i ω) ^ 2 ∂μ := hleft
 
+omit [DecidableEq ι] in
 lemma sum_integral_expectedKernelFwd_eq_one
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
     (h_mean : ∀ k, ∫ ω, X k ω ∂μ = 0)
@@ -1177,9 +1126,10 @@ lemma sum_integral_expectedKernelFwd_eq_one
     Finset.sum_congr rfl fun i _ => integral_expectedKernelFwd i (hX i) (hXmeas i)
   rw [h, sum_integral_sq_eq_one hX h_mean hvar]
 
+omit [Fintype ι] [IsProbabilityMeasure μ] [DecidableEq ι] in
 /-- Product-space integrability of residual majorant weight `(|ξ|+|t|)K`. -/
 lemma integrable_uncurry_abs_add_mul_kernel (i : ι)
-    (hX : MemLp (X i) 2 μ) (h3 : Integrable (fun ω => |X i ω| ^ 3) μ)
+    (_hX : MemLp (X i) 2 μ) (h3 : Integrable (fun ω => |X i ω| ^ 3) μ)
     (hXmeas : Measurable (X i)) :
     Integrable (fun p : Ω × ℝ =>
       (|X i p.1| + |p.2|) * kernelDensityFwd (X i p.1) p.2) (μ.prod volume) := by
@@ -1213,6 +1163,7 @@ noncomputable def leaveOneOutKernelDerivIntegral (z : ℝ) (i : ι) (ω : Ω) : 
   ∫ t : ℝ, kernelDensityFwd (X i ω) t *
     steinSolutionDeriv z (leaveOneOut X i ω + t)
 
+omit [MeasurableSpace Ω] in
 lemma leaveOneOutKernelDerivIntegral_eq (z : ℝ) (i : ι) (ω : Ω) :
     leaveOneOutKernelDerivIntegral (X := X) z i ω =
       X i ω * (steinSolution z (sumX X ω) - steinSolution z (leaveOneOut X i ω)) := by
@@ -1271,6 +1222,7 @@ noncomputable def kernelSteinProductMass (z : ℝ) (i : ι) (ω : Ω) : ℝ :=
   ∫ t : ℝ, kernelDensityFwd (X i ω) t *
     ((leaveOneOut X i ω + t) * steinSolution z (leaveOneOut X i ω + t))
 
+omit [MeasurableSpace Ω] in
 lemma kernel_masses_of_expand (z : ℝ) (i : ι) (ω : Ω) :
     leaveOneOutKernelDerivIntegral (X := X) z i ω =
       kernelSteinProductMass (X := X) z i ω + kernelIndicatorMass (X := X) z i ω -
@@ -1278,6 +1230,7 @@ lemma kernel_masses_of_expand (z : ℝ) (i : ι) (ω : Ω) :
   simpa [leaveOneOutKernelDerivIntegral, kernelSteinProductMass, kernelIndicatorMass] using
     integral_kernelFwd_mul_steinSolutionDeriv_expand z (leaveOneOut X i ω) (X i ω)
 
+omit [MeasurableSpace Ω] in
 lemma abs_kernelSteinProductMass_le (z : ℝ) (i : ι) (ω : Ω) :
     |kernelSteinProductMass (X := X) z i ω| ≤ (X i ω) ^ 2 := by
   have hInt := integrable_kernelDensityFwd_mul_mul_steinSolution z
@@ -1308,6 +1261,7 @@ lemma abs_kernelSteinProductMass_le (z : ℝ) (i : ι) (ω : Ω) :
     _ ≤ ∫ t, kernelDensityFwd (X i ω) t := hstep
     _ = (X i ω) ^ 2 := integral_kernelDensityFwd _
 
+omit [MeasurableSpace Ω] in
 lemma abs_kernelIndicatorMass_le (z : ℝ) (i : ι) (ω : Ω) :
     |kernelIndicatorMass (X := X) z i ω| ≤ (X i ω) ^ 2 := by
   have hInt := integrable_kernelDensityFwd_mul_indicator_le z
@@ -1319,7 +1273,7 @@ lemma abs_kernelIndicatorMass_le (z : ℝ) (i : ι) (ω : Ω) :
     refine integral_mono hInt.abs (integrable_kernelDensityFwd (X i ω)) fun t => ?_
     have hk := kernelDensityFwd_nonneg (X i ω) t
     rw [abs_mul, abs_of_nonneg hk]
-    split_ifs <;> simp [hk, abs_of_nonneg hk]
+    split_ifs <;> simp [hk]
   calc
     |kernelIndicatorMass (X := X) z i ω|
         ≤ ∫ t, |kernelDensityFwd (X i ω) t *
@@ -1331,6 +1285,7 @@ lemma abs_kernelIndicatorMass_le (z : ℝ) (i : ι) (ω : Ω) :
     _ ≤ ∫ t, kernelDensityFwd (X i ω) t := hstep
     _ = (X i ω) ^ 2 := integral_kernelDensityFwd _
 
+omit [IsProbabilityMeasure μ] in
 lemma integrable_kernelSteinProductMass
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
     (z : ℝ) (i : ι) :
@@ -1364,6 +1319,7 @@ lemma integrable_kernelSteinProductMass
   -- `integral_prod_left`: ω ↦ ∫_t f(ω,t) is integrable
   exact huncurry_int.integral_prod_left
 
+omit [IsProbabilityMeasure μ] in
 lemma integrable_kernelIndicatorMass
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
     (z : ℝ) (i : ι) :
@@ -1456,6 +1412,7 @@ noncomputable def kernelProductResidual (z : ℝ) (i : ι) (ω : Ω) : ℝ :=
     ((sumX X ω) * steinSolution z (sumX X ω) -
       (leaveOneOut X i ω + t) * steinSolution z (leaveOneOut X i ω + t))
 
+omit [MeasurableSpace Ω] in
 lemma abs_kernelProductResidual_le (z : ℝ) (i : ι) (ω : Ω) :
     |kernelProductResidual (X := X) z i ω| ≤
       (2 * |leaveOneOut X i ω| + sqrt (2 * π) / 2) * ((3 : ℝ) / 2) * |X i ω| ^ 3 := by
@@ -1463,6 +1420,7 @@ lemma abs_kernelProductResidual_le (z : ℝ) (i : ι) (ω : Ω) :
   simpa [kernelProductResidual, hW] using
     abs_integral_residual_kernelFwd_le z (leaveOneOut X i ω) (X i ω)
 
+omit [MeasurableSpace Ω] in
 lemma kernelProductResidual_eq (z : ℝ) (i : ι) (ω : Ω) :
     kernelProductResidual (X := X) z i ω =
       sumX X ω * steinSolution z (sumX X ω) * (X i ω) ^ 2 -
@@ -1497,12 +1455,13 @@ lemma kernelProductResidual_eq (z : ℝ) (i : ι) (ω : Ω) :
   simp only [kernelProductResidual, kernelSteinProductMass]
   rw [hsub, integral_sub hInt1 hInt2, hc]
 
+omit [IsProbabilityMeasure μ] in
 /-- Integrability of the product residual (dominated by the third-moment majorant). -/
 lemma integrable_kernelProductResidual
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
-    (h_indep : iIndepFun X μ) (h_mean : ∀ k, ∫ ω, X k ω ∂μ = 0)
-    (hvar : ∑ k, variance (X k) μ = 1)
-    (h3 : ∀ k, Integrable (fun ω => |X k ω| ^ 3) μ)
+    (_h_indep : iIndepFun X μ) (_h_mean : ∀ k, ∫ ω, X k ω ∂μ = 0)
+    (_hvar : ∑ k, variance (X k) μ = 1)
+    (_h3 : ∀ k, Integrable (fun ω => |X k ω| ^ 3) μ)
     (z : ℝ) (i : ι) :
     Integrable (kernelProductResidual (X := X) z i) μ := by
   -- residual = Wf * X² - product mass; both integrable
@@ -1582,7 +1541,7 @@ lemma sum_expected_abs_kernelProductResidual_le
 
 /-- Stein product of leave-one-out at shift `t` is integrable (bounded by 1). -/
 lemma integrable_leaveOneOut_mul_steinSolution
-    (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
+    (_hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
     (z t : ℝ) (i : ι) :
     Integrable (fun ω =>
       (leaveOneOut X i ω + t) * steinSolution z (leaveOneOut X i ω + t)) μ := by
@@ -1595,6 +1554,7 @@ lemma integrable_leaveOneOut_mul_steinSolution
     have h := abs_mul_steinSolution_le_one z (leaveOneOut X i ω + t)
     simpa [Real.norm_eq_abs, abs_mul] using h
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- Kernel density at fixed `t` is integrable (dominated by `|Xᵢ|`). -/
 lemma integrable_kernelDensityFwd_eval (i : ι)
     (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i)) (t : ℝ) :
@@ -1742,6 +1702,7 @@ lemma abs_sum_expected_Wf_Xsq_sub_productMass_le
 
 /-! ### Expected-kernel Fubini for product mass -/
 
+omit [IsProbabilityMeasure μ] in
 /-- Product-space integrability of `K · (W'+t)f`. -/
 lemma integrable_uncurry_kernel_mul_steinProduct
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
@@ -1813,9 +1774,10 @@ lemma young_abs_mul_sq {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
   have h' : a ^ 3 + 2 * b ^ 3 - 3 * a * b ^ 2 = (a - b) ^ 2 * (a + 2 * b) := by ring
   linarith [h'.symm ▸ h]
 
+omit [Fintype ι] [IsProbabilityMeasure μ] [DecidableEq ι] in
 /-- Integrability of `(ω,t) ↦ |t| · K(Xᵢω,t)` on `μ.prod volume`. -/
 lemma integrable_uncurry_abs_t_mul_kernel (i : ι)
-    (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i))
+    (_hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i))
     (h3 : Integrable (fun ω => |X i ω| ^ 3) μ) :
     Integrable (fun p : Ω × ℝ => |p.2| * kernelDensityFwd (X i p.1) p.2)
       (μ.prod volume) := by
@@ -1862,6 +1824,7 @@ lemma integrable_uncurry_abs_t_mul_kernel (i : ι)
   rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (abs_nonneg _) hk)]
   exact hle
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- `∫ |t| · Khatᵢ(t) dt = (1/2) E|Xᵢ|³`. -/
 lemma integral_abs_mul_expectedKernelFwd (i : ι)
     (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i))
@@ -1902,6 +1865,7 @@ lemma integral_abs_mul_expectedKernelFwd (i : ι)
           exact integral_const_mul _ _
 
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- `Khatᵢ` is integrable. -/
 lemma integrable_expectedKernelFwd (i : ι)
     (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i)) :
@@ -2354,6 +2318,7 @@ lemma concentrationUpgradeCoeff_add_six_le_thirty :
 noncomputable def leaveOneOutCdf (i : ι) (x : ℝ) : ℝ :=
   μ.real {ω | leaveOneOut X i ω ≤ x}
 
+omit [IsProbabilityMeasure μ] in
 lemma leaveOneOutCdf_nonneg (i : ι) (x : ℝ) :
     0 ≤ leaveOneOutCdf (X := X) (μ := μ) i x :=
   measureReal_nonneg
@@ -2371,6 +2336,7 @@ lemma measurable_leaveOneOutCdf (i : ι) :
     Measurable (leaveOneOutCdf (X := X) (μ := μ) i) :=
   Monotone.measurable fun _ _ h => leaveOneOutCdf_mono i h
 
+omit [IsProbabilityMeasure μ] in
 /-- Indicator integral equals leave-one-out CDF. -/
 lemma integral_leaveOneOut_indicator_eq_cdf
     (hXmeas : ∀ k, Measurable (X k)) (i : ι) (y : ℝ) :
@@ -2457,7 +2423,6 @@ lemma cdf_sumX_eq_integral_leaveOneOutCdf
   have hWmeas := measurable_sumX hXmeas
   have hF : cdf (μ.map (sumX X)) z = μ.real {ω | sumX X ω ≤ z} := by
     rw [cdf_map_sumX_eq_real (fun j => (hXmeas j).aemeasurable)]
-    change (μ.map (sumX X)).real (Iic z) = μ.real {ω | sumX X ω ≤ z}
     simp only [Measure.real, Measure.map_apply hWmeas measurableSet_Iic]
     rfl
   have hInd := indepFun_leaveOneOut (X := X) (μ := μ) hXmeas h_indep i
@@ -2543,6 +2508,7 @@ lemma cdf_sumX_eq_integral_leaveOneOutCdf
         (measurable_const.sub measurable_id)).aestronglyMeasurable
   rw [hF, hind_ind, hleft, hright]
 
+omit [IsProbabilityMeasure μ] in
 /-- Product integrability of `K * 1_{W'+t <= z}`. -/
 lemma integrable_uncurry_kernel_mul_indicator
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
@@ -2589,7 +2555,7 @@ lemma integral_indicator_mul_kernel_eq_mul
       (fun ω => if leaveOneOut X i ω + t ≤ z then (1 : ℝ) else 0) μ := by
     refine (integrable_const (1 : ℝ)).mono' ?_ ?_
     · exact (hg.comp (measurable_leaveOneOut hXmeas i)).aestronglyMeasurable
-    · filter_upwards with ω; split_ifs <;> simp [Real.norm_eq_abs]
+    · filter_upwards with ω; split_ifs <;> simp
   have hIntK := integrable_kernelDensityFwd_eval i (hX i) (hXmeas i) t
   have hmul :=
     hindep.integral_mul_eq_mul_integral hIntg.aestronglyMeasurable hIntK.aestronglyMeasurable
@@ -2638,6 +2604,7 @@ lemma expected_kernelIndicatorMass_eq_integral_expected
           expectedKernelFwd (X := X) (μ := μ) i t :=
       integral_indicator_mul_kernel_eq_mul hX hXmeas h_indep z i t
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- Integrability of `|t| * Khat_i`. -/
 lemma integrable_abs_mul_expectedKernelFwd (i : ι)
     (hX : MemLp (X i) 2 μ) (hXmeas : Measurable (X i))
@@ -2658,6 +2625,7 @@ lemma integrable_abs_mul_expectedKernelFwd (i : ι)
   exact heq.symm
 
 
+omit [DecidableEq ι] in
 /-- One-coordinate integrated concentration majorant. -/
 lemma integral_conc_majorant_mul_expectedKernel_le
     (hX : ∀ k, MemLp (X k) 2 μ) (hXmeas : ∀ k, Measurable (X k))
@@ -2810,7 +2778,7 @@ lemma abs_cdf_sub_leaveOneOutCdf_shift_le
     have hB : Integrable (fun _ : Ω => Real.sqrt 2 * |t| + Cγ) μ :=
       integrable_const _
     rw [heq, integral_add hA hB, integral_const_mul, integral_const]
-    simp only [smul_eq_mul, Measure.real, measure_univ, ENNReal.toReal_one, one_smul, EX]
+    simp only [smul_eq_mul, Measure.real, measure_univ, ENNReal.toReal_one, EX]
     ring
   exact hmono1.trans hmono2
 
@@ -3005,7 +2973,7 @@ theorem uniformBerryEsseen_thirdMoment
   calc
     |cdf (μ.map fun ω ↦ ∑ i, X i ω) x - cdf (gaussianReal 0 1) x|
         = |F - Phi| := by
-          simp only [F, Phi, sumX]
+          simp only [F, Phi]
           rfl
     _ ≤ |F - EB| + |EB - Phi| := htri
     _ ≤ concentrationUpgradeCoeff * γ + 6 * γ := hsum

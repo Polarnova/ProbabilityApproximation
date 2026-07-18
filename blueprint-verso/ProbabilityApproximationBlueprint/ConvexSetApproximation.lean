@@ -74,7 +74,7 @@ with the analogous identity for closed parallel sets.
 
 These are the set-theoretic facts used in {Citations.citet bentkus2004}[], condition (ii)
 and the neighborhood notation preceding Theorem 1.2, printed pp. 401--402.
-The formal open-thickening theorem is harmlessly generalized to all real radii.
+The open-thickening identity remains valid for all real radii.
 
 :::theorem "metric-projection" (lean := "ProbabilityTheory.existsUnique_isNearestPoint, ProbabilityTheory.metricProjection, ProbabilityTheory.metricProjection_variational, ProbabilityTheory.metricProjection_firmlyNonexpansive, ProbabilityTheory.metricProjection_lipschitzWith, ProbabilityTheory.metricProjection_residual_lipschitzWith") (tags := "bentkus, convex-geometry, projection, source-bentkus-2003, fidelity-exact")
 *Metric projection onto a closed convex set.* Let $`A\subseteq\mathbb R^d` be
@@ -94,8 +94,7 @@ $`1`-Lipschitz.
 
 This packages the Euclidean projection geometry used in {Citations.citet bentkus2003}[], Lemma 2.2,
 printed pp. 389--390.  The paper states the resulting distance-gradient inequalities;
-the projection formulation records the complete geometric mechanism used by the
-formal proof.
+the projection formulation records the geometric mechanism behind them.
 
 :::theorem "squared-distance-calculus" (lean := "ProbabilityTheory.squaredInfDist_remainder_bound, ProbabilityTheory.hasFDerivAt_squaredInfDist, ProbabilityTheory.hasFDerivAt_infDist_of_notMem, ProbabilityTheory.norm_fderiv_infDist_of_notMem") (uses := "metric-projection") (tags := "bentkus, convex-geometry, distance, source-bentkus-2003, fidelity-explicit-frechet-form")
 *Differentiability of distance to a convex set.* Under the hypotheses of the preceding
@@ -116,8 +115,8 @@ Dd_A(x)[h]
 
 This is the distance calculus behind Lemma 2.2, equations (2.5)--(2.9), of
 {Citations.citet bentkus2003}[],
-printed pp. 389--390.  The formal statement makes the derivative a bounded
-linear functional and supplies an explicit quadratic remainder.
+printed pp. 389--390. The derivative is written as a bounded linear functional, together
+with an explicit quadratic remainder.
 
 :::theorem "bentkus-smooth-cutoff" (lean := "ProbabilityTheory.bentkusProfile, ProbabilityTheory.bentkusCutoff, ProbabilityTheory.hasFDerivAt_bentkusCutoff, ProbabilityTheory.bentkusCutoff_eq_one_of_mem, ProbabilityTheory.bentkusCutoff_eq_zero_of_le_infDist, ProbabilityTheory.norm_fderiv_bentkusCutoff_le, ProbabilityTheory.norm_fderiv_bentkusCutoff_sub_le, ProbabilityTheory.contDiff_bentkusCutoff") (uses := "squared-distance-calculus") (tags := "bentkus, convex-geometry, smoothing, source-bentkus-2003, source-bentkus-2004, fidelity-exact-constants")
 *Bentkus's continuously differentiable distance cutoff.* Let $`A\subseteq\mathbb R^d`
@@ -143,9 +142,8 @@ $$`
 This is Lemma 2.3, equations (2.10)--(2.12), of {Citations.citet bentkus2003}[],
 printed pp. 390--391, and the
 same cutoff imported in {Citations.citet bentkus2004}[],
-Lemma 2.2, equation (2.2), printed p. 402.  The formal profile is the paper's
-piecewise quadratic $`\psi`; endpoint
-values are included explicitly.
+Lemma 2.2, equation (2.2), printed p. 402. Here $`\psi` is the paper's piecewise
+quadratic profile, including its endpoint values.
 
 # Gaussian companions and rotation
 
@@ -183,10 +181,9 @@ and their covariance bilinear forms agree.
 This is the canonical-space realization of the Gaussian companions $`Y_i`, the
 leave-one-out variables in equation (3.2), and the joint enlargement implicit in the
 telescoping/rotation setup (3.2)--(3.5) of {Citations.citet bentkus2004}[], printed pp. 403--404.  The source
-simply assumes all variables exist independently in the aggregate; the formal statement
-constructs the required marginal and Gaussian product spaces and allows singular
-individual covariance matrices.  It deliberately stops before the rotation identity (3.4),
-which is recorded in the rotation nodes below.
+assumes all variables exist independently on one probability space. The canonical product
+construction above realizes this arrangement while allowing singular individual covariance
+matrices. The rotation identity (3.4) is treated below.
 
 :::lemma_ "gaussian-fourth-moment-control" (lean := "ProbabilityTheory.integral_norm_pow_four_multivariateGaussian_le") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-sufficient-bound")
 *Dimension-free fourth-moment control for a Gaussian vector.* Let $`S` be a positive
@@ -201,7 +198,7 @@ This is an explicit sufficient estimate for the dimension-free Gaussian moment c
 used by {Citations.citet bentkus2004}[], in the
 discussion following equation (3.35), printed p. 408.  Bentkus records the resulting
 third-moment comparison with an implicit absolute constant; the displayed fourth-moment
-bound is the formal route used to make that constant explicit.
+bound, together with Hölder's inequality, gives an explicit constant.
 
 :::lemma_ "gaussian-companion-second-moment-match" (lean := "ProbabilityTheory.integral_norm_sq_replacementGaussian_eq_replacementOriginal") (uses := "gaussian-companions-and-transport") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-exact")
 *Exact second-moment matching on the replacement space.* Let $`X_i` be measurable,
@@ -235,8 +232,8 @@ $$`
 {Citations.citet bentkus2004}[], uses
 $`\mathbb E\lvert Y\rvert^3\ll\mathbb E\lvert X\rvert^3` after equation (3.35),
 printed p. 408, and reuses the same absolute-moment control in equations (3.39)--(3.40),
-printed p. 409.  The formal statement replaces the source's implicit constant by the
-conservative explicit value $`27`.
+printed p. 409. The conservative value $`27` is one explicit choice for the
+source's implicit constant.
 
 :::lemma_ "gaussian-companion-mixed-moment" (lean := "ProbabilityTheory.integral_norm_sq_replacementOriginal_mul_norm_replacementGaussian_le") (uses := "gaussian-companions-and-transport, gaussian-companion-second-moment-match") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-holder-bound")
 *Mixed original--Gaussian moment bound.* Under the preceding centered $`L^3`
@@ -249,8 +246,8 @@ $$`
 
 This is the Hölder estimate used immediately before equation (3.30) in Vidmantas
 {Citations.citet bentkus2004}[], printed p. 407.  The source
-writes the estimate with $`X` and its covariance-matched Gaussian $`Y`; the formal
-statement records it on the canonical independent replacement space.
+writes the estimate with $`X` and its covariance-matched Gaussian $`Y`; the display above
+uses their canonical independent coupling.
 
 :::theorem "bentkus-rotation-cancellation" (lean := "ProbabilityTheory.bentkusRotated, ProbabilityTheory.bentkusRotatedDeriv, ProbabilityTheory.integral_bentkusRotated_eq_zero, ProbabilityTheory.integral_bentkusRotatedDeriv_eq_zero, ProbabilityTheory.bentkusRotated_bilin_bentkusRotatedDeriv, ProbabilityTheory.integral_bilin_bentkusRotated_bentkusRotatedDeriv_eq_zero, ProbabilityTheory.integral_bilin_replacementRotated_replacementRotatedDeriv_eq_zero") (uses := "gaussian-companions-and-transport") (tags := "bentkus, gaussian-replacement, rotation, source-bentkus-2004, fidelity-low-order-cancellation")
 *Rotation and low-order moment cancellation.* Let $`X,Y` be independent random
@@ -336,8 +333,8 @@ the uniform rotation and leave-one-out sums immediately before equation (3.4),
 printed pp. 403--404; equations (3.4)--(3.5), printed p. 404, give the coordinate
 representation and low-order cancellations.  The actual and fully Gaussian reference
 contributions are the terms split in equations (3.11)--(3.12), also printed p. 404.
-The paper writes the angle expectations compactly; the formal statement makes their
-joint integrability and every Fubini interchange explicit.
+The joint integrability assertions above justify the Fubini interchanges implicit in the
+paper's compact notation.
 
 :::theorem "covariance-additivity-and-leave-one-out" (lean := "ProbabilityTheory.covarianceBilin_map_finsetSum_eq_sum, ProbabilityTheory.covarianceBilin_map_sum_eq_sum, ProbabilityTheory.bentkusLeaveOneOut, ProbabilityTheory.covarianceBilin_map_sum_eq_leaveOneOut_add, ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix, ProbabilityTheory.covarianceBilin_leaveOneOut_eq_inner_sub, ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix_eq_one_sub") (uses := "gaussian-companions-and-transport") (tags := "bentkus, covariance, leave-one-out, source-bentkus-2004, fidelity-exact")
 *Covariance additivity and the leave-one-out identity.* Let $`X_1,\ldots,X_n` be
@@ -366,7 +363,7 @@ No individual covariance matrix is required to be nonsingular.
 
 This is the covariance algebra in equation (3.2) and the paragraph immediately following it
 in {Citations.citet bentkus2004}[],
-printed p. 403.  The formal subsum identity is stated at the
+printed p. 403. The subsum identity above is stated at the
 level of covariance bilinear forms; the last display is its coordinate-matrix form and
 is exactly the paper's $`P_k^2=I-\operatorname{cov}X_k` notation.
 
@@ -388,8 +385,8 @@ T\bigl(S(Tx)\bigr)=x\qquad(x\in\mathbb R^d).
 {Citations.citet bentkus2004}[], defines the
 positive covariance square root $`C` by $`C^2=\operatorname{Cov}(S_n)` in the notation
 preceding Theorem 1.1, printed p. 400, and uses $`C^{-1}` in the normalization following
-equation (3.1), printed p. 403.  The formal statement makes the resulting
-$`C^{-1}C^2C^{-1}=I` identity explicit.
+equation (3.1), printed p. 403. This gives the displayed
+$`C^{-1}C^2C^{-1}=I` identity.
 
 :::theorem "bentkus-whitening-gaussian-pushforward" (lean := "ProbabilityTheory.bentkusWhiteningMatrix, ProbabilityTheory.bentkusWhiteningCLM, ProbabilityTheory.bentkusWhiteningEquiv, ProbabilityTheory.map_multivariateGaussian_bentkusWhiteningEquiv, ProbabilityTheory.map_stdGaussian_bentkusWhiteningEquiv_symm") (uses := "bentkus-whitening-covariance-identity") (tags := "bentkus, whitening, gaussian-transport, source-bentkus-2004, fidelity-exact-pushforward")
 *Gaussian pushforward under whitening.* Under the preceding hypotheses, let
@@ -427,10 +424,10 @@ $$`
 Here $`\gamma_d` denotes standard Gaussian measure on $`\mathbb R^d`.
 :::
 
-This is the standardized estimate (3.1) and the rescaling paragraph immediately after it
+This is the standardized estimate in equation (3.1) and the rescaling paragraph immediately after it
 in {Citations.citet bentkus2004}[], printed
-p. 403.  The formal contract isolates precisely the identity-covariance theorem that the
-induction must supply; it does not assume that induction has been proved.
+p. 403. It separates the identity-covariance estimate from the subsequent whitening
+argument.
 
 :::theorem "bentkus-whitening-one-set-transport" (lean := "ProbabilityTheory.bentkusWhitenedSet, ProbabilityTheory.isConvexSet_bentkusWhitenedSet, ProbabilityTheory.map_sum_apply_bentkusWhitenedSet, ProbabilityTheory.stdGaussian_apply_bentkusWhitenedSet, ProbabilityTheory.bentkus_convex_set_whitening_reduction, ProbabilityTheory.bentkus_convex_set_bound_of_identity_covariance_bound, ProbabilityTheory.exists_bentkus_convex_set_constant_of_identity_covariance_bound") (uses := "bentkus-whitening-gaussian-pushforward, bentkus-identity-covariance-contract") (tags := "bentkus, whitening, convex-set-transport, source-bentkus-2004, fidelity-exact-one-set-reduction")
 *One-set transport from the standardized estimate.* Let $`S` be positive definite,
@@ -477,7 +474,7 @@ at almost every such point.
 {Citations.citet raic2019}[],
 defines the signed distance on printed pp. 2825--2826 and proves the almost-everywhere
 differentiability and eikonal conclusions in Proposition 3.3(2)--(3), printed p. 2844.
-The formal statement uses Fréchet derivatives on Euclidean space.
+The derivative above is the Fréchet derivative on Euclidean space.
 
 :::lemma_ "gaussian-signed-distance-level-frontiers" (lean := "ProbabilityTheory.signedDistance_level_pos_eq_frontier_cthickening, ProbabilityTheory.signedDistance_level_neg_eq_frontier_innerParallel, ProbabilityTheory.signedDistance_level_zero_eq_frontier") (uses := "gaussian-signed-distance-eikonal, convex-parallel-sets") (tags := "bentkus, gaussian-geometry, signed-distance, parallel-frontiers, source-raic-2019, fidelity-explicit-boundary-conventions")
 *Signed-distance fibers are parallel-set frontiers.* Under the preceding hypotheses,
@@ -525,8 +522,8 @@ $$`
 {Citations.citet raic2019}[],
 introduces the signed-distance neighborhoods on printed pp. 2825--2826 and uses precisely these
 positive and negative slabs in the proof of Proposition 3.1, printed pp. 2844--2845, before
-applying the coarea formula.  The formal identities retain equality boundaries and discharge
-the convex-frontier null set explicitly.
+applying the coarea formula. The identities above retain the equality boundaries; the
+convex frontier is Gaussian-null.
 
 :::theorem "gaussian-affine-codimension-one-slicing" (lean := "ProbabilityTheory.stdGaussian_eq_withDensity_standardGaussianDensityReal, ProbabilityTheory.lintegral_standardGaussianDensityReal_eq_one, ProbabilityTheory.euclideanVolume_eq_lintegral_codimOneSections, ProbabilityTheory.lintegral_eq_lintegral_codimOneSections, ProbabilityTheory.stdGaussian_apply_eq_lintegral_codimOneSections, ProbabilityTheory.standardGaussianDensity_affineHyperplane, ProbabilityTheory.standardGaussianDensity_affineHyperplane_le_one") (tags := "bentkus, gaussian-geometry, affine-slicing, coarea, source-ball-1993, source-raic-2019, fidelity-normalized-affine-coarea")
 *Normalized affine codimension-one slicing.* Put
@@ -619,8 +616,8 @@ Corollary 3.2.32 of {Citations.citet federer1969}[] supplies the area/coarea the
 {Citations.citet raic2019}[] states the measurable-fiber theorem as Proposition 3.2, printed
 pp. 2843--2844, and its scalar coarea specialization as Corollary 3.1, printed p. 2844.
 Raič combines it with the almost-everywhere unit gradient of signed distance in
-Proposition 3.3 and the proof of Proposition 3.1, printed pp. 2844--2845.  The formal
-result uses nonnegative extended-valued weights, includes the exact $`(a,b]` convention,
+Proposition 3.3 and the proof of Proposition 3.1, printed pp. 2844--2845. The version above
+uses nonnegative extended-valued weights, includes the exact $`(a,b]` convention,
 and also proves the dimension-zero endpoint under the displayed predecessor convention.
 
 :::theorem "gaussian-signed-distance-coarea-profiles" (lean := "ProbabilityTheory.standardGaussianBoundaryContent, ProbabilityTheory.outerGaussianBoundaryProfile, ProbabilityTheory.innerGaussianBoundaryProfile, ProbabilityTheory.outerGaussianBoundaryProfile_eq_levelLIntegral, ProbabilityTheory.innerGaussianBoundaryProfile_eq_levelLIntegral, ProbabilityTheory.stdGaussian_outer_shell_eq_lintegral_outerGaussianBoundaryProfile, ProbabilityTheory.stdGaussian_inner_shell_eq_lintegral_innerGaussianBoundaryProfile, ProbabilityTheory.ballGaussianPerimeterConstant, ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_boundaryContent") (uses := "gaussian-signed-distance-level-frontiers, gaussian-shell-signed-distance-slabs, scalar-coarea-formula") (tags := "bentkus, gaussian-geometry, signed-distance, coarea, perimeter-reduction, source-raic-2019, fidelity-exact-half-open-profile-identities")
@@ -880,7 +877,7 @@ transform by equations (5)--(6), and takes its positive part, printed p. 417.  T
 power-series calculation following equation (7), also on printed p. 417, proves the
 required monotonicity; the zero-location estimate and polar mass identity are on printed
 p. 418.  The two-part integral estimate and normalized Gamma peak close
-$`\mu(\mathbb R^{n-1})\le2n^{1/4}` on printed pp. 418--419.  The formal result separates
+$`\mu(\mathbb R^{n-1})\le2n^{1/4}` on printed pp. 418--419. The statement above separates
 the construction, the exact signed projection, the positive-part majorization, the
 compact positive-radius support, and both normalized forms of the mass estimate.
 
@@ -905,8 +902,8 @@ extends it to an arbitrary normal direction.  No normalization assumption is mad
 spherical density inequality in equation (3), applies Lemma 3 to reduce arbitrary position
 and normal directions to the orthogonal case, and rewrites that case as equation (4), printed
 pp. 416--417.  Equations (5)--(7) construct the monotone radial majorant used here, printed
-pp. 417--418.  The formal statement packages these steps in the pointwise vector form required
-by the boundary area formula.
+pp. 417--418. These steps give the pointwise vector inequality used in the boundary
+area formula.
 
 :::theorem "ball-boundary-projection-area" (lean := "ProbabilityTheory.ballBoundaryCoordinateDirection, ProbabilityTheory.ballBoundaryCoordinatePiece, ProbabilityTheory.ballBoundaryCoordinateChartDomain, ProbabilityTheory.ballBoundaryCoordinateChart, ProbabilityTheory.ballBoundaryCoordinateProjectedChart, ProbabilityTheory.lintegral_ballBoundaryCoordinatePiece_eq_chart, ProbabilityTheory.ae_exists_unit_normal_ballBoundaryCoordinateChart, ProbabilityTheory.exists_ballBoundaryCoordinateProjectedChart_multiplicity_partition, ProbabilityTheory.lintegral_frontier_eq_tsum_ballBoundaryCoordinateCharts, ProbabilityTheory.ballBoundaryProjectionFiber, ProbabilityTheory.ae_encard_ballBoundaryProjectionFiber_le_two, ProbabilityTheory.tsum_lintegral_ballBoundaryCoordinateProjectedChart_le_two_mul, ProbabilityTheory.tsum_lintegral_ballBoundaryCoordinateProjectedChart_ballRadialMajorant_le") (uses := "ball-projection-jacobian-charts, ball-radial-majorant") (tags := "bentkus, gaussian-geometry, perimeter, boundary-projection, source-ball-1993, fidelity-exact-normal-free-chart-form")
 *Weighted boundary projection area and the factor-two line multiplicity.* Let $`d\ge2`,
@@ -935,8 +932,8 @@ $$`
 the projected comparison measure in equation (2), printed p. 415, and observes that almost
 every line in a fixed direction meets the boundary of a convex body at most twice, yielding
 the factor $`2`, printed p. 416 in the proof of Theorem 4.  The radial mass estimate
-$`\mu(\mathbb R^{d-1})\le2d^{1/4}` is completed on printed pp. 418--419.  The formal
-statement expresses the same projection argument through a finite disjoint chart cover and
+$`\mu(\mathbb R^{d-1})\le2d^{1/4}` is completed on printed pp. 418--419. The same
+projection argument can be expressed through a finite disjoint chart cover and
 the equal-rank area formula, avoiding any measurable choice of an outward normal.
 
 :::theorem "ball-gaussian-perimeter" (lean := "ProbabilityTheory.standardGaussianBoundaryContent_le_one_of_interior_eq_empty, ProbabilityTheory.standardGaussianBoundaryContent_le_of_isBounded_case, ProbabilityTheory.standardGaussianBoundaryContent_le_of_convexBody_case_all, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_of_convexBody_case, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_compactBody, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant") (uses := "gaussian-affine-codimension-one-slicing, ball-spherical-density-majorization, ball-boundary-projection-area") (tags := "bentkus, gaussian-geometry, perimeter, source-ball-1993, fidelity-domain-completed-exact-constant")
@@ -957,8 +954,8 @@ truncation, affine slicing, and the empty-interior case complete the domain.
 
 This is {Citations.citet ball1993}[],
 Theorem 4, printed pp. 415--419, with its explicit constant $`4d^{1/4}`.  Ball states the
-theorem for convex bodies.  The formal theorem retains that source theorem as the compact
-full-dimensional core and extends it to every convex set by the exact boundary-content
+theorem for convex bodies. The compact full-dimensional case is extended to every convex
+set by the boundary-content
 reductions described in the statement; the codimension-one case uses normalized affine
 slicing, while higher-codimension boundaries have zero $`\mathcal H^{d-1}` measure.
 
@@ -985,8 +982,8 @@ printed pp. 415--419, supplies the boundary-content constant in dimensions at le
 {Citations.citet raic2019}[],
 Proposition 3.1 and its proof, printed pp. 2843--2845, derive the outer and inner shell
 integrals from Gaussian boundary content by signed-distance coarea.  {Citations.citet bentkus2004}[], uses the resulting
-$`O(d^{1/4}\varepsilon)` estimate as equation (1.4), printed p. 401.  The formal theorem
-keeps the exact half-open boundary conventions and supplies the elementary zero- and
+$`O(d^{1/4}\varepsilon)` estimate as equation (1.4), printed p. 401. The version above
+keeps the exact half-open boundary conventions and includes the elementary zero- and
 one-dimensional endpoints.
 
 # Smoothing convex indicators
@@ -1030,7 +1027,7 @@ This is the setwise form of Lemma 2.1 in {Citations.citet bentkus2004}[], combin
 cutoff of Lemma 2.2,
 equation (2.2), printed p. 402.  The paper takes the outer neighborhood
 $`\{d_A\le\varepsilon\}` and defines its inner neighborhood using a closed ball.  The
-formal inner core instead uses an open ball, equivalently the complement of the open
+inner core above uses an open ball, equivalently the complement of the open
 $`\varepsilon`-thickening of $`A^c`; this keeps the equality boundary in the displayed
 inner shell.  Empty and nonclosed convex sets are handled by the total cutoff and
 $`\overline A` explicitly.
@@ -1051,8 +1048,8 @@ $$`
 This is {Citations.citet bentkus2004}[],
 Lemma 2.3, equations (2.3)--(2.4), printed pp. 402--403.  The paper's hypothesis that
 $`p` and all of its derivatives decay faster than every inverse power is represented
-exactly by the Schwartz class; the formal theorem follows the paper's difference-quotient
-argument and does not assume that the Lipschitz factor is differentiable.
+by the Schwartz-class hypothesis above. The difference-quotient argument does not require
+the Lipschitz factor to be differentiable.
 
 :::theorem "gaussian-density-third-derivative" (lean := "ProbabilityTheory.standardGaussianDensityNormalization, ProbabilityTheory.standardGaussianDensity, ProbabilityTheory.standardGaussianDensityD1, ProbabilityTheory.standardGaussianDensityD2, ProbabilityTheory.standardGaussianDensityD3, ProbabilityTheory.hasFDerivAt_standardGaussianDensity, ProbabilityTheory.fderiv_standardGaussianDensity_apply, ProbabilityTheory.fderiv_standardGaussianDensityD1_apply, ProbabilityTheory.fderiv_standardGaussianDensityD2_apply, ProbabilityTheory.gaussianThirdHermiteContraction, ProbabilityTheory.standardGaussianDensityD3_sameDirection, ProbabilityTheory.fderiv_standardGaussianDensityD2_sameDirection, ProbabilityTheory.integrable_gaussianThirdHermiteContraction_stdGaussian, ProbabilityTheory.standardGaussianFourthMoment, ProbabilityTheory.standardGaussianFourthMoment_nonneg, ProbabilityTheory.integral_inner_pow_four_stdGaussian, ProbabilityTheory.integral_inner_sq_stdGaussian, ProbabilityTheory.integral_abs_inner_stdGaussian_le_norm, ProbabilityTheory.integral_abs_gaussianThirdHermiteContraction_le") (tags := "bentkus, gaussian-analysis, density-derivatives, source-bentkus-2004, fidelity-explicit-absolute-constant")
 *Gaussian density derivatives and the cubic-contraction bound.* Let $`E` be a
@@ -1327,8 +1324,8 @@ $$`
 These are the two trivial branches at the start of Section 3 in {Citations.citet bentkus2004}[], printed p. 403.  The first is the
 Hölder calculation and $`\Delta\le1` argument immediately after equation (3.1) for
 $`n\le d^3M^2`; the second is the large-individual-covariance exclusion immediately
-before equation (3.2).  The formal node isolates exactly the moment consequences used
-before the nontrivial Taylor induction begins.
+before equation (3.2). These are precisely the moment consequences used before the
+nontrivial Taylor induction begins.
 
 :::lemma_ "bentkus-leave-one-out-whitening" (lean := "ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix_posDef_of_integral_norm_sq_lt_quarter, ProbabilityTheory.norm_bentkusWhiteningCLM_leaveOneOut_apply_le_two, ProbabilityTheory.norm_bentkusWhiteningCLM_leaveOneOut_apply_pow_three_le, ProbabilityTheory.integral_norm_bentkusWhiteningCLM_leaveOneOut_pow_three_le") (uses := "covariance-additivity-and-leave-one-out, bentkus-whitening-covariance-identity") (tags := "bentkus, gaussian-replacement, leave-one-out, whitening, source-bentkus-2004, fidelity-explicit-small-moment-branch")
 *Leave-one-out whitening in the small-second-moment branch.* Under identity total
@@ -1353,8 +1350,7 @@ This is the small-individual-covariance branch introduced after equation (3.2) i
 {Citations.citet bentkus2004}[], printed
 pp. 403--404.  The paper writes $`P_k^2=\operatorname{Cov}(U_k)` and
 $`Q_k=P_k^{-1}` and, after excluding the large-covariance trivial case, assumes
-$`\|Q_k\|\le2`; the formal statement derives that bound and records the resulting
-third-moment factor $`2^3=8` explicitly.
+$`\|Q_k\|\le2`; this gives the third-moment factor $`2^3=8`.
 
 :::theorem "bentkus-standardized-induction" (lean := "ProbabilityTheory.exists_bentkus_identity_covariance_constant") (uses := "gaussian-convex-shell, bentkus-smoothing-inequality, density-derivative-integral-bound, gaussian-density-ibp, cutoff-derivative-shell-ibp, bentkus-taylor-remainders, gaussian-density-second-order-remainder, bentkus-angle-integrals, bentkus-rotation-fubini, bentkus-coordinate-piece-assembly, bentkus-parameter-closure, bentkus-rotation-cancellation, covariance-additivity-and-leave-one-out, gaussian-companion-third-moment-comparison, gaussian-companion-mixed-moment, bentkus-trivial-induction-branches, bentkus-leave-one-out-whitening, bentkus-identity-covariance-contract") (tags := "bentkus, gaussian-replacement, induction, source-bentkus-2004, fidelity-exact-identity-covariance")
 *Identity-covariance convex-set replacement bound.* There is an absolute constant
@@ -1382,7 +1378,7 @@ and the standardized setup in equation (3.1), printed p. 403.  The leave-one-out
 induction begins with equation (3.2), printed p. 403; the rotation and replacement
 estimates in equations (3.4)--(3.15) occupy printed pp. 404--405, and the proof
 continues through printed p. 409.  Bentkus leaves the absolute constant unspecified;
-the associated declaration selects one through explicit kernel-checked bookkeeping.
+tracking constants through the preceding estimates gives one absolute choice.
 
 # Bentkus's convex-set theorem
 
@@ -1409,6 +1405,5 @@ C d^{1/4}\sum_{i=1}^n
 
 This is Theorem 1.1 and equation (1.1) of {Citations.citet bentkus2004}[], printed
 pp. 400--401.  The matrix $`S` here is the total covariance; $`S^{-1/2}` is the
-paper's inverse of the positive covariance square root.  The associated declaration first proves
-the standardized replacement theorem and then transports it through covariance-square-root
-whitening.
+paper's inverse of the positive covariance square root. The proof first establishes the
+standardized replacement estimate and then applies covariance-square-root whitening.

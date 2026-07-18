@@ -651,7 +651,7 @@ private theorem bentkus_largeAngle_densityCancellation
     change linearO p - r * linearG p - r * quadraticO p + r * quadraticG p = cancel p
     dsimp only [cancel, linearO, linearG, quadraticO, quadraticG]
     unfold standardGaussianDensityD2
-    simp only [inner_smul_right, RCLike.star_def, conj_trivial, neg_mul, one_mul]
+    simp only [inner_smul_right, neg_mul, one_mul]
     ring_nf
   constructor
   · simpa only [cancel, BO, BG, O, G, ρ] using hcancel
@@ -704,7 +704,7 @@ private theorem bentkus_largeAngle_densityCancellation
           filter_upwards with z
           dsimp only [cancel]
           unfold standardGaussianDensityD2
-          simp only [inner_smul_right, RCLike.star_def, conj_trivial, neg_mul, one_mul]
+          simp only [inner_smul_right, neg_mul, one_mul]
           ring_nf
         _ =
             (∫ z, φ x * standardGaussianDensityD1 (x - BG z) (BO z) ∂ρ) -
@@ -1071,15 +1071,6 @@ private theorem bentkus_largeAngle_secondShiftRemainder_integrable
       hφm hφ hrBOm hnegBGm hBGm hmom.1 hmom.2
   apply hrem.congr
   filter_upwards with z
-  change
-    φ z.2 * (standardGaussianDensityD1
-        (z.2 - r • BO z.1 + (-1 : ℝ) • BG z.1) (BG z.1) -
-      standardGaussianDensityD1 (z.2 - r • BO z.1) (BG z.1) -
-      standardGaussianDensityD2 z.2 (BG z.1) ((-1 : ℝ) • BG z.1)) =
-    φ z.2 * (standardGaussianDensityD1
-        (z.2 - BG z.1 - r • BO z.1) (BG z.1) -
-      standardGaussianDensityD1 (z.2 - r • BO z.1) (BG z.1) -
-      standardGaussianDensityD2 z.2 (BG z.1) ((-1 : ℝ) • BG z.1))
   simp only [neg_one_smul]
   rw [show z.2 - r • BO z.1 + -BG z.1 =
     z.2 - BG z.1 - r • BO z.1 by abel]
@@ -1244,11 +1235,6 @@ private theorem bentkus_largeAngle_rotationCoordinate_sub_reference_le
     (s : Set (EuclideanSpace ℝ (Fin d)))
     (hs : Convexity.IsConvexSet ℝ s) {ε : ℝ} (hε : 0 < ε) :
     let ρ := bentkusReplacementMeasure μ X
-    let S := bentkusLeaveOneOutCovarianceMatrix μ X k
-    let hS := bentkusLeaveOneOutCovarianceMatrix_posDef_of_integral_norm_sq_lt_quarter
-      hX3 h_indep hX0 hidentity k hk
-    let e := bentkusWhiteningEquiv S hS
-    let B := e.toContinuousLinearMap
     let O := replacementOriginal (d := d) k
     let G := replacementGaussian (d := d) k
     let UO := bentkusLeaveOneOut

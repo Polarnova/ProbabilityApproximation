@@ -13,10 +13,9 @@ import Mathlib.MeasureTheory.Group.MeasurableEquiv
 /-!
 # Convex Euclidean parallel sets
 
-This file supplies the `Convexity.IsConvexSet` facts about open and closed Euclidean
-thickenings used by the Bentkus convex-set argument. Mathlib already supplies their topological
-properties and empty-set identities; the declarations below reuse those results and add the
-convexity, measurability, whole-space, and translation facts needed downstream.
+This file establishes the convexity, measurability, whole-space, and translation properties of
+open and closed Euclidean thickenings used in the smoothing and whitening arguments for Bentkus's
+convex-set theorem.
 -/
 
 open Set

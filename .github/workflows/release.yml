@@ -95,7 +95,7 @@ jobs:
           } > "$consumer_dir/lakefile.toml"
           lake -d="$consumer_dir" update
           lake -d="$consumer_dir" exe cache get
-          lake --no-cache -d="$consumer_dir" build ProbabilityApproximation
+          lake --wfail --no-cache -d="$consumer_dir" build ProbabilityApproximation
 
       - name: Audit release
         run: |

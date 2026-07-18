@@ -85,6 +85,7 @@ lemma upperTruncatedSum_eq_sumX_of_forall_le_one {X : ι → Ω → ℝ} {ω : �
   intro i _
   rw [if_pos (hω i)]
 
+omit [MeasurableSpace Ω] in
 /-- The event comparison in Chen--Shao (2005), (6.13): an original upper tail is contained in the
 truncated upper tail together with the exceptional events having a summand larger than one. -/
 lemma upperTail_subset_upperTruncatedTail_union_largeJump {X : ι → Ω → ℝ} (z : ℝ) :
@@ -102,6 +103,7 @@ lemma upperTail_subset_upperTruncatedTail_union_largeJump {X : ι → Ω → ℝ
     obtain ⟨i, hi⟩ := hall
     exact Set.mem_iUnion.2 ⟨i, by simpa using And.intro hω hi⟩
 
+omit [MeasurableSpace Ω] in
 /-- A large-jump event splits into a large coordinate or a simultaneous
 leave-one-out tail and coordinate tail. -/
 lemma largeJump_subset_coordinateTail_union_leaveOneOut [DecidableEq ι] {X : ι → Ω → ℝ}
@@ -134,6 +136,7 @@ private lemma one_div_half_cube_le {z : ℝ} (hz : 2 ≤ z) :
   rw [div_le_div_iff₀ (by positivity : 0 < (z / 2) ^ 3) (by positivity : 0 < 1 + z ^ 3)]
   nlinarith
 
+omit [Fintype ι] in
 private lemma measureReal_coordinate_upperTail_le
     {X : ι → Ω → ℝ} (hXmeas : ∀ i, Measurable (X i))
     (hX3 : ∀ i, MemLp (X i) 3 μ) (i : ι) {z : ℝ} (hz : 2 ≤ z) :
@@ -158,6 +161,7 @@ private lemma measureReal_coordinate_upperTail_le
       mul_le_mul_of_nonneg_left (one_div_half_cube_le hz) hm
     _ = 9 * (∫ ω, |X i ω| ^ 3 ∂μ) / (1 + z ^ 3) := by ring
 
+omit [Fintype ι] in
 private lemma measureReal_coordinate_gt_one_le
     {X : ι → Ω → ℝ} (hXmeas : ∀ i, Measurable (X i))
     (hX3 : ∀ i, MemLp (X i) 3 μ) (i : ι) :
@@ -376,7 +380,9 @@ lemma abs_cdf_sumX_sub_gaussian_le_upperTruncated_add
       (upperTruncatedSum_le_sumX (X := X) ω).trans hω
   calc
     |cdf (μ.map (sumX X)) z - cdf (gaussianReal 0 1) z| = |FS - Φ| := by rfl
-    _ = |(FB - Φ) - (FB - FS)| := by congr 1 <;> ring
+    _ = |(FB - Φ) - (FB - FS)| := by
+      congr 1
+      ring
     _ ≤ |FB - Φ| + |FB - FS| := abs_sub _ _
     _ = |FB - Φ| + (FB - FS) := by rw [abs_of_nonneg (sub_nonneg.mpr hmono)]
     _ ≤ |FB - Φ| + E := by gcongr

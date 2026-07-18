@@ -418,7 +418,7 @@ theorem integral_steinProductIncrement_upperTruncated_le
       gcongr
     _ = steinProductIncrementConstant * exp (-z / 2) * (t - s) := by ring
 
-/-- The interval-length estimate implies the symmetric shift-size form used downstream. -/
+/-- The interval-length estimate implies the symmetric shift-size form. -/
 theorem integral_steinProductIncrement_upperTruncated_le_abs_add
     (hXmeas : ∀ i, Measurable (X i))
     (hX2 : ∀ i, MemLp (X i) 2 μ)

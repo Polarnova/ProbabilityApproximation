@@ -400,8 +400,9 @@ private theorem integral_ballSectionProfile_eq_two_mul {m : ℕ}
     calc
       (∫ t in (-1 : ℝ)..0, ballSectionIntegrand m f r t) =
           ∫ t in (0 : ℝ)..1, ballSectionIntegrand m f r (-t) := by
-        simpa using (intervalIntegral.integral_comp_neg
-          (f := ballSectionIntegrand m f r) (a := (0 : ℝ)) (b := 1)).symm
+        simpa only [neg_zero] using
+          (intervalIntegral.integral_comp_neg
+            (f := ballSectionIntegrand m f r) (a := (0 : ℝ)) (b := 1)).symm
       _ = ∫ t in (0 : ℝ)..1, ballSectionIntegrand m f r t := by
         apply intervalIntegral.integral_congr
         intro t _ht
@@ -1076,7 +1077,10 @@ theorem standardGaussianDensityReal_mul_norm_le_sphere_ballRadialMajorant_absInn
         ballRadialMajorant d
           ‖((ℝ ∙ (θ : EuclideanSpace ℝ (Fin d)))ᗮ).orthogonalProjectionOnto x‖ := by
     have hθ : ‖(θ : EuclideanSpace ℝ (Fin d))‖ = 1 := by
-      simpa [Metric.mem_sphere] using θ.property
+      have hθ := θ.property
+      change dist (θ : EuclideanSpace ℝ (Fin d)) 0 = 1 at hθ
+      rw [dist_zero_right] at hθ
+      exact hθ
     dsimp only [u]
     split
     · rename_i hx
@@ -1133,7 +1137,7 @@ theorem standardGaussianDensityReal_mul_norm_le_sphere_ballRadialMajorant_absInn
           (ENNReal.ofReal ‖N‖ *
             ENNReal.ofReal |inner ℝ (θ : EuclideanSpace ℝ (Fin d)) w|) by ac_rfl]
     rw [hwinner, hprofile]
-  have hscaled := mul_le_mul_left' hbase (ENNReal.ofReal ‖N‖)
+  have hscaled := mul_le_mul_right hbase (ENNReal.ofReal ‖N‖)
   change ENNReal.ofReal ‖N‖ *
       ENNReal.ofReal
         (ballGaussianNormalization d * Real.exp (-(‖x‖ ^ 2) / 2)) ≤

@@ -18,21 +18,19 @@ import Mathlib.Probability.Distributions.Gaussian.Multivariate
 /-!
 # Standard-Gaussian convex shells
 
-This file isolates the domain-completion and coarea output needed around Ball's Gaussian-perimeter
-theorem.  Ball (1993), Theorem 4, printed pp. 415--419, proves the boundary-density estimate
+Ball (1993), Theorem 4, printed pp. 415--419, proves the boundary-density estimate
 `4 * d ^ (1 / 4)` for convex bodies in dimension `d ≥ 2`.  Raič (2019), Proposition 3.1 and its
 proof on printed pp. 2843--2845, identifies the supremum of those boundary integrals with both the
 outer- and inner-shell difference quotients by the coarea formula for signed distance.
 
-The declarations below supply the signed-distance and boundary-profile infrastructure consumed by
-the completed one-dimensional coarea argument in `GaussianShellCoarea`:
+This module develops the signed-distance and boundary-profile ingredients of that argument:
 
 * standard Gaussian measure is dominated by Euclidean volume in every finite dimension;
 * convex frontiers therefore have zero standard-Gaussian measure;
 * signed distance is almost everywhere differentiable with derivative norm one, and its positive,
   zero, and negative fibers are identified with the correct parallel-set frontiers;
 * outer and inner shells are identified, up to null boundaries, with signed-distance slabs;
-* the outer and inner shell estimates are complete in dimensions zero and one;
+* the outer and inner shell estimates are proved directly in dimensions zero and one;
 * Gaussian-weighted Hausdorff boundary profiles and precise interval-integral lemmas package the
   Ball/coarea composition.
 
@@ -1844,8 +1842,7 @@ theorem stdGaussian_shell_pair_le_ball_of_lintegral {d : ℕ}
 
 /-- The analytic output of the coarea step in Raič (2019), Proposition 3.1: if a shell's
 measure is the interval integral of a boundary-density profile bounded by `K`, then its mass is at
-most `K` times the interval length.  Establishing the coarea identity itself requires the
-codimension-one area formula, which is not presently in Mathlib. -/
+most `K` times the interval length. -/
 lemma shell_measureReal_le_of_intervalIntegral {α : Type*} [MeasurableSpace α]
     (mu : Measure α) (shell : Set α) {a b K : ℝ} {p : ℝ → ℝ}
     (hab : a ≤ b) (hp : IntervalIntegrable p volume a b)
@@ -1858,9 +1855,9 @@ lemma shell_measureReal_le_of_intervalIntegral {α : Type*} [MeasurableSpace α]
       intervalIntegral.integral_mono_on hab hp intervalIntegrable_const hbound
     _ = K * (b - a) := by simp [mul_comm]
 
-/-- The final composition boundary between Ball's boundary-density estimate and Raič's coarea
-identities.  The two profiles are parameterized over `[0, ε]`; for the inner shell this amounts to
-reversing the negative signed-distance parameter used in Raič's proof. -/
+/-- Ball's boundary-density estimate combined with Raič's coarea identities.  The two profiles are
+parameterized over `[0, ε]`; for the inner shell this amounts to reversing the negative
+signed-distance parameter used in Raič's proof. -/
 theorem stdGaussian_shell_pair_le_ball_of_coarea {d : ℕ}
     (s : Set (EuclideanSpace ℝ (Fin d))) {ε : ℝ} (hε : 0 ≤ ε)
     {outerProfile innerProfile : ℝ → ℝ}

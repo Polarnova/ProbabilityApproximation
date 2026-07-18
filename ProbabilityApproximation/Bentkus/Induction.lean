@@ -9,9 +9,9 @@ import ProbabilityApproximation.Bentkus.Induction.SmallAngleEstimate
 /-!
 # Closure of Bentkus's standardized replacement induction
 
-This stable public module combines the small-angle, large-angle, and Gaussian-reference pieces,
-composes the smooth replacement estimate with Ball's shell theorem, closes the induction on the
-number of summands, and exports the identity-covariance and general convex-set endpoints.
+This module combines the small-angle, large-angle, and Gaussian-reference estimates, composes the
+smooth replacement estimate with Ball's shell theorem, and closes the induction on the number of
+summands.
 -/
 
 open MeasureTheory InnerProductSpace Matrix Set
@@ -375,7 +375,8 @@ private theorem bentkus_interval_rotationCoordinate_le
       hsmall' hlarge' href'
   change
     |T| ≤ (61440 + 17024 * H) * d14 * (1 + q) * βk
-  convert hthree using 1 <;> ring
+  convert hthree using 1
+  all_goals ring
 
 /-- The exact smooth-test estimate left by Bentkus (3.4)--(3.7), before Lemma 2.1 adds the
 Gaussian boundary shells.  The strict branch hypotheses are retained because the proof uses the

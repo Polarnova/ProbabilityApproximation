@@ -75,19 +75,17 @@ import ProbabilityApproximation.Bentkus.Induction
 /-!
 # ProbabilityApproximation
 
-Standalone formalization of Berry–Esseen theorems (see `.agents/SPEC.md`).
+Quantitative normal approximation for independent scalar sums and finite-dimensional random
+vectors.
 
 ## Principal theorems
 
 * `ProbabilityTheory.uniformBerryEsseen_thirdMoment` — uniform bound with constant `30`
 * `ProbabilityTheory.nonuniformBerryEsseen` — finite-third-moment nonuniform theorem
 * `ProbabilityTheory.exists_bentkus_convex_set_constant` — multivariate convex-set theorem
-* Mathlib-native scalar Stein, convex-geometric, Gaussian-analytic, induction, whitening, and
-  transport lemmas used by the release proofs
 
-Chen–Shao truncated theorems with constant `41/10` are optional strengthenings, not release blockers.
-
-Every declaration exported by this aggregate has a kernel-checked proof. The repository Blueprint
-records the curated mathematical proof DAG leading to the two principal endpoints while omitting
-proof-local bookkeeping.
+The supporting library develops scalar Stein equations, leave-one-out concentration and truncation,
+Gaussian analysis, convex parallel sets and Gaussian perimeter estimates, replacement induction,
+and covariance whitening. The accompanying Blueprint presents the mathematical statements,
+citations, and dependency structure.
 -/

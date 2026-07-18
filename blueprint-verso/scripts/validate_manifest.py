@@ -18,7 +18,7 @@ EXPECTED_LABELS = {
     "upper-truncated-r1-r3-bounds", "upper-truncated-r2-expected-kernel",
     "upper-truncated-indicator-residual", "stein-product-increment",
     "upper-truncated-product-residual", "upper-truncated-central-decay",
-    "scalar-release-reduction",
+    "nonuniform-reflection-reduction",
     "convex-parallel-sets", "metric-projection", "squared-distance-calculus",
     "bentkus-smooth-cutoff", "gaussian-companions-and-transport",
     "gaussian-fourth-moment-control", "gaussian-companion-second-moment-match",

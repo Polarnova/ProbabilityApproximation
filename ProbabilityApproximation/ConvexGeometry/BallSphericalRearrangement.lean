@@ -537,7 +537,7 @@ private lemma ballCircleCorrelation_eq_kernel {F : ℝ → ℝ} (hF : Continuous
             rw [intervalIntegral.integral_comp_add_right]
             ring_nf
       _ = ∫ t in (0 : ℝ)..Real.pi, p t := by
-            convert hpperiod.intervalIntegral_add_eq δ 0 using 1 <;> ring
+            convert hpperiod.intervalIntegral_add_eq δ 0 using 1 <;> ring_nf
   rw [hshift]
   have hhalf : Real.pi - Real.pi / 2 = Real.pi / 2 := by ring
   calc
@@ -549,7 +549,8 @@ private lemma ballCircleCorrelation_eq_kernel {F : ℝ → ℝ} (hF : Continuous
     _ = (∫ t in (0 : ℝ)..Real.pi / 2, p t) +
           ∫ t in (0 : ℝ)..Real.pi / 2, p (Real.pi - t) := by
             congr 1
-            simpa [hhalf] using
+            nth_rewrite 1 [← hhalf]
+            simpa only [sub_zero] using
               (intervalIntegral.integral_comp_sub_left
                 (f := p) (a := (0 : ℝ)) (b := Real.pi / 2) Real.pi).symm
     _ = ∫ t in (0 : ℝ)..Real.pi / 2, p t + p (Real.pi - t) := by

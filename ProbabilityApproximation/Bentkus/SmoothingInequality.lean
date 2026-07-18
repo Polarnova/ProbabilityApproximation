@@ -16,7 +16,7 @@ The outer parallel set is the closed enlargement `Metric.cthickening ε (closure
 parallel set is the complement of the open enlargement of the complement,
 `(Metric.thickening ε Aᶜ)ᶜ`.  These conventions retain the boundary in the shell terms instead of
 silently replacing `< ε` by `≤ ε`.  The final inequality leaves both shell measures explicit; the
-Gaussian shell theorem is a separate downstream input.
+Gaussian shell theorem controls these terms separately.
 
 The underlying scalar smoothing argument is also Lemma 2.1 of Bentkus (2003).  The empty-set
 branch is explicit because Mathlib defines real-valued distance to the empty set to be zero.
@@ -138,8 +138,7 @@ lemma convexInnerParallel_isConvexSet {d : ℕ}
         abel
   exact hu (heq ▸ hmem)
 
-/-- Closure preserves convexity in finite-dimensional Euclidean space, stated directly in the
-new `Convexity.IsConvexSet` API. -/
+/-- Closure preserves convexity in finite-dimensional Euclidean space. -/
 lemma closure_isConvexSet {d : ℕ} {s : Set (EuclideanSpace ℝ (Fin d))}
     (hs : Convexity.IsConvexSet ℝ s) : Convexity.IsConvexSet ℝ (closure s) := by
   refine Convexity.IsConvexSet.of_convexCombPair_mem ?_

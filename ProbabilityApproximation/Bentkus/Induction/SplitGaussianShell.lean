@@ -123,7 +123,7 @@ private theorem map_stdGaussian_smul_outerShell_le_ball
   have hBconv : Convexity.IsConvexSet ℝ B := by
     have hL : (fun x : E ↦ L x) = scale := by
       funext x
-      simp only [L, scale, ContinuousLinearMap.smul_apply,
+      simp only [L, scale, _root_.smul_apply,
         ContinuousLinearMap.id_apply]
     have hpre := isConvexSet_preimage_continuousLinearMap L hAconv
     dsimp only [B]
@@ -206,7 +206,7 @@ private theorem map_stdGaussian_smul_frontier_eq_zero
     fun_prop
   have hL : (fun x : E ↦ L x) = scale := by
     funext x
-    simp only [L, scale, ContinuousLinearMap.smul_apply,
+    simp only [L, scale, _root_.smul_apply,
       ContinuousLinearMap.id_apply]
   have hBconv : Convexity.IsConvexSet ℝ B := by
     dsimp only [B]
@@ -226,7 +226,7 @@ private theorem closedShell_le_of_convexDistance
     {d : ℕ}
     {ν τ : Measure (EuclideanSpace ℝ (Fin d))}
     [IsProbabilityMeasure ν] [IsProbabilityMeasure τ]
-    {D G : ℝ} (hD : 0 ≤ D)
+    {D G : ℝ} (_hD : 0 ≤ D)
     (hbound : ∀ A : Set (EuclideanSpace ℝ (Fin d)), MeasurableSet A →
       Convexity.IsConvexSet ℝ A → |ν.real A - τ.real A| ≤ D)
     (A : Set (EuclideanSpace ℝ (Fin d))) (hAclosed : IsClosed A)

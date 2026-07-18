@@ -18,18 +18,17 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 # Scalar coarea
 
 This file proves Federer's weighted scalar coarea formula for globally Lipschitz maps from a
-finite-dimensional Euclidean space to the real line.  The proof builds the missing geometric
-measure theory layer over Mathlib's equal-dimensional change-of-variables theorem, Rademacher's
-theorem, and normalized Euclidean Hausdorff measure:
+finite-dimensional Euclidean space to the real line.  The proof combines the equal-dimensional
+change-of-variables theorem, Rademacher's theorem, and normalized Euclidean Hausdorff measure:
 
 * regular level sets are covered by countably many bi-Lipschitz coordinate graphs;
 * an injective lower-dimensional area formula computes each graph slice;
 * an Eilenberg covering argument eliminates critical fibers almost everywhere;
 * Rademacher's theorem eliminates the remaining nondifferentiability set.
 
-The public theorem is `LipschitzWith.scalarCoareaFormula`.  The module also exposes the weighted
-lower-dimensional chart formula used by convex-boundary projection arguments and direct slab
-corollaries for maps whose derivative norm is one almost everywhere.
+The principal result is `LipschitzWith.scalarCoareaFormula`; weighted lower-dimensional chart
+identities and direct slab corollaries for maps whose derivative norm is one almost everywhere
+are developed alongside it.
 -/
 
 open Set MeasureTheory MeasureTheory.Measure Metric Filter Module Asymptotics TopologicalSpace
@@ -585,7 +584,7 @@ private theorem coordinateGraphInverseDerivative_gram_apply {n : ℕ}
   rw [coordinateInsertionLinear_single, coordinateInsertionLinear_single]
   simp only [inner_sub_left, inner_sub_right, real_inner_smul_left,
     real_inner_smul_right]
-  simp [EuclideanSpace.inner_single_left, EuclideanSpace.inner_single_right,
+  simp [EuclideanSpace.inner_single_right,
     Matrix.one_apply, eq_comm]
   ring
 
@@ -726,12 +725,12 @@ private theorem coordinateProductMeasurableEquiv_apply {n : ℕ} (i : Fin (n + 1
   induction j using i.succAboveCases with
   | x =>
       simp [coordinateProductMeasurableEquiv, coordinateAffineInsertion,
-        Equiv.prodCongr_apply, MeasurableEquiv.piFinSuccAbove_symm_apply,
+        MeasurableEquiv.piFinSuccAbove_symm_apply,
         Fin.insertNthEquiv]
       rfl
   | p j =>
       simp [coordinateProductMeasurableEquiv, coordinateAffineInsertion,
-        Equiv.prodCongr_apply, MeasurableEquiv.piFinSuccAbove_symm_apply,
+        MeasurableEquiv.piFinSuccAbove_symm_apply,
         Fin.insertNthEquiv]
       rfl
 
@@ -1162,10 +1161,10 @@ theorem continuous_normDet :
   rw [← A.normDet_sq]
   exact (Real.sqrt_sq A.toLinearMap.normDet_nonneg).symm
 
+omit [FiniteDimensional ℝ V] in
 /-- The derivative of a differentiable map into an arbitrary finite-dimensional codomain is
-almost everywhere as close to a fixed linear approximation as the map itself.  Mathlib's
-equal-dimensional Jacobian development proves this only for endomorphism-valued derivatives;
-the density-point argument is codomain-independent. -/
+almost everywhere as close to a fixed linear approximation as the map itself.  The density-point
+argument is independent of the codomain dimension. -/
 theorem ApproximatesLinearOn.norm_fderiv_sub_le_general
     [MeasurableSpace U] [BorelSpace U]
     {f : U → V} {A : U →L[ℝ] V} {s : Set U} {δ : ℝ≥0}
@@ -1241,6 +1240,7 @@ theorem ApproximatesLinearOn.norm_fderiv_sub_le_general
       rw [mem_closedBall_iff_norm'] at az
       gcongr
 
+omit [FiniteDimensional ℝ V] in
 /-- At a Lebesgue density-one point, a within derivative is unique even when the source set has
 no interior.  This is the pointwise density substitute for `UniqueDiffWithinAt` used by Lipschitz
 graph parameterizations. -/
@@ -1338,6 +1338,7 @@ theorem HasFDerivWithinAt.eq_of_volume_density_one
       rw [mem_closedBall_iff_norm'] at haz
       gcongr
 
+omit [FiniteDimensional ℝ V] in
 /-- Two almost-everywhere within-derivative fields for the same function agree almost
 everywhere with respect to source volume. -/
 theorem ae_eq_of_ae_hasFDerivWithinAt_of_volume
@@ -1381,8 +1382,7 @@ theorem ae_injective_fderivWithin_of_lipschitzOnWith_of_comp_eq_id
     ∀ᵐ z ∂volume.restrict s,
       Function.Injective (fderivWithin ℝ φ s z) := by
   filter_upwards [ae_comp_fderivWithin_eq_id_of_lipschitzOnWith hs hφ P heq]
-  intro z hz
-  intro x y hxy
+  intro z hz x y hxy
   have hP := congr_arg P hxy
   change (P.comp (fderivWithin ℝ φ s z)) x =
     (P.comp (fderivWithin ℝ φ s z)) y at hP
@@ -1390,10 +1390,8 @@ theorem ae_injective_fderivWithin_of_lipschitzOnWith_of_comp_eq_id
   exact hP
 
 /-- The derivative field of a differentiable map between finite-dimensional inner-product
-spaces is almost everywhere measurable on its measurable source set.  This is the
-codomain-independent analogue of Mathlib's equal-dimensional
-`aemeasurable_fderivWithin`; the proof uses the same countable uniform-linearization
-partition. -/
+spaces is almost everywhere measurable on its measurable source set.  The proof uses a countable
+uniform-linearization partition. -/
 theorem aemeasurable_fderivWithin_general
     [MeasurableSpace U] [BorelSpace U]
     {f : U → V} {f' : U → U →L[ℝ] V} {s : Set U}
@@ -1480,7 +1478,9 @@ theorem exists_normDet_inverse_control (A : U →L[ℝ] V) (hA : Function.Inject
       have hδle : (δ : ℝ) ≤ δ₂ := min_le_right _ _
       calc
         (δ : ℝ) * M ≤ δ₂ * M := mul_le_mul_of_nonneg_right hδle hM
-        _ ≤ δ₂ * (M + 1) := by gcongr <;> linarith
+        _ ≤ δ₂ * (M + 1) := by
+          gcongr
+          linarith
         _ = q₀ / 2 := by
           dsimp [δ₂]
           field_simp
@@ -1494,7 +1494,9 @@ theorem exists_normDet_inverse_control (A : U →L[ℝ] V) (hA : Function.Inject
       have hδle : (δ : ℝ) ≤ δ₂ := min_le_right _ _
       calc
         (δ : ℝ) * M ≤ δ₂ * M := mul_le_mul_of_nonneg_right hδle hM
-        _ ≤ δ₂ * (M + 1) := by gcongr <;> linarith
+        _ ≤ δ₂ * (M + 1) := by
+          gcongr
+          linarith
         _ = q₀ / 2 := by
           dsimp [δ₂]
           field_simp
@@ -1610,6 +1612,7 @@ omit [FiniteDimensional ℝ V] in
     (x : U) : (continuousLinearEquivRange A hA x : V) = A x := by
   simp [continuousLinearEquivRange, ContinuousLinearEquiv.coeFn_ofBijective]
 
+omit [FiniteDimensional ℝ V] in
 /-- Passing to the range coordinates of an injective continuous linear map preserves its
 lower-dimensional Jacobian. -/
 theorem continuousLinearEquivRange_normDet (A : U →L[ℝ] V) (hA : Function.Injective A) :
@@ -1617,7 +1620,7 @@ theorem continuousLinearEquivRange_normDet (A : U →L[ℝ] V) (hA : Function.In
   have heq : (continuousLinearEquivRange A hA).toLinearMap =
       A.toLinearMap.codRestrict A.range (fun x ↦ ⟨x, rfl⟩) := by
     ext x
-    simpa using continuousLinearEquivRange_apply A hA x
+    exact continuousLinearEquivRange_apply A hA x
   rw [heq, LinearMap.normDet_codRestrict]
 
 /-- Reparametrize a map by the range coordinates of an injective linear approximation. -/
@@ -1625,6 +1628,7 @@ noncomputable def linearRangeReparam (f : U → V) (A : U →L[ℝ] V)
     (hA : Function.Injective A) : A.range → V :=
   fun z ↦ f ((continuousLinearEquivRange A hA).symm z)
 
+omit [FiniteDimensional ℝ V] in
 /-- On a set where `f` is approximated by an injective linear map `A`, range coordinates turn
 `f` into a Lipschitz map.  The constant records precisely the approximation error transported
 through the inverse of `A` on its range. -/
@@ -1657,6 +1661,8 @@ theorem ApproximatesLinearOn.lipschitzOnWith_linearRangeReparam
         dist (e x) (e y) := by gcongr
     _ = (1 + c * ‖(e.symm : A.range →L[ℝ] U)‖) * dist (e x) (e y) := by ring
 
+omit [InnerProductSpace ℝ U] [FiniteDimensional ℝ U]
+  [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] in
 /-- The standard Hausdorff-measure distortion estimate also holds for Mathlib's Euclidean
 normalization of Hausdorff measure. -/
 theorem LipschitzOnWith.euclideanHausdorffMeasure_image_le
@@ -1688,6 +1694,7 @@ theorem AntilipschitzWith.le_euclideanHausdorffMeasure_image
         (volume : Measure (EuclideanSpace ℝ (Fin d)))
         (μH[(d : ℝ)] : Measure (EuclideanSpace ℝ (Fin d))) : ℝ≥0∞)
 
+omit [FiniteDimensional ℝ V] in
 /-- A quantitative upper area bound on a set where a map is uniformly approximated by an
 injective linear map.  This is the local estimate used in the lower-dimensional area argument. -/
 theorem ApproximatesLinearOn.euclideanHausdorffMeasure_image_le
@@ -1729,6 +1736,7 @@ theorem ApproximatesLinearOn.euclideanHausdorffMeasure_image_le
       rw [continuousLinearEquivRange_normDet A hA]
       simp [e, mul_assoc]
 
+omit [FiniteDimensional ℝ V] in
 /-- If the approximation error is smaller than the least expansion of `A`, then the
 range-coordinate restriction is quantitatively antilipschitz. -/
 theorem ApproximatesLinearOn.antilipschitzWith_linearRangeReparam_restrict
@@ -1777,6 +1785,7 @@ theorem ApproximatesLinearOn.antilipschitzWith_linearRangeReparam_restrict
       rw [NNReal.coe_inv, NNReal.coe_sub hq.le]
       norm_num
 
+omit [FiniteDimensional ℝ V] in
 /-- The lower local area bound complementary to
 `ApproximatesLinearOn.euclideanHausdorffMeasure_image_le`. -/
 theorem ApproximatesLinearOn.normDet_mul_volume_le_euclideanHausdorffMeasure_image
@@ -1828,6 +1837,7 @@ theorem ApproximatesLinearOn.normDet_mul_volume_le_euclideanHausdorffMeasure_ima
   rw [← continuousLinearEquivRange_normDet A hA, hemeasure, ht]
   simpa [e, g, hg] using hmeasure
 
+omit [FiniteDimensional ℝ V] in
 /-- Multiplicative form of the local upper area estimate. -/
 theorem ApproximatesLinearOn.euclideanHausdorffMeasure_image_le_mul
     [MeasurableSpace U] [BorelSpace U] [MeasurableSpace V] [BorelSpace V]
@@ -1841,6 +1851,7 @@ theorem ApproximatesLinearOn.euclideanHausdorffMeasure_image_le_mul
   have hK := one_add_lt_of_lt_sub_one hr hsmall
   gcongr
 
+omit [FiniteDimensional ℝ V] in
 /-- Multiplicative form of the local lower area estimate. -/
 theorem ApproximatesLinearOn.mul_le_euclideanHausdorffMeasure_image
     [MeasurableSpace U] [BorelSpace U] [MeasurableSpace V] [BorelSpace V]
@@ -2042,6 +2053,7 @@ theorem lintegral_normDet_fderivWithin_eq_euclideanHausdorffMeasure_image_of_inj
     (lintegral_normDet_le_euclideanHausdorffMeasure_image_of_injective hs hf' hf'inj hfinj)
     (euclideanHausdorffMeasure_image_le_lintegral_normDet_of_injective hs hf' hf'inj)
 
+omit [FiniteDimensional ℝ V] in
 /-- A differentiable injective lower-dimensional parameterization of a measurable set is a
 measurable embedding. -/
 theorem measurableEmbedding_restrict_of_fderivWithin_general
@@ -2432,7 +2444,8 @@ theorem exists_equalRank_lipschitz_area_multiplicity_partition
         apply not_ne_iff.mp
         intro hne
         have hxr : x ∈ r := hx.mp hne
-        simpa [hrempty] using hxr
+        rw [hrempty] at hxr
+        exact hxr.elim
       calc
         (∫⁻ x in s,
             ENNReal.ofReal (fderivWithin ℝ f s x).toLinearMap.normDet * w (f x) ∂volume) =
@@ -2987,7 +3000,7 @@ private theorem ae_hausdorffMeasure_fiber_eq_zero_of_volume_eq_zero {d : ℕ} (h
             _ = (C : ℝ≥0∞) * ediam (t k n) ^ d := by
               rw [pow_sub_one_mul (Nat.ne_of_gt hd)]
         · have hempty : t k n = ∅ := not_nonempty_iff_eq_empty.mp hn
-          simp [hempty, u]
+          simp [hempty]
       _ = (C : ℝ≥0∞) *
           ∑' n, ⨆ _h : (t k n).Nonempty, ediam (t k n) ^ (d : ℝ) :=
         ENNReal.tsum_mul_left
@@ -3074,7 +3087,7 @@ private theorem scalarCoordinatePiece_fiber_formula {n : ℕ} (i : Fin (n + 1))
     (hpinj : InjOn (scalarCoordinateChart i f) p)
     {K : ℝ≥0}
     (hpanti : AntilipschitzWith K (p.restrict (scalarCoordinateChart i f)))
-    (v : EuclideanSpace ℝ (Fin (n + 1)) → ℝ≥0∞) (hv : Measurable v)
+    (v : EuclideanSpace ℝ (Fin (n + 1)) → ℝ≥0∞) (_hv : Measurable v)
     (hv_apply : ∀ x ∈ p,
       v (scalarCoordinateChart i f x) = scalarCoordinateAreaWeight i f w x)
     (t : ℝ) :
@@ -3110,7 +3123,7 @@ private theorem scalarCoordinatePiece_fiber_formula {n : ℕ} (i : Fin (n + 1))
     have hproj_chart (x : EuclideanSpace ℝ (Fin (n + 1))) :
         coordinateProjection i (scalarCoordinateChart i f x) = coordinateProjection i x := by
       ext j
-      simp [scalarCoordinateChart_apply_of_ne (i.succAbove_ne j)]
+      simp
     have hproj (z : EuclideanSpace ℝ (Fin n)) (hz : z ∈ q) :
         coordinateProjection i (φ z) = z := by
       rw [← hproj_chart (φ z), hright z hz,

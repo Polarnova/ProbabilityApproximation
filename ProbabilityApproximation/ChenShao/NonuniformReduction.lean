@@ -9,12 +9,11 @@ import ProbabilityApproximation.ChenShao.UpperTruncation
 import ProbabilityApproximation.ChenShao.UniformBerryEsseen
 
 /-!
-# Reduction of the scalar release theorem to the truncated central estimate
+# Reduction to the truncated central estimate
 
 This module combines the bounded-threshold uniform estimate, the large-third-moment tail branch,
-and the comparison with the one-sided truncated sum.  Its composition theorem takes the central
-Chen--Shao estimate for the truncated sum at `z ≥ 2` and total third moment at most one as an
-explicit input; `NonuniformBerryEsseen.lean` supplies that input.
+and comparison with the one-sided truncated sum. A central Chen--Shao estimate for the truncated
+sum at `z ≥ 2` and total third moment at most one then gives the nonuniform cubic estimate.
 -/
 
 open MeasureTheory ProbabilityTheory Real
@@ -25,8 +24,8 @@ namespace ProbabilityTheory
 
 universe uι uΩ
 
-/-- Explicit release constant obtained from a truncated exponential-decay estimate with constant
-`A`. -/
+/-- Explicit reduction constant obtained from a truncated exponential-decay estimate with
+constant `A`. -/
 def nonuniformReductionConstant (A : ℝ) : ℝ := 270 + 54 * A
 
 lemma nonuniformReductionConstant_pos {A : ℝ} (hA : 0 ≤ A) :
@@ -38,7 +37,7 @@ variable {ι Ω : Type*} [Fintype ι] [MeasurableSpace Ω]
 variable {μ : Measure Ω} [IsProbabilityMeasure μ]
 variable {X : ι → Ω → ℝ}
 
-/-- A central exponential-decay estimate for the one-sided truncated sum implies the public cubic
+/-- A central exponential-decay estimate for the one-sided truncated sum implies the cubic
 estimate for the original sum at every nonnegative threshold. -/
 theorem nonuniformBerryEsseen_nonnegative_of_upperTruncated_decay
     (hXmeas : ∀ i, Measurable (X i))
@@ -119,8 +118,8 @@ theorem nonuniformBerryEsseen_nonnegative_of_upperTruncated_decay
         _ ≤ C * γ := mul_le_mul_of_nonneg_right h30den hγ0
     exact hBE30.trans hscale
 
-/-- A universal central estimate for one-sided truncated sums composes with the reduction into the
-frozen scalar release theorem. -/
+/-- A universal central estimate for one-sided truncated sums implies the nonuniform
+Berry--Esseen theorem. -/
 theorem exists_nonuniformBerryEsseen_of_upperTruncated_decay
     (A : ℝ) (hA : 0 ≤ A)
     (hcentral :

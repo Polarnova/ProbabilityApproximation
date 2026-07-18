@@ -113,7 +113,9 @@ lemma steinDeriv_half_region_majorant_le_two_exp {z : ℝ} (hz : 2 ≤ z) :
       nlinarith [sq_nonneg z]
     calc
       (1 / 2 : ℝ) * exp (-(3 : ℝ) * z ^ 2 / 8) ≤
-          1 * exp (-z / 2) := by gcongr <;> norm_num
+          1 * exp (-z / 2) := by
+        gcongr
+        norm_num
       _ = exp (-z / 2) := one_mul _
   have hfactor : 0 ≤ 1 + √(2 * π) * (z / 2) * exp (z ^ 2 / 8) := by positivity
   have hprod := mul_le_mul_of_nonneg_right hmills' hfactor
@@ -369,6 +371,7 @@ lemma integral_steinSolution_le_eight_exp_of_mgf
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 variable {X : ι → Ω → ℝ}
 
+omit [DecidableEq ι] in
 private lemma integrable_exp_upperTruncated_finsetSum
     (s : Finset ι) (hXmeas : ∀ i, Measurable (X i))
     (h_indep : iIndepFun X μ) :
@@ -392,6 +395,7 @@ private lemma integrable_exp_upperTruncated_finsetSum
   simpa only [one_mul, Y] using
     hYindep.integrable_exp_mul_sum hYmeas (t := (1 : ℝ)) hcoord
 
+omit [DecidableEq ι] in
 /-- The MGF of the full one-sided truncated sum is at most three at `t = 1`. -/
 lemma mgf_upperTruncatedSum_one_le_three
     (hXmeas : ∀ i, Measurable (X i))
@@ -421,6 +425,7 @@ lemma mgf_upperTruncatedSum_one_le_three
   rw [hfun]
   exact hmgf
 
+omit [DecidableEq ι] in
 lemma integrable_exp_upperTruncatedSum
     (hXmeas : ∀ i, Measurable (X i)) (h_indep : iIndepFun X μ) :
     Integrable (fun ω ↦ exp (upperTruncatedSum X ω)) μ := by
@@ -465,6 +470,7 @@ lemma integrable_exp_upperTruncated_leaveOneOut
     hXmeas h_indep
   simpa only [leaveOneOut, Finset.sum_apply] using h
 
+omit [DecidableEq ι] in
 /-- `E|f'_z(W̄)| ≤ 8 e^{-z/2}`. -/
 lemma integral_abs_steinSolutionDeriv_upperTruncatedSum_le
     (hXmeas : ∀ i, Measurable (X i))
@@ -497,6 +503,7 @@ lemma integral_steinSolution_upperTruncated_leaveOneOut_le
     (mgf_upperTruncated_leaveOneOut_one_le_three
       hXmeas hX2 h_indep h_mean hvar i) hz
 
+omit [DecidableEq ι] in
 /-- Chen--Shao (2005), (6.17), with explicit constant `8`. -/
 lemma abs_upperTruncatedR1_le
     (hXmeas : ∀ i, Measurable (X i))
@@ -525,6 +532,7 @@ lemma abs_upperTruncatedR1_le
       gcongr
     _ = 8 * exp (-z / 2) * thirdMomentSum X μ := by ring
 
+omit [DecidableEq ι] in
 /-- The total magnitude of the negative means introduced by one-sided truncation is at most the
 sum of absolute third moments. -/
 lemma sum_neg_integral_upperTruncatedFamily_le_thirdMomentSum

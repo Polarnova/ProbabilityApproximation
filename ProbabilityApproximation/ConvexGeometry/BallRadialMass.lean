@@ -166,10 +166,10 @@ private lemma hasDerivAt_ballRadialAbelPrimitive {n : ℕ} (hn : 2 ≤ n)
             (-(t * Real.sin θ ^ 2)) * ballRadialAbelIntegrand n t θ) |>.const_mul
               (t ^ (n - 1))).intervalIntegrable _ _]
   unfold ballRadialAuxIntegrand ballRadialAbelIntegrand
-  ring
+  ring_nf
 
 private theorem integral_ballRadialAux_mul_pow_eq_abelPrimitive
-    {n : ℕ} (hn : 2 ≤ n) {s : ℝ} (hs : 0 ≤ s) :
+    {n : ℕ} (hn : 2 ≤ n) {s : ℝ} (_hs : 0 ≤ s) :
     (∫ t in (0 : ℝ)..s, ballRadialAux n t * t ^ (n - 2)) =
       ballRadialAbelPrimitive n s := by
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -348,7 +348,7 @@ private theorem integral_exp_neg_half_mul_pow {n : ℕ} (hn : 2 ≤ n) :
         rw [← Real.rpow_natCast t (n - 2), hcast]
       dsimp only
       rw [hnatpow, Real.rpow_two]
-      ring
+      ring_nf
     _ = (1 / 2 : ℝ) ^ (-(((n : ℝ) - 2) + 1) / 2) * (1 / 2) *
         Real.Gamma ((((n : ℝ) - 2) + 1) / 2) := h
     _ = 2 ^ (((n : ℝ) - 3) / 2) * Real.Gamma (((n : ℝ) - 1) / 2) := by
@@ -363,7 +363,9 @@ private theorem integral_exp_neg_half_mul_pow {n : ℕ} (hn : 2 ≤ n) :
             rw [Real.one_rpow, one_div]
           _ = (2 : ℝ) ^ (-(-(((n : ℝ) - 2) + 1) / 2)) := by
             rw [Real.rpow_neg (by positivity)]
-          _ = (2 : ℝ) ^ (((n : ℝ) - 1) / 2) := by congr 1 <;> ring
+          _ = (2 : ℝ) ^ (((n : ℝ) - 1) / 2) := by
+            congr 1
+            ring
       rw [hpow]
       have hhalf : (1 / 2 : ℝ) = (2 : ℝ) ^ (-1 : ℝ) := by
         rw [Real.rpow_neg (by positivity)]
@@ -410,7 +412,8 @@ private theorem ballRadialMassCoefficient_mul_full_integral {n : ℕ} (hn : 2 �
         Real.Gamma (((n : ℝ) - 1) / 2)) =
       1 / (Real.sqrt 2 * Real.sqrt Real.pi)
   field_simp
-  convert hpowMul using 1 <;> ring
+  convert hpowMul using 1
+  all_goals ring_nf
 
 private def ballRadialAngularMassIntegrand (n : ℕ) (s θ : ℝ) : ℝ :=
   ballRadialMassCoefficient n * s ^ (n - 1) *
@@ -557,7 +560,7 @@ private lemma integrableOn_ballRadialGaussianPowerIntegrand
   rw [mul_comm]
   congr 1
   rw [Real.rpow_two]
-  ring
+  ring_nf
 
 private lemma ballRadialAngularMassIntegrand_le_comp
     {n : ℕ} (hn : 2 ≤ n) {s θ : ℝ} (hs : 1 < s)
@@ -714,7 +717,7 @@ private lemma ballRadialMassCoefficient_two :
   rw [hsqrt, inv_eq_one_div]
 
 private lemma ballRadialMassCoefficient_mul_gaussianPower_le_one_div_pi_two
-    {t : ℝ} (ht : 0 ≤ t) :
+    {t : ℝ} (_ht : 0 ≤ t) :
     ballRadialMassCoefficient 2 * ballRadialGaussianPowerIntegrand 2 t ≤
       1 / Real.pi := by
   rw [ballRadialMassCoefficient_two]

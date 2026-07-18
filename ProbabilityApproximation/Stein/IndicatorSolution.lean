@@ -30,9 +30,9 @@ noncomputable section
 
 namespace ProbabilityTheory
 
-/-! ### Private normal density / cdf aliases -/
+/-! ### Standard normal density and distribution function -/
 
-/-- Standard normal density (private; not a competing public API). -/
+/-- Standard normal density. -/
 private def φ (x : ℝ) : ℝ := gaussianPDFReal 0 1 x
 
 private lemma φ_eq (x : ℝ) : φ x = (√(2 * π))⁻¹ * exp (-x ^ 2 / 2) := by

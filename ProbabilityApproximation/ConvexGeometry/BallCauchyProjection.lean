@@ -17,8 +17,8 @@ Summing the two hemispheres gives
 
 `∫ g(P_v θ) |<θ,v>| dH^(d-1)(θ) = 2 ∫_{B(v⊥)} g(z) dz`.
 
-The proof uses the supporting-normal projection charts from `BallProjectionArea`.  It does not
-identify Hausdorff surface measure with Mathlib's independently constructed `Measure.toSphere`.
+The proof uses the supporting-normal projection charts from `BallProjectionArea` and works
+directly with intrinsic Hausdorff surface measure.
 -/
 
 open Set Metric MeasureTheory Filter

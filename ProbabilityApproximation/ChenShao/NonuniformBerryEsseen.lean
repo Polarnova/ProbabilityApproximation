@@ -11,11 +11,10 @@ import ProbabilityApproximation.ChenShao.NonuniformReduction
 /-!
 # Nonuniform Berry--Esseen theorem
 
-This module closes the scalar release chain.  The one-sided truncated estimate combines the exact
-Stein residual identity with the bounds for `R₁`, `R₃`, `R₂,₁`, and `R₂,₂` from Chen--Shao
-(2005), Section 6.  The reduction module then adds the truncation comparison, bounded-threshold
-uniform estimate, large-third-moment branch, and atom-safe reflection needed for every real
-threshold.
+The one-sided truncated estimate combines the Stein residual identity with the bounds for `R₁`,
+`R₃`, `R₂,₁`, and `R₂,₂` from Chen--Shao (2005), Section 6. Truncation comparison, a
+bounded-threshold uniform estimate, a large-third-moment estimate, and reflection extend the
+central estimate to every real threshold.
 -/
 
 open MeasureTheory ProbabilityTheory Real
@@ -63,11 +62,9 @@ theorem abs_cdf_upperTruncatedSum_sub_gaussian_le_exp_thirdMomentSum
   simp only [upperTruncatedNonuniformConstant]
   ring
 
-/-- Nonuniform Berry--Esseen theorem for independent centered finite families with total variance
-one and finite absolute third moments. The constant is absolute: it is chosen before the index
-type, probability space, family, and threshold. The scalar theorem specified in
-`.agents/SPEC.md` is obtained from Chen--Shao (2005), Section 6 together with the standard
-truncation and reflection reductions. -/
+/-- The finite-third-moment nonuniform Berry--Esseen theorem for independent centered finite
+families with unit total variance. This Bikelis-type consequence of the Chen--Shao nonuniform
+bound follows from their one-sided truncated estimate by truncation and reflection. -/
 theorem nonuniformBerryEsseen :
     ∃ C : ℝ, 0 < C ∧
       ∀ {ι : Type uι} {Ω : Type uΩ} [Fintype ι] [MeasurableSpace Ω]

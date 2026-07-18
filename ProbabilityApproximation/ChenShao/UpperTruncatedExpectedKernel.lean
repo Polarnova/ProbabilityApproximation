@@ -29,10 +29,12 @@ def upperTruncatedExpectedKernel
     (X : ι → Ω → ℝ) (μ : Measure Ω) (i : ι) (t : ℝ) : ℝ :=
   expectedKernelFwd (X := upperTruncatedFamily X) (μ := μ) i t
 
+omit [Fintype ι] [IsProbabilityMeasure μ] in
 lemma upperTruncatedExpectedKernel_nonneg [DecidableEq ι] (i : ι) (t : ℝ) :
     0 ≤ upperTruncatedExpectedKernel X μ i t :=
   expectedKernelFwd_nonneg i t
 
+omit [Fintype ι] in
 lemma integral_upperTruncatedExpectedKernel
     [DecidableEq ι]
     (hX2 : ∀ i, MemLp (X i) 2 μ) (hXmeas : ∀ i, Measurable (X i)) (i : ι) :
@@ -42,6 +44,7 @@ lemma integral_upperTruncatedExpectedKernel
     (memLp_upperTruncatedFamily hXmeas hX2 i)
     (measurable_upperTruncatedFamily hXmeas i)
 
+omit [Fintype ι] in
 lemma integrable_upperTruncatedExpectedKernel
     [DecidableEq ι]
     (hX2 : ∀ i, MemLp (X i) 2 μ) (hXmeas : ∀ i, Measurable (X i)) (i : ι) :
@@ -50,6 +53,7 @@ lemma integrable_upperTruncatedExpectedKernel
     (memLp_upperTruncatedFamily hXmeas hX2 i)
     (measurable_upperTruncatedFamily hXmeas i)
 
+omit [IsProbabilityMeasure μ] in
 private lemma integrable_upperTruncatedKernelDerivative_uncurry
     [DecidableEq ι]
     (hX2 : ∀ i, MemLp (X i) 2 μ) (hXmeas : ∀ i, Measurable (X i))

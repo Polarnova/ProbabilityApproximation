@@ -15,11 +15,10 @@ standard Gaussian density, and its derivative is the corresponding second contra
 
 `|∫ f(x) D²φ(x)[w,h] dx| ≤ Lip(f) ‖h‖ ∫_{tsupport f} |Dφ(x)[w]| dx`.
 
-The proof does not add a global Schwartz-space realization of the Gaussian.  It follows Bentkus's
-difference-quotient proof directly, using Rademacher's theorem for the Lipschitz factor and an
-explicit integrable Gaussian majorant for bounded translates.  Gaussian polynomial moments are
-transported from `stdGaussian` to Euclidean volume through the density bridge proved in
-`ConvexGeometry.GaussianShell`.
+The proof follows Bentkus's difference-quotient argument, using Rademacher's theorem for the
+Lipschitz factor and an integrable Gaussian majorant for bounded translates.  Gaussian polynomial
+moments are transferred from `stdGaussian` to Euclidean volume by the standard Gaussian density
+identity.
 -/
 
 open Filter MeasureTheory Measure Module Topology Set

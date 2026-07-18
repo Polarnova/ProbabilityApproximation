@@ -260,7 +260,7 @@ theorem succ_mul_ballSineMoment_mul_succ (m : ℕ) :
         _ = Real.pi / 2 := ih
 
 /-- Ball's integrand is pointwise nonnegative below `sqrt (n - 1)`. -/
-lemma ballRadialAuxIntegrand_nonneg {n : ℕ} (hn : 2 ≤ n) {t θ : ℝ}
+lemma ballRadialAuxIntegrand_nonneg {n : ℕ} (_hn : 2 ≤ n) {t θ : ℝ}
     (ht : 0 ≤ t) (htop : t ≤ √((n - 1 : ℕ) : ℝ))
     (hθ : θ ∈ Set.uIcc (0 : ℝ) (Real.pi / 2)) :
     0 ≤ ballRadialAuxIntegrand n t θ := by
@@ -365,7 +365,6 @@ private theorem integral_ballRadialScaled_parameterDerivative {n : ℕ} (hn : 2 
       intro θ _hθ
       dsimp only [D]
       unfold ballRadialDecreaseKernel
-      push_cast
       rw [pow_eq_sq_mul_pow_sub_two hn]
       ring
     _ = t * (∫ θ in (0 : ℝ)..Real.pi / 2, D θ) -
@@ -1169,7 +1168,7 @@ private lemma tsum_ballRadialProjectionSeriesIntegrand
   rw [tsum_mul_right]
 
 private lemma integral_ballRadialProjectionSeriesIntegrand
-    {n : ℕ} (hn : 2 ≤ n) (r : ℝ) (k : ℕ) :
+    {n : ℕ} (_hn : 2 ≤ n) (r : ℝ) (k : ℕ) :
     (∫ θ in (0 : ℝ)..Real.pi / 2,
       ballRadialProjectionSeriesIntegrand n r k θ) =
       ((-(r ^ 2) / 2) ^ k / (k.factorial : ℝ)) *

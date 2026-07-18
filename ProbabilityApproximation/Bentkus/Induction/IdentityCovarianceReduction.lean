@@ -400,7 +400,7 @@ private theorem indepFun_whitenedRotatedLeaveOneOut_replacementPair
       change Measurable ((fun x : EuclideanSpace ℝ (Fin d) ↦ Real.sin α • x) ∘
         fun z : S → EuclideanSpace ℝ (Fin d) ↦ z p)
       exact (measurable_const_smul (Real.sin α)).comp (measurable_pi_apply p)
-    · simp only [hp, if_false]
+    · simp only [hp]
       change Measurable ((fun x : EuclideanSpace ℝ (Fin d) ↦ Real.cos α • x) ∘
         fun z : S → EuclideanSpace ℝ (Fin d) ↦ z p)
       exact (measurable_const_smul (Real.cos α)).comp (measurable_pi_apply p)
@@ -411,7 +411,6 @@ private theorem indepFun_whitenedRotatedLeaveOneOut_replacementPair
   have hcombineS (ω) : combineS (fun p : S ↦ F p ω) =
       B (Real.cos α • bentkusLeaveOneOut O k ω +
         Real.sin α • bentkusLeaveOneOut G k ω) := by
-    congr 1
     dsimp only [combineS, F, S, bentkusLeaveOneOut]
     have hsub :
         (∑ p : {p // p ∈ (Finset.univ.filter
@@ -1328,7 +1327,7 @@ theorem integral_fderiv_convexSetCutoff_affine_translate
       dsimp only [f]
       rw [map_add, hLv]
       congr 2
-      abel]
+      abel_nf]
   exact htranslate
 
 /-- Shifted form of the cutoff-derivative Gaussian integration-by-parts estimate.  Translating
@@ -1367,7 +1366,7 @@ private theorem convexSetCutoffDirectionalPullback_shifted_D2_shell_bound
         dsimp only [g, a', convexSetCutoffDirectionalPullback]
         congr 2
         rw [map_add]
-        abel
+        abel_nf
       _ = ∫ u, g u ∂volume := htranslate
       _ = ∫ u, convexSetCutoffDirectionalPullback s ε a' x L u *
           standardGaussianDensityD2 u w h ∂volume := rfl
@@ -1450,7 +1449,7 @@ private theorem integral_fderiv_convexSetCutoff_scaled_stdGaussian_eq_neg_D1
     q⁻¹ • ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin d))
   have hPB : P (B h) = h := by
     dsimp only [P, B]
-    simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, smul_smul]
+    simp only [_root_.smul_apply, ContinuousLinearMap.id_apply, smul_smul]
     rw [mul_inv_cancel₀ hq, one_smul]
   have hbase := integral_fderiv_convexSetCutoff_affineGaussian_eq_neg_D1
     hs hε P B r h hPB
@@ -2277,7 +2276,7 @@ theorem convexDistance_map_prod_affineNoise_le
     [MeasurableSpace E] [BorelSpace E] [SecondCountableTopology E]
     [Convexity.ConvexSpace ℝ E] [Convexity.IsModuleConvexSpace ℝ E]
     {ν τ κ : Measure E} [IsProbabilityMeasure ν] [IsProbabilityMeasure τ]
-    [IsProbabilityMeasure κ] {D : ℝ} (hD : 0 ≤ D)
+    [IsProbabilityMeasure κ] {D : ℝ} (_hD : 0 ≤ D)
     (hbound : ∀ A : Set E, MeasurableSet A → Convexity.IsConvexSet ℝ A →
       |ν.real A - τ.real A| ≤ D)
     (p : ℝ) (A : Set E) (hA : MeasurableSet A)
@@ -2575,7 +2574,7 @@ lemma isConvexSet_preimage_add_right
 theorem abs_integral_quasiconcave_sub_le_convexDistance
     {d : ℕ} {ν τ : Measure (EuclideanSpace ℝ (Fin d))}
     [IsProbabilityMeasure ν] [IsProbabilityMeasure τ]
-    {D : ℝ} (hD : 0 ≤ D)
+    {D : ℝ} (_hD : 0 ≤ D)
     (hbound : ∀ A : Set (EuclideanSpace ℝ (Fin d)), MeasurableSet A →
       Convexity.IsConvexSet ℝ A → |ν.real A - τ.real A| ≤ D)
     (f : EuclideanSpace ℝ (Fin d) → ℝ) (hfm : Measurable f)

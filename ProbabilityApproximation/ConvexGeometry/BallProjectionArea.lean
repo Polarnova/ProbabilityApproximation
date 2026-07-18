@@ -431,9 +431,7 @@ theorem dist_le_one_add_inv_mul_dist_orthogonalProjectionOnto_of_mem_positivePat
   let p : EuclideanSpace ℝ (Fin d) := K.starProjection w
   let t : ℝ := inner ℝ θ w
   have hw : p + t • θ = w := by
-    simpa [K, p, t, Submodule.orthogonal_orthogonal,
-      Submodule.starProjection_unit_singleton ℝ hθ] using
-      (K.starProjection_add_starProjection_orthogonal w)
+    simp [K, p, t, Submodule.starProjection_unit_singleton ℝ hθ]
   have htcx : t * inner ℝ θ ux ≤ ‖p‖ := by
     have hs := hsupportx y hyC
     change inner ℝ w ux ≤ 0 at hs
@@ -506,9 +504,7 @@ theorem dist_le_one_add_inv_mul_dist_orthogonalProjectionOnto_of_mem_negativePat
   let p : EuclideanSpace ℝ (Fin d) := K.starProjection w
   let t : ℝ := inner ℝ θ w
   have hw : p + t • θ = w := by
-    simpa [K, p, t, Submodule.orthogonal_orthogonal,
-      Submodule.starProjection_unit_singleton ℝ hθ] using
-      (K.starProjection_add_starProjection_orthogonal w)
+    simp [K, p, t, Submodule.starProjection_unit_singleton ℝ hθ]
   have htcx : t * inner ℝ θ ux ≤ ‖p‖ := by
     have hs := hsupportx y hyC
     change inner ℝ w ux ≤ 0 at hs
@@ -838,7 +834,7 @@ private lemma injOn_orthogonalProjectionPatchInverse {d : ℕ}
 
 /-- Weighted area formula on a strictly positive supporting-normal patch. -/
 theorem lintegral_positiveSupportingNormalPatch_eq_chart {d : ℕ}
-    (hd : 2 ≤ d) {C : Set (EuclideanSpace ℝ (Fin d))}
+    (_hd : 2 ≤ d) {C : Set (EuclideanSpace ℝ (Fin d))}
     (hcompact : IsCompact C) {θ : EuclideanSpace ℝ (Fin d)} (hθ : ‖θ‖ = 1)
     {a : ℝ} (ha : 0 < a) (g : EuclideanSpace ℝ (Fin d) → ℝ≥0∞)
     (hg : Measurable g) :
@@ -877,7 +873,7 @@ theorem lintegral_positiveSupportingNormalPatch_eq_chart {d : ℕ}
 
 /-- Weighted area formula on a strictly negative supporting-normal patch. -/
 theorem lintegral_negativeSupportingNormalPatch_eq_chart {d : ℕ}
-    (hd : 2 ≤ d) {C : Set (EuclideanSpace ℝ (Fin d))}
+    (_hd : 2 ≤ d) {C : Set (EuclideanSpace ℝ (Fin d))}
     (hcompact : IsCompact C) {θ : EuclideanSpace ℝ (Fin d)} (hθ : ‖θ‖ = 1)
     {a : ℝ} (ha : 0 < a) (g : EuclideanSpace ℝ (Fin d) → ℝ≥0∞)
     (hg : Measurable g) :
@@ -1021,7 +1017,7 @@ theorem frontier_subset_iUnion_ballBoundaryCoordinatePatch {d : ℕ} (hd : 2 ≤
       simpa [abs_of_nonneg hnonneg] using hi
     apply Set.mem_iUnion.mpr
     refine ⟨(i, true), ?_⟩
-    simp only [ballBoundaryCoordinatePatch, if_pos rfl]
+    simp only [ballBoundaryCoordinatePatch]
     apply mem_positiveSupportingNormalPatch.mpr
     exact ⟨u, hx, hu, hsupport, by
       simpa using hcoord⟩
@@ -1105,7 +1101,7 @@ theorem iUnion_ballBoundaryCoordinatePiece_eq_frontier {d : ℕ} (hd : 2 ≤ d)
   apply Set.Subset.antisymm
   · apply Set.iUnion_subset
     intro j
-    exact Set.diff_subset.trans
+    exact Set.sdiff_subset.trans
       (ballBoundaryCoordinatePatch_subset_frontier C j)
   · intro x hx
     have hcover := frontier_subset_iUnion_ballBoundaryCoordinatePatch
@@ -1636,8 +1632,6 @@ theorem tsum_lintegral_ballBoundaryCoordinateProjectedChart_le_two_mul {d : ℕ}
             have hxother :
                 ballBoundaryCoordinateChart C j (z ⟨(j, n), hk⟩) ∈
                   ballBoundaryCoordinatePiece C j' := by
-              change ballBoundaryCoordinateChart C j (z ⟨(j, n), hk⟩) ∈
-                ballBoundaryCoordinatePiece C j'
               exact hpoint.symm ▸ hxpiece ⟨(j', n'), hl⟩
             exact (Set.disjoint_left.mp hdisj)
               (hxpiece ⟨(j, n), hk⟩) hxother
@@ -1704,11 +1698,11 @@ theorem tsum_lintegral_ballBoundaryCoordinateProjectedChart_le_two_mul {d : ℕ}
     have hAy : (A y).encard ≤ 2 := (hactive y).trans hy
     have hcoe : ((A y).encard : ℝ≥0∞) ≤ 2 := by
       simpa using ENat.toENNReal_mono hAy
-    exact mul_le_mul_right' hcoe (w y)
+    exact mul_le_mul_left hcoe (w y)
   have hmeas (j : Fin d × Bool) : Measurable fun y : (ℝ ∙ θ)ᗮ ↦
       ∑' n : ℕ,
         (ballBoundaryCoordinateProjectedChart C j θ '' p j n).indicator w y :=
-    Measurable.ennreal_tsum fun n ↦ hw.indicator (hpimage j n)
+    Measurable.tsum fun n ↦ hw.indicator (hpimage j n)
   calc
     (∑' j : Fin d × Bool,
         ∫⁻ z in ballBoundaryCoordinateChartDomain C j,
@@ -1766,7 +1760,7 @@ theorem tsum_lintegral_ballBoundaryCoordinateProjectedChart_ballRadialMajorant_l
         2 * ∫⁻ y : (ℝ ∙ θ)ᗮ,
           ENNReal.ofReal (ballRadialMajorant d ‖y‖) := hproj
     _ ≤ 2 * ENNReal.ofReal (2 * (d : ℝ) ^ (1 / 4 : ℝ)) :=
-      mul_le_mul_left' hmass 2
+      mul_le_mul_right hmass 2
     _ = ENNReal.ofReal (4 * (d : ℝ) ^ (1 / 4 : ℝ)) := by
       rw [show (2 : ℝ≥0∞) = ENNReal.ofReal (2 : ℝ) by norm_num,
         ← ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2)]

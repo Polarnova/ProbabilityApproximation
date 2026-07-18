@@ -10,7 +10,7 @@ import Mathlib.Probability.Moments.Variance
 import Mathlib.Tactic
 
 /-!
-# Mathlib-native leaves for Chen–Shao (SPEC §7.1)
+# Probability lemmas for independent finite sums
 
 Measurability, map measures, CDF bridges, and variance additivity under independence.
 -/
