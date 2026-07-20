@@ -234,6 +234,24 @@ html[data-bp-color-theme="dark"] a {
   color: var(--bp-color-link);
 }
 
+html[data-bp-color-theme="dark"] .split-toc a,
+html[data-bp-color-theme="dark"] .split-toc a:visited {
+  color: var(--verso-toc-text-color) !important;
+  text-decoration-color: transparent;
+}
+
+html[data-bp-color-theme="dark"] .split-toc a:hover,
+html[data-bp-color-theme="dark"] .split-toc a:focus-visible {
+  color: #f8fafc !important;
+  text-decoration-color: currentColor;
+}
+
+html[data-bp-color-theme="dark"] .split-toc tr.current a,
+html[data-bp-color-theme="dark"] .split-toc .title .current a {
+  color: #ffffff !important;
+  font-weight: 650;
+}
+
 html[data-bp-color-theme="dark"] a.bp_external_decl_source_link {
   color: #7dd3fc !important;
 }
