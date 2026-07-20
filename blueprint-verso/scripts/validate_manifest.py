@@ -58,8 +58,8 @@ EXPECTED_OPEN: set[str] = set()
 EXPECTED_DECLARATIONS = 345
 EXPECTED_EDGES = 97
 EXPECTED_GROUPS = {
-    "probability-scalar": 17,
-    "probability-convex": 48,
+    "«probability-scalar»": 17,
+    "«probability-convex»": 48,
 }
 
 
