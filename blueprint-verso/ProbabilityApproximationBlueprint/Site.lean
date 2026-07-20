@@ -267,6 +267,15 @@ html[data-bp-color-theme="dark"] .bp_graph_canvas svg g.edge polygon {
   stroke: #94a3b8;
 }
 
+html[data-bp-color-theme="dark"] .bp_graph_canvas svg g.cluster > path {
+  fill: #111827;
+  stroke: #475569;
+}
+
+html[data-bp-color-theme="dark"] .bp_graph_canvas svg g.cluster > text {
+  fill: #e5e7eb;
+}
+
 html[data-bp-color-theme="dark"][data-bp-style="blueprint"] .bp_graph_legend_item {
   color: var(--bp-color-text);
 }
