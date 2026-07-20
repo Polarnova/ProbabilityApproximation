@@ -179,9 +179,11 @@ lake build +ProbabilityApproximationBlueprint.ConvexSetApproximation
 lake build +ProbabilityApproximationBlueprint.References
 ```
 
-`site.sh build` runs the statement-style check, Blueprint library build, HTML render, strict
-manifest validator, `vbp check`, and PDF render. It installs the PDF into the HTML publication at
-the stable `berry-esseen-bounds.pdf` path. Inspect generated HTML through `site.sh serve`, not
+`site.sh build release` runs the statement-style check, Blueprint library build, HTML render,
+strict manifest validator, `vbp check`, and PDF render. The release profile is the default and
+removes fidelity tags from reader-facing HTML while retaining them in the validated manifest;
+`site.sh build dev` and `site.sh serve dev` retain them for review. The build installs the PDF at
+the stable `berry-esseen-bounds.pdf` path. Inspect generated HTML through the local server, not
 `file://`, and inspect the rendered book whenever mathematical prose or displayed formula layout
 changes materially. `site.sh pdf` remains available for a PDF-only rebuild.
 

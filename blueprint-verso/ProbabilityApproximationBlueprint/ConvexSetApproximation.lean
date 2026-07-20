@@ -61,7 +61,7 @@ followed by covariance whitening, proves the multivariate limit theorem.
 
 # Convex distance and smooth cutoffs
 
-:::lemma_ "convex-parallel-sets" (lean := "ProbabilityTheory.thickening_isConvexSet, ProbabilityTheory.cthickening_isConvexSet, ProbabilityTheory.measurableSet_thickening, ProbabilityTheory.measurableSet_cthickening, ProbabilityTheory.thickening_vadd, ProbabilityTheory.cthickening_vadd") (tags := "bentkus, convex-geometry, parallel-sets, source-bentkus-2004, fidelity-generalized-radii")
+:::lemma_ "convex-parallel-sets" (parent := "probability-convex") (lean := "ProbabilityTheory.thickening_isConvexSet, ProbabilityTheory.cthickening_isConvexSet, ProbabilityTheory.measurableSet_thickening, ProbabilityTheory.measurableSet_cthickening, ProbabilityTheory.thickening_vadd, ProbabilityTheory.cthickening_vadd") (tags := "bentkus, convex-geometry, parallel-sets, source-bentkus-2004, fidelity-generalized-radii")
 *Convex parallel sets.* If $`A\subseteq\mathbb R^d` is convex, then its open
 parallel set $`A^\varepsilon` is convex for every $`\varepsilon\in\mathbb R`; its closed
 parallel set $`\{x:d_A(x)\le\varepsilon\}` is convex whenever $`\varepsilon\ge0`.
@@ -76,7 +76,7 @@ These are the set-theoretic facts used in {Citations.citet bentkus2004}[], condi
 and the neighborhood notation preceding Theorem 1.2, printed pp. 401--402.
 The open-thickening identity remains valid for all real radii.
 
-:::theorem "metric-projection" (lean := "ProbabilityTheory.existsUnique_isNearestPoint, ProbabilityTheory.metricProjection, ProbabilityTheory.metricProjection_variational, ProbabilityTheory.metricProjection_firmlyNonexpansive, ProbabilityTheory.metricProjection_lipschitzWith, ProbabilityTheory.metricProjection_residual_lipschitzWith") (tags := "bentkus, convex-geometry, projection, source-bentkus-2003, fidelity-exact")
+:::theorem "metric-projection" (parent := "probability-convex") (lean := "ProbabilityTheory.existsUnique_isNearestPoint, ProbabilityTheory.metricProjection, ProbabilityTheory.metricProjection_variational, ProbabilityTheory.metricProjection_firmlyNonexpansive, ProbabilityTheory.metricProjection_lipschitzWith, ProbabilityTheory.metricProjection_residual_lipschitzWith") (tags := "bentkus, convex-geometry, projection, source-bentkus-2003, fidelity-exact")
 *Metric projection onto a closed convex set.* Let $`A\subseteq\mathbb R^d` be
 nonempty, closed, and convex.  For every $`x` there is a unique point $`p_A(x)\in A`
 such that $`\|x-p_A(x)\|=d_A(x)`.  It satisfies
@@ -96,7 +96,7 @@ This packages the Euclidean projection geometry used in {Citations.citet bentkus
 printed pp. 389--390.  The paper states the resulting distance-gradient inequalities;
 the projection formulation records the geometric mechanism behind them.
 
-:::theorem "squared-distance-calculus" (lean := "ProbabilityTheory.squaredInfDist_remainder_bound, ProbabilityTheory.hasFDerivAt_squaredInfDist, ProbabilityTheory.hasFDerivAt_infDist_of_notMem, ProbabilityTheory.norm_fderiv_infDist_of_notMem") (uses := "metric-projection") (tags := "bentkus, convex-geometry, distance, source-bentkus-2003, fidelity-explicit-frechet-form")
+:::theorem "squared-distance-calculus" (parent := "probability-convex") (lean := "ProbabilityTheory.squaredInfDist_remainder_bound, ProbabilityTheory.hasFDerivAt_squaredInfDist, ProbabilityTheory.hasFDerivAt_infDist_of_notMem, ProbabilityTheory.norm_fderiv_infDist_of_notMem") (uses := "metric-projection") (tags := "bentkus, convex-geometry, distance, source-bentkus-2003, fidelity-explicit-frechet-form")
 *Differentiability of distance to a convex set.* Under the hypotheses of the preceding
 node, for every $`x,h\in\mathbb R^d`,
 $$`
@@ -118,7 +118,7 @@ This is the distance calculus behind Lemma 2.2, equations (2.5)--(2.9), of
 printed pp. 389--390. The derivative is written as a bounded linear functional, together
 with an explicit quadratic remainder.
 
-:::theorem "bentkus-smooth-cutoff" (lean := "ProbabilityTheory.bentkusProfile, ProbabilityTheory.bentkusCutoff, ProbabilityTheory.hasFDerivAt_bentkusCutoff, ProbabilityTheory.bentkusCutoff_eq_one_of_mem, ProbabilityTheory.bentkusCutoff_eq_zero_of_le_infDist, ProbabilityTheory.norm_fderiv_bentkusCutoff_le, ProbabilityTheory.norm_fderiv_bentkusCutoff_sub_le, ProbabilityTheory.contDiff_bentkusCutoff") (uses := "squared-distance-calculus") (tags := "bentkus, convex-geometry, smoothing, source-bentkus-2003, source-bentkus-2004, fidelity-exact-constants")
+:::theorem "bentkus-smooth-cutoff" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusProfile, ProbabilityTheory.bentkusCutoff, ProbabilityTheory.hasFDerivAt_bentkusCutoff, ProbabilityTheory.bentkusCutoff_eq_one_of_mem, ProbabilityTheory.bentkusCutoff_eq_zero_of_le_infDist, ProbabilityTheory.norm_fderiv_bentkusCutoff_le, ProbabilityTheory.norm_fderiv_bentkusCutoff_sub_le, ProbabilityTheory.contDiff_bentkusCutoff") (uses := "squared-distance-calculus") (tags := "bentkus, convex-geometry, smoothing, source-bentkus-2003, source-bentkus-2004, fidelity-exact-constants")
 *Bentkus's continuously differentiable distance cutoff.* Let $`A\subseteq\mathbb R^d`
 be nonempty, closed, and convex, and let $`\varepsilon>0`.  There is a continuously
 differentiable function $`\varphi_{\varepsilon,A}:\mathbb R^d\to[0,1]` of the form
@@ -147,7 +147,7 @@ quadratic profile, including its endpoint values.
 
 # Gaussian companions and rotation
 
-:::theorem "gaussian-companions-and-transport" (lean := "ProbabilityTheory.covarianceMatrix, ProbabilityTheory.covarianceMatrix_posSemidef, ProbabilityTheory.dotProduct_covarianceMatrix_mulVec, ProbabilityTheory.gaussianCompanion, ProbabilityTheory.summandCovarianceMatrix, ProbabilityTheory.gaussianCompanionMeasureOf, ProbabilityTheory.iIndepFun_gaussianCompanion_of, ProbabilityTheory.integral_gaussianCompanion_of_eq_zero, ProbabilityTheory.memLp_three_gaussianCompanion_of, ProbabilityTheory.covarianceBilin_map_gaussianCompanion_of, ProbabilityTheory.independentLawProduct, ProbabilityTheory.isProbabilityMeasure_independentLawProduct, ProbabilityTheory.iIndepFun_independentLawProduct, ProbabilityTheory.map_coordinate_independentLawProduct, ProbabilityTheory.map_family_eq_independentLawProduct, ProbabilityTheory.map_sum_eq_map_sum_independentLawProduct, ProbabilityTheory.bentkusReplacementMeasure, ProbabilityTheory.replacementOriginal, ProbabilityTheory.replacementGaussian, ProbabilityTheory.indepFun_replacement_blocks, ProbabilityTheory.indepFun_replacementOriginal_replacementGaussian, ProbabilityTheory.map_replacementOriginal, ProbabilityTheory.map_replacementGaussian, ProbabilityTheory.measurePreserving_replacementOriginal, ProbabilityTheory.measurePreserving_replacementGaussian, ProbabilityTheory.memLp_replacementOriginal, ProbabilityTheory.memLp_three_replacementGaussian, ProbabilityTheory.integral_replacementOriginal_eq, ProbabilityTheory.integral_replacementGaussian_eq_zero, ProbabilityTheory.covarianceBilin_replacementGaussian_eq_replacementOriginal, ProbabilityTheory.iIndepFun_replacementOriginal, ProbabilityTheory.iIndepFun_replacementGaussian") (tags := "bentkus, gaussian-replacement, probability-transport, source-bentkus-2004, fidelity-canonical-product-realization")
+:::theorem "gaussian-companions-and-transport" (parent := "probability-convex") (lean := "ProbabilityTheory.covarianceMatrix, ProbabilityTheory.covarianceMatrix_posSemidef, ProbabilityTheory.dotProduct_covarianceMatrix_mulVec, ProbabilityTheory.gaussianCompanion, ProbabilityTheory.summandCovarianceMatrix, ProbabilityTheory.gaussianCompanionMeasureOf, ProbabilityTheory.iIndepFun_gaussianCompanion_of, ProbabilityTheory.integral_gaussianCompanion_of_eq_zero, ProbabilityTheory.memLp_three_gaussianCompanion_of, ProbabilityTheory.covarianceBilin_map_gaussianCompanion_of, ProbabilityTheory.independentLawProduct, ProbabilityTheory.isProbabilityMeasure_independentLawProduct, ProbabilityTheory.iIndepFun_independentLawProduct, ProbabilityTheory.map_coordinate_independentLawProduct, ProbabilityTheory.map_family_eq_independentLawProduct, ProbabilityTheory.map_sum_eq_map_sum_independentLawProduct, ProbabilityTheory.bentkusReplacementMeasure, ProbabilityTheory.replacementOriginal, ProbabilityTheory.replacementGaussian, ProbabilityTheory.indepFun_replacement_blocks, ProbabilityTheory.indepFun_replacementOriginal_replacementGaussian, ProbabilityTheory.map_replacementOriginal, ProbabilityTheory.map_replacementGaussian, ProbabilityTheory.measurePreserving_replacementOriginal, ProbabilityTheory.measurePreserving_replacementGaussian, ProbabilityTheory.memLp_replacementOriginal, ProbabilityTheory.memLp_three_replacementGaussian, ProbabilityTheory.integral_replacementOriginal_eq, ProbabilityTheory.integral_replacementGaussian_eq_zero, ProbabilityTheory.covarianceBilin_replacementGaussian_eq_replacementOriginal, ProbabilityTheory.iIndepFun_replacementOriginal, ProbabilityTheory.iIndepFun_replacementGaussian") (tags := "bentkus, gaussian-replacement, probability-transport, source-bentkus-2004, fidelity-canonical-product-realization")
 *Gaussian companions and canonical probability-space transport.* Let
 $`X_i:\Omega\to\mathbb R^d` be a finite measurable family on a probability space
 $`(\Omega,\mu)`, put $`\nu_i=\mathcal L_\mu(X_i)`, and let $`\Sigma_i` be the matrix
@@ -185,7 +185,7 @@ assumes all variables exist independently on one probability space. The canonica
 construction above realizes this arrangement while allowing singular individual covariance
 matrices. The rotation identity (3.4) is treated below.
 
-:::lemma_ "gaussian-fourth-moment-control" (lean := "ProbabilityTheory.integral_norm_pow_four_multivariateGaussian_le") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-sufficient-bound")
+:::lemma_ "gaussian-fourth-moment-control" (parent := "probability-convex") (lean := "ProbabilityTheory.integral_norm_pow_four_multivariateGaussian_le") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-sufficient-bound")
 *Dimension-free fourth-moment control for a Gaussian vector.* Let $`S` be a positive
 semidefinite $`d\times d` real matrix and let $`Y\sim N(0,S)`.  Then
 $$`
@@ -200,7 +200,7 @@ discussion following equation (3.35), printed p. 408.  Bentkus records the resul
 third-moment comparison with an implicit absolute constant; the displayed fourth-moment
 bound, together with Hölder's inequality, gives an explicit constant.
 
-:::lemma_ "gaussian-companion-second-moment-match" (lean := "ProbabilityTheory.integral_norm_sq_replacementGaussian_eq_replacementOriginal") (uses := "gaussian-companions-and-transport") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-exact")
+:::lemma_ "gaussian-companion-second-moment-match" (parent := "probability-convex") (lean := "ProbabilityTheory.integral_norm_sq_replacementGaussian_eq_replacementOriginal") (uses := "gaussian-companions-and-transport") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-exact")
 *Exact second-moment matching on the replacement space.* Let $`X_i` be measurable,
 centered, square-integrable random vectors in $`\mathbb R^d`.  On the canonical
 replacement space, let $`\widetilde X_i` have the law of $`X_i` and let
@@ -215,7 +215,7 @@ This is the norm-moment consequence of the covariance matching used by {Citation
 printed p. 408, where the equality $`\mathbb E\lvert Y\rvert^2=
 \mathbb E\lvert X\rvert^2` is invoked explicitly.
 
-:::theorem "gaussian-companion-third-moment-comparison" (lean := "ProbabilityTheory.gaussianCompanionThirdMomentConstant, ProbabilityTheory.integral_norm_pow_three_multivariateGaussian_covarianceMatrix_le, ProbabilityTheory.integral_norm_pow_three_replacementGaussian_le") (uses := "gaussian-fourth-moment-control, gaussian-companion-second-moment-match") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-absolute-constant")
+:::theorem "gaussian-companion-third-moment-comparison" (parent := "probability-convex") (lean := "ProbabilityTheory.gaussianCompanionThirdMomentConstant, ProbabilityTheory.integral_norm_pow_three_multivariateGaussian_covarianceMatrix_le, ProbabilityTheory.integral_norm_pow_three_replacementGaussian_le") (uses := "gaussian-fourth-moment-control, gaussian-companion-second-moment-match") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-absolute-constant")
 *Third-moment comparison for a covariance-matched Gaussian.* Let $`X` be a centered
 $`L^3` random vector in $`\mathbb R^d`, and let
 $`Y\sim N(0,\operatorname{Cov}(X))`.  With the absolute constant $`C_G=27`, one has
@@ -235,7 +235,7 @@ printed p. 408, and reuses the same absolute-moment control in equations (3.39)-
 printed p. 409. The conservative value $`27` is one explicit choice for the
 source's implicit constant.
 
-:::lemma_ "gaussian-companion-mixed-moment" (lean := "ProbabilityTheory.integral_norm_sq_replacementOriginal_mul_norm_replacementGaussian_le") (uses := "gaussian-companions-and-transport, gaussian-companion-second-moment-match") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-holder-bound")
+:::lemma_ "gaussian-companion-mixed-moment" (parent := "probability-convex") (lean := "ProbabilityTheory.integral_norm_sq_replacementOriginal_mul_norm_replacementGaussian_le") (uses := "gaussian-companions-and-transport, gaussian-companion-second-moment-match") (tags := "bentkus, gaussian-replacement, moments, source-bentkus-2004, fidelity-explicit-holder-bound")
 *Mixed original--Gaussian moment bound.* Under the preceding centered $`L^3`
 hypotheses, the independent canonical pair $`(\widetilde X_i,Y_i)` satisfies
 $$`
@@ -249,7 +249,7 @@ This is the Hölder estimate used immediately before equation (3.30) in Vidmanta
 writes the estimate with $`X` and its covariance-matched Gaussian $`Y`; the display above
 uses their canonical independent coupling.
 
-:::theorem "bentkus-rotation-cancellation" (lean := "ProbabilityTheory.bentkusRotated, ProbabilityTheory.bentkusRotatedDeriv, ProbabilityTheory.integral_bentkusRotated_eq_zero, ProbabilityTheory.integral_bentkusRotatedDeriv_eq_zero, ProbabilityTheory.bentkusRotated_bilin_bentkusRotatedDeriv, ProbabilityTheory.integral_bilin_bentkusRotated_bentkusRotatedDeriv_eq_zero, ProbabilityTheory.integral_bilin_replacementRotated_replacementRotatedDeriv_eq_zero") (uses := "gaussian-companions-and-transport") (tags := "bentkus, gaussian-replacement, rotation, source-bentkus-2004, fidelity-low-order-cancellation")
+:::theorem "bentkus-rotation-cancellation" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusRotated, ProbabilityTheory.bentkusRotatedDeriv, ProbabilityTheory.integral_bentkusRotated_eq_zero, ProbabilityTheory.integral_bentkusRotatedDeriv_eq_zero, ProbabilityTheory.bentkusRotated_bilin_bentkusRotatedDeriv, ProbabilityTheory.integral_bilin_bentkusRotated_bentkusRotatedDeriv_eq_zero, ProbabilityTheory.integral_bilin_replacementRotated_replacementRotatedDeriv_eq_zero") (uses := "gaussian-companions-and-transport") (tags := "bentkus, gaussian-replacement, rotation, source-bentkus-2004, fidelity-low-order-cancellation")
 *Rotation and low-order moment cancellation.* Let $`X,Y` be independent random
 vectors in a real Banach space $`E`, assume that they are integrable and centered, and
 let $`B:E\times E\to\mathbb R` be a continuous bilinear form for which
@@ -286,7 +286,7 @@ kills the two mixed expectations and the matched second moment
 kills the remaining pair.  The full telescoping identity (3.4) and its third-order
 remainder estimates are assembled in the rotation and standardized-induction nodes below.
 
-:::theorem "bentkus-rotation-fubini" (lean := "ProbabilityTheory.bentkusRotationCoordinateIntegrand, ProbabilityTheory.bentkusGaussianReferenceCoordinateIntegrand, ProbabilityTheory.bentkusRotatedSum_eq_leaveOneOut_add, ProbabilityTheory.integrable_bentkusCoordinateIntegrands, ProbabilityTheory.intervalIntegrable_integral_bentkusCoordinateIntegrands, ProbabilityTheory.integrable_intervalIntegral_bentkusRotationCoordinate, ProbabilityTheory.integrable_intervalIntegral_bentkusGaussianReferenceCoordinate, ProbabilityTheory.intervalIntegral_integral_bentkusRotationCoordinate_swap, ProbabilityTheory.intervalIntegral_integral_bentkusGaussianReferenceCoordinate_swap, ProbabilityTheory.integral_sum_intervalIntegral_bentkusRotationCoordinate_eq") (uses := "gaussian-companions-and-transport, bentkus-rotation-cancellation, covariance-additivity-and-leave-one-out, bentkus-smoothing-inequality") (tags := "bentkus, gaussian-replacement, rotation, fubini, source-bentkus-2004, fidelity-explicit-integrability")
+:::theorem "bentkus-rotation-fubini" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusRotationCoordinateIntegrand, ProbabilityTheory.bentkusGaussianReferenceCoordinateIntegrand, ProbabilityTheory.bentkusRotatedSum_eq_leaveOneOut_add, ProbabilityTheory.integrable_bentkusCoordinateIntegrands, ProbabilityTheory.intervalIntegrable_integral_bentkusCoordinateIntegrands, ProbabilityTheory.integrable_intervalIntegral_bentkusRotationCoordinate, ProbabilityTheory.integrable_intervalIntegral_bentkusGaussianReferenceCoordinate, ProbabilityTheory.intervalIntegral_integral_bentkusRotationCoordinate_swap, ProbabilityTheory.intervalIntegral_integral_bentkusGaussianReferenceCoordinate_swap, ProbabilityTheory.integral_sum_intervalIntegral_bentkusRotationCoordinate_eq") (uses := "gaussian-companions-and-transport, bentkus-rotation-cancellation, covariance-additivity-and-leave-one-out, bentkus-smoothing-inequality") (tags := "bentkus, gaussian-replacement, rotation, fubini, source-bentkus-2004, fidelity-explicit-integrability")
 *Coordinate rotation integrands and justified exchange of expectations.*  On the
 canonical replacement space $`(\widetilde X_i,Y_i)_{i\in I}`, put
 $$`
@@ -336,7 +336,7 @@ contributions are the terms split in equations (3.11)--(3.12), also printed p. 4
 The joint integrability assertions above justify the Fubini interchanges implicit in the
 paper's compact notation.
 
-:::theorem "covariance-additivity-and-leave-one-out" (lean := "ProbabilityTheory.covarianceBilin_map_finsetSum_eq_sum, ProbabilityTheory.covarianceBilin_map_sum_eq_sum, ProbabilityTheory.bentkusLeaveOneOut, ProbabilityTheory.covarianceBilin_map_sum_eq_leaveOneOut_add, ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix, ProbabilityTheory.covarianceBilin_leaveOneOut_eq_inner_sub, ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix_eq_one_sub") (uses := "gaussian-companions-and-transport") (tags := "bentkus, covariance, leave-one-out, source-bentkus-2004, fidelity-exact")
+:::theorem "covariance-additivity-and-leave-one-out" (parent := "probability-convex") (lean := "ProbabilityTheory.covarianceBilin_map_finsetSum_eq_sum, ProbabilityTheory.covarianceBilin_map_sum_eq_sum, ProbabilityTheory.bentkusLeaveOneOut, ProbabilityTheory.covarianceBilin_map_sum_eq_leaveOneOut_add, ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix, ProbabilityTheory.covarianceBilin_leaveOneOut_eq_inner_sub, ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix_eq_one_sub") (uses := "gaussian-companions-and-transport") (tags := "bentkus, covariance, leave-one-out, source-bentkus-2004, fidelity-exact")
 *Covariance additivity and the leave-one-out identity.* Let $`X_1,\ldots,X_n` be
 independent square-integrable random vectors in $`\mathbb R^d`.  For every set of
 indices $`J` and every $`u,v\in\mathbb R^d`, one has
@@ -369,7 +369,7 @@ is exactly the paper's $`P_k^2=I-\operatorname{cov}X_k` notation.
 
 # Whitening and covariance normalization
 
-:::theorem "bentkus-whitening-covariance-identity" (lean := "ProbabilityTheory.bentkusWhiteningMatrix_mul_self, ProbabilityTheory.bentkusWhiteningCLM_covariance_comp") (tags := "bentkus, whitening, covariance, source-bentkus-2004, fidelity-exact-positive-square-root")
+:::theorem "bentkus-whitening-covariance-identity" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusWhiteningMatrix_mul_self, ProbabilityTheory.bentkusWhiteningCLM_covariance_comp") (tags := "bentkus, whitening, covariance, source-bentkus-2004, fidelity-exact-positive-square-root")
 *Whitening a positive-definite covariance.* Let $`S` be a positive-definite real
 $`d\times d` matrix, let $`R=S^{1/2}` be its positive square root, and set
 $`T=R^{-1}=S^{-1/2}`.  Then
@@ -388,7 +388,7 @@ preceding Theorem 1.1, printed p. 400, and uses $`C^{-1}` in the normalization f
 equation (3.1), printed p. 403. This gives the displayed
 $`C^{-1}C^2C^{-1}=I` identity.
 
-:::theorem "bentkus-whitening-gaussian-pushforward" (lean := "ProbabilityTheory.bentkusWhiteningMatrix, ProbabilityTheory.bentkusWhiteningCLM, ProbabilityTheory.bentkusWhiteningEquiv, ProbabilityTheory.map_multivariateGaussian_bentkusWhiteningEquiv, ProbabilityTheory.map_stdGaussian_bentkusWhiteningEquiv_symm") (uses := "bentkus-whitening-covariance-identity") (tags := "bentkus, whitening, gaussian-transport, source-bentkus-2004, fidelity-exact-pushforward")
+:::theorem "bentkus-whitening-gaussian-pushforward" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusWhiteningMatrix, ProbabilityTheory.bentkusWhiteningCLM, ProbabilityTheory.bentkusWhiteningEquiv, ProbabilityTheory.map_multivariateGaussian_bentkusWhiteningEquiv, ProbabilityTheory.map_stdGaussian_bentkusWhiteningEquiv_symm") (uses := "bentkus-whitening-covariance-identity") (tags := "bentkus, whitening, gaussian-transport, source-bentkus-2004, fidelity-exact-pushforward")
 *Gaussian pushforward under whitening.* Under the preceding hypotheses, let
 $`T=S^{-1/2}` and let $`R=S^{1/2}`.  These maps are mutually inverse continuous linear
 equivalences, and their Gaussian pushforwards satisfy
@@ -404,7 +404,7 @@ $`Z\mapsto C^{-1}Z` immediately after equation (3.1) in {Citations.citet bentkus
 printed p. 403; the
 covariance-square-root notation is introduced before Theorem 1.1, printed p. 400.
 
-:::theorem "bentkus-identity-covariance-contract" (lean := "ProbabilityTheory.bentkusWhitenedSummand, ProbabilityTheory.sum_bentkusWhitenedSummand, ProbabilityTheory.iIndepFun_bentkusWhitenedSummand, ProbabilityTheory.integral_bentkusWhitenedSummand_eq_zero, ProbabilityTheory.covarianceBilin_map_sum_bentkusWhitenedSummand_eq_inner, ProbabilityTheory.BentkusIdentityCovarianceBound") (uses := "bentkus-whitening-covariance-identity") (tags := "bentkus, whitening, standardized-theorem, source-bentkus-2004, fidelity-exact-contract")
+:::theorem "bentkus-identity-covariance-contract" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusWhitenedSummand, ProbabilityTheory.sum_bentkusWhitenedSummand, ProbabilityTheory.iIndepFun_bentkusWhitenedSummand, ProbabilityTheory.integral_bentkusWhitenedSummand_eq_zero, ProbabilityTheory.covarianceBilin_map_sum_bentkusWhitenedSummand_eq_inner, ProbabilityTheory.BentkusIdentityCovarianceBound") (uses := "bentkus-whitening-covariance-identity") (tags := "bentkus, whitening, standardized-theorem, source-bentkus-2004, fidelity-exact-contract")
 *The identity-covariance theorem contract.* Let $`X_1,\ldots,X_n` be independent,
 centered $`L^3` random vectors, suppose that their sum $`W` has positive-definite
 covariance $`S`, and put $`\widehat X_i=S^{-1/2}X_i`.  Then
@@ -429,7 +429,7 @@ in {Citations.citet bentkus2004}[], printed
 p. 403. It separates the identity-covariance estimate from the subsequent whitening
 argument.
 
-:::theorem "bentkus-whitening-one-set-transport" (lean := "ProbabilityTheory.bentkusWhitenedSet, ProbabilityTheory.isConvexSet_bentkusWhitenedSet, ProbabilityTheory.map_sum_apply_bentkusWhitenedSet, ProbabilityTheory.stdGaussian_apply_bentkusWhitenedSet, ProbabilityTheory.bentkus_convex_set_whitening_reduction, ProbabilityTheory.bentkus_convex_set_bound_of_identity_covariance_bound, ProbabilityTheory.exists_bentkus_convex_set_constant_of_identity_covariance_bound") (uses := "bentkus-whitening-gaussian-pushforward, bentkus-identity-covariance-contract") (tags := "bentkus, whitening, convex-set-transport, source-bentkus-2004, fidelity-exact-one-set-reduction")
+:::theorem "bentkus-whitening-one-set-transport" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusWhitenedSet, ProbabilityTheory.isConvexSet_bentkusWhitenedSet, ProbabilityTheory.map_sum_apply_bentkusWhitenedSet, ProbabilityTheory.stdGaussian_apply_bentkusWhitenedSet, ProbabilityTheory.bentkus_convex_set_whitening_reduction, ProbabilityTheory.bentkus_convex_set_bound_of_identity_covariance_bound, ProbabilityTheory.exists_bentkus_convex_set_constant_of_identity_covariance_bound") (uses := "bentkus-whitening-gaussian-pushforward, bentkus-identity-covariance-contract") (tags := "bentkus, whitening, convex-set-transport, source-bentkus-2004, fidelity-exact-one-set-reduction")
 *One-set transport from the standardized estimate.* Let $`S` be positive definite,
 $`T=S^{-1/2}`, $`W=\sum_iX_i`, and $`B=T(A)`.  Write $`\gamma_S` for centered
 Gaussian measure with covariance $`S`.  An invertible linear map preserves convexity, and the two
@@ -454,7 +454,7 @@ normalization in Theorem 1.1, equation (1.1), printed p. 400.
 
 # Signed distance and coarea
 
-:::theorem "gaussian-signed-distance-eikonal" (lean := "ProbabilityTheory.setSignedDistance, ProbabilityTheory.ae_norm_fderiv_setSignedDistance_eq_one") (uses := "squared-distance-calculus") (tags := "bentkus, gaussian-geometry, signed-distance, source-raic-2019, fidelity-exact-eikonal")
+:::theorem "gaussian-signed-distance-eikonal" (parent := "probability-convex") (lean := "ProbabilityTheory.setSignedDistance, ProbabilityTheory.ae_norm_fderiv_setSignedDistance_eq_one") (uses := "squared-distance-calculus") (tags := "bentkus, gaussian-geometry, signed-distance, source-raic-2019, fidelity-exact-eikonal")
 *Signed distance and its eikonal identity.* Let $`A\subsetneq\mathbb R^d` be a
 nonempty convex set and define
 $$`
@@ -476,7 +476,7 @@ defines the signed distance on printed pp. 2825--2826 and proves the almost-ever
 differentiability and eikonal conclusions in Proposition 3.3(2)--(3), printed p. 2844.
 The derivative above is the Fréchet derivative on Euclidean space.
 
-:::lemma_ "gaussian-signed-distance-level-frontiers" (lean := "ProbabilityTheory.signedDistance_level_pos_eq_frontier_cthickening, ProbabilityTheory.signedDistance_level_neg_eq_frontier_innerParallel, ProbabilityTheory.signedDistance_level_zero_eq_frontier") (uses := "gaussian-signed-distance-eikonal, convex-parallel-sets") (tags := "bentkus, gaussian-geometry, signed-distance, parallel-frontiers, source-raic-2019, fidelity-explicit-boundary-conventions")
+:::lemma_ "gaussian-signed-distance-level-frontiers" (parent := "probability-convex") (lean := "ProbabilityTheory.signedDistance_level_pos_eq_frontier_cthickening, ProbabilityTheory.signedDistance_level_neg_eq_frontier_innerParallel, ProbabilityTheory.signedDistance_level_zero_eq_frontier") (uses := "gaussian-signed-distance-eikonal, convex-parallel-sets") (tags := "bentkus, gaussian-geometry, signed-distance, parallel-frontiers, source-raic-2019, fidelity-explicit-boundary-conventions")
 *Signed-distance fibers are parallel-set frontiers.* Under the preceding hypotheses,
 for $`t>0`, $`t=0`, and $`t<0`, respectively,
 $$`
@@ -496,7 +496,7 @@ and negative cases written
 separately to expose the exact outer-closure and open-ball conventions used by the
 setwise smoothing inequality.
 
-:::lemma_ "gaussian-shell-signed-distance-slabs" (lean := "ProbabilityTheory.stdGaussian_frontier_eq_zero, ProbabilityTheory.outerShell_closed_eq_signedDistance_preimage_Ioc, ProbabilityTheory.innerShell_eq_inter_signedDistance_preimage_Ioc, ProbabilityTheory.stdGaussian_outer_shell_eq_signedDistance_slab, ProbabilityTheory.stdGaussian_inner_shell_eq_signedDistance_slab") (uses := "gaussian-signed-distance-eikonal, convex-parallel-sets") (tags := "bentkus, gaussian-geometry, signed-distance, shells, source-raic-2019, fidelity-exact-null-boundary-conventions")
+:::lemma_ "gaussian-shell-signed-distance-slabs" (parent := "probability-convex") (lean := "ProbabilityTheory.stdGaussian_frontier_eq_zero, ProbabilityTheory.outerShell_closed_eq_signedDistance_preimage_Ioc, ProbabilityTheory.innerShell_eq_inter_signedDistance_preimage_Ioc, ProbabilityTheory.stdGaussian_outer_shell_eq_signedDistance_slab, ProbabilityTheory.stdGaussian_inner_shell_eq_signedDistance_slab") (uses := "gaussian-signed-distance-eikonal, convex-parallel-sets") (tags := "bentkus, gaussian-geometry, signed-distance, shells, source-raic-2019, fidelity-exact-null-boundary-conventions")
 *Outer and inner shells as signed-distance slabs.* Let $`A\subsetneq\mathbb R^d`
 be nonempty and convex, let $`\gamma_d=N(0,I_d)`, and let $`\varepsilon\ge0`.
 The convex frontier is Gaussian-null, and
@@ -525,7 +525,7 @@ positive and negative slabs in the proof of Proposition 3.1, printed pp. 2844--2
 applying the coarea formula. The identities above retain the equality boundaries; the
 convex frontier is Gaussian-null.
 
-:::theorem "gaussian-affine-codimension-one-slicing" (lean := "ProbabilityTheory.stdGaussian_eq_withDensity_standardGaussianDensityReal, ProbabilityTheory.lintegral_standardGaussianDensityReal_eq_one, ProbabilityTheory.euclideanVolume_eq_lintegral_codimOneSections, ProbabilityTheory.lintegral_eq_lintegral_codimOneSections, ProbabilityTheory.stdGaussian_apply_eq_lintegral_codimOneSections, ProbabilityTheory.standardGaussianDensity_affineHyperplane, ProbabilityTheory.standardGaussianDensity_affineHyperplane_le_one") (tags := "bentkus, gaussian-geometry, affine-slicing, coarea, source-ball-1993, source-raic-2019, fidelity-normalized-affine-coarea")
+:::theorem "gaussian-affine-codimension-one-slicing" (parent := "probability-convex") (lean := "ProbabilityTheory.stdGaussian_eq_withDensity_standardGaussianDensityReal, ProbabilityTheory.lintegral_standardGaussianDensityReal_eq_one, ProbabilityTheory.euclideanVolume_eq_lintegral_codimOneSections, ProbabilityTheory.lintegral_eq_lintegral_codimOneSections, ProbabilityTheory.stdGaussian_apply_eq_lintegral_codimOneSections, ProbabilityTheory.standardGaussianDensity_affineHyperplane, ProbabilityTheory.standardGaussianDensity_affineHyperplane_le_one") (tags := "bentkus, gaussian-geometry, affine-slicing, coarea, source-ball-1993, source-raic-2019, fidelity-normalized-affine-coarea")
 *Normalized affine codimension-one slicing.* Put
 $$`
 \phi_d(x)=(2\pi)^{-d/2}e^{-\|x\|^2/2}.
@@ -565,7 +565,7 @@ This node supplies the
 Mathlib-normalized affine specialization; the nonlinear coarea formula for signed distance
 is recorded in the next node.
 
-:::theorem "lipschitz-area-formula" (lean := "ProbabilityTheory.lintegral_image_eq_lintegral_normDet_fderivWithin_mul_of_lipschitzOnWith, ProbabilityTheory.lintegral_image_eq_lintegral_normDet_fderivWithin_mul_of_comp_eq_id") (tags := "geometric-measure-theory, area-formula, source-raic-2019, source-federer-1969, fidelity-injective-weighted-specialization")
+:::theorem "lipschitz-area-formula" (parent := "probability-convex") (lean := "ProbabilityTheory.lintegral_image_eq_lintegral_normDet_fderivWithin_mul_of_lipschitzOnWith, ProbabilityTheory.lintegral_image_eq_lintegral_normDet_fderivWithin_mul_of_comp_eq_id") (tags := "geometric-measure-theory, area-formula, source-raic-2019, source-federer-1969, fidelity-injective-weighted-specialization")
 *Weighted area formula for an injective Lipschitz chart.* Let $`U` and $`V` be
 finite-dimensional real inner-product spaces, put $`m=\dim U`, and let
 $`\varphi:S\subseteq U\to V` be Lipschitz and one-to-one on a measurable set $`S`.
@@ -585,7 +585,7 @@ This is the injective weighted specialization of Corollary 3.2.32 in
 {Citations.citet federer1969}[].  {Citations.citet raic2019}[] records the area formula as Proposition 3.2, printed
 pp. 2843--2844, and uses it both for coarea and for the boundary projection estimate.
 
-:::theorem "scalar-coarea-formula" (lean := "ProbabilityTheory.scalarJacobian, ProbabilityTheory.scalarCoareaFiber, ProbabilityTheory.ScalarCoareaFormula, ProbabilityTheory.LipschitzWith.scalarCoareaFormula, ProbabilityTheory.ScalarCoareaFormula.setLIntegral_slab, ProbabilityTheory.ScalarCoareaFormula.setLIntegral_slab_of_ae_norm_fderiv_eq_one, ProbabilityTheory.LipschitzWith.scalarCoarea_setLIntegral_slab, ProbabilityTheory.LipschitzWith.setLIntegral_slab_of_ae_norm_fderiv_eq_one") (uses := "lipschitz-area-formula") (tags := "geometric-measure-theory, coarea, source-raic-2019, source-federer-1969, fidelity-measurable-ennreal-weighted-formula")
+:::theorem "scalar-coarea-formula" (parent := "probability-convex") (lean := "ProbabilityTheory.scalarJacobian, ProbabilityTheory.scalarCoareaFiber, ProbabilityTheory.ScalarCoareaFormula, ProbabilityTheory.LipschitzWith.scalarCoareaFormula, ProbabilityTheory.ScalarCoareaFormula.setLIntegral_slab, ProbabilityTheory.ScalarCoareaFormula.setLIntegral_slab_of_ae_norm_fderiv_eq_one, ProbabilityTheory.LipschitzWith.scalarCoarea_setLIntegral_slab, ProbabilityTheory.LipschitzWith.setLIntegral_slab_of_ae_norm_fderiv_eq_one") (uses := "lipschitz-area-formula") (tags := "geometric-measure-theory, coarea, source-raic-2019, source-federer-1969, fidelity-measurable-ennreal-weighted-formula")
 *Weighted scalar coarea formula.* Let $`d\in\mathbb N`, let
 $`f:\mathbb R^d\to\mathbb R` be globally Lipschitz, and let
 $`w:\mathbb R^d\to[0,\infty]` be Borel measurable.  Put
@@ -620,7 +620,7 @@ Proposition 3.3 and the proof of Proposition 3.1, printed pp. 2844--2845. The ve
 uses nonnegative extended-valued weights, includes the exact $`(a,b]` convention,
 and also proves the dimension-zero endpoint under the displayed predecessor convention.
 
-:::theorem "gaussian-signed-distance-coarea-profiles" (lean := "ProbabilityTheory.standardGaussianBoundaryContent, ProbabilityTheory.outerGaussianBoundaryProfile, ProbabilityTheory.innerGaussianBoundaryProfile, ProbabilityTheory.outerGaussianBoundaryProfile_eq_levelLIntegral, ProbabilityTheory.innerGaussianBoundaryProfile_eq_levelLIntegral, ProbabilityTheory.stdGaussian_outer_shell_eq_lintegral_outerGaussianBoundaryProfile, ProbabilityTheory.stdGaussian_inner_shell_eq_lintegral_innerGaussianBoundaryProfile, ProbabilityTheory.ballGaussianPerimeterConstant, ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_boundaryContent") (uses := "gaussian-signed-distance-level-frontiers, gaussian-shell-signed-distance-slabs, scalar-coarea-formula") (tags := "bentkus, gaussian-geometry, signed-distance, coarea, perimeter-reduction, source-raic-2019, fidelity-exact-half-open-profile-identities")
+:::theorem "gaussian-signed-distance-coarea-profiles" (parent := "probability-convex") (lean := "ProbabilityTheory.standardGaussianBoundaryContent, ProbabilityTheory.outerGaussianBoundaryProfile, ProbabilityTheory.innerGaussianBoundaryProfile, ProbabilityTheory.outerGaussianBoundaryProfile_eq_levelLIntegral, ProbabilityTheory.innerGaussianBoundaryProfile_eq_levelLIntegral, ProbabilityTheory.stdGaussian_outer_shell_eq_lintegral_outerGaussianBoundaryProfile, ProbabilityTheory.stdGaussian_inner_shell_eq_lintegral_innerGaussianBoundaryProfile, ProbabilityTheory.ballGaussianPerimeterConstant, ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_boundaryContent") (uses := "gaussian-signed-distance-level-frontiers, gaussian-shell-signed-distance-slabs, scalar-coarea-formula") (tags := "bentkus, gaussian-geometry, signed-distance, coarea, perimeter-reduction, source-raic-2019, fidelity-exact-half-open-profile-identities")
 *Signed-distance coarea identities for Gaussian shell profiles.* Let
 $`A\subsetneq\mathbb R^d` be nonempty and convex, put
 $$`
@@ -669,7 +669,7 @@ conventions, and records the direct perimeter-to-shell implication.
 
 # Ball's Gaussian perimeter theorem
 
-:::theorem "intrinsic-sphere-hausdorff-normalization" (lean := "ProbabilityTheory.standardSphereHausdorffMeasure, ProbabilityTheory.map_subtype_standardSphereHausdorffMeasure, ProbabilityTheory.lintegral_standardSphereHausdorffMeasure_eq_ambient, ProbabilityTheory.standardSphereHausdorffMeasure_apply_univ_eq_ambient, ProbabilityTheory.standardSphereHausdorffMeasure_apply_univ, ProbabilityTheory.euclideanHausdorffMeasure_unitSphere, ProbabilityTheory.isFiniteMeasure_standardSphereHausdorffMeasure, ProbabilityTheory.standardSphereHausdorffMeasure_ne_zero, ProbabilityTheory.standardSphereHausdorffMeasure_apply_univ_ne_zero, ProbabilityTheory.measurePreserving_linearIsometryEquivUnitSphere_euclideanHausdorffMeasure") (uses := "scalar-coarea-formula") (tags := "bentkus, gaussian-geometry, sphere, hausdorff-measure, rotation, source-ball-1993, fidelity-exact-intrinsic-ambient-normalization")
+:::theorem "intrinsic-sphere-hausdorff-normalization" (parent := "probability-convex") (lean := "ProbabilityTheory.standardSphereHausdorffMeasure, ProbabilityTheory.map_subtype_standardSphereHausdorffMeasure, ProbabilityTheory.lintegral_standardSphereHausdorffMeasure_eq_ambient, ProbabilityTheory.standardSphereHausdorffMeasure_apply_univ_eq_ambient, ProbabilityTheory.standardSphereHausdorffMeasure_apply_univ, ProbabilityTheory.euclideanHausdorffMeasure_unitSphere, ProbabilityTheory.isFiniteMeasure_standardSphereHausdorffMeasure, ProbabilityTheory.standardSphereHausdorffMeasure_ne_zero, ProbabilityTheory.standardSphereHausdorffMeasure_apply_univ_ne_zero, ProbabilityTheory.measurePreserving_linearIsometryEquivUnitSphere_euclideanHausdorffMeasure") (uses := "scalar-coarea-formula") (tags := "bentkus, gaussian-geometry, sphere, hausdorff-measure, rotation, source-ball-1993, fidelity-exact-intrinsic-ambient-normalization")
 *Intrinsic Hausdorff measure on the Euclidean unit sphere.* Let
 $`S^{d-1}=\{x\in\mathbb R^d:\|x\|=1\}`, let
 $`\iota:S^{d-1}\hookrightarrow\mathbb R^d` be inclusion, and let
@@ -705,7 +705,7 @@ averaging and Hausdorff surface projection.  The intrinsic-to-ambient pushforwar
 identity makes that normalization explicit; the rotation statement is valid more
 generally for every Hausdorff dimension on any real inner-product space.
 
-:::theorem "ball-projection-jacobian-charts" (lean := "ProbabilityTheory.exists_unit_supportingNormal, ProbabilityTheory.hyperplaneOrthogonalProjection, ProbabilityTheory.normDet_hyperplaneOrthogonalProjection, ProbabilityTheory.supportingNormalPairs, ProbabilityTheory.transverseSupportingNormalPoints_eq_iUnion_patches, ProbabilityTheory.injOn_orthogonalProjectionOnto_positiveSupportingNormalPatch, ProbabilityTheory.injOn_orthogonalProjectionOnto_negativeSupportingNormalPatch, ProbabilityTheory.orthogonalProjectionPatchInverse, ProbabilityTheory.exists_unit_normal_fderivWithin_patchInverse_normDet_mul_eq_one, ProbabilityTheory.lipschitzOnWith_orthogonalProjectionPatchInverse_positivePatch, ProbabilityTheory.lipschitzOnWith_orthogonalProjectionPatchInverse_negativePatch") (uses := "lipschitz-area-formula") (tags := "bentkus, gaussian-geometry, perimeter, projection, source-ball-1993, fidelity-explicit-graph-charts")
+:::theorem "ball-projection-jacobian-charts" (parent := "probability-convex") (lean := "ProbabilityTheory.exists_unit_supportingNormal, ProbabilityTheory.hyperplaneOrthogonalProjection, ProbabilityTheory.normDet_hyperplaneOrthogonalProjection, ProbabilityTheory.supportingNormalPairs, ProbabilityTheory.transverseSupportingNormalPoints_eq_iUnion_patches, ProbabilityTheory.injOn_orthogonalProjectionOnto_positiveSupportingNormalPatch, ProbabilityTheory.injOn_orthogonalProjectionOnto_negativeSupportingNormalPatch, ProbabilityTheory.orthogonalProjectionPatchInverse, ProbabilityTheory.exists_unit_normal_fderivWithin_patchInverse_normDet_mul_eq_one, ProbabilityTheory.lipschitzOnWith_orthogonalProjectionPatchInverse_positivePatch, ProbabilityTheory.lipschitzOnWith_orthogonalProjectionPatchInverse_negativePatch") (uses := "lipschitz-area-formula") (tags := "bentkus, gaussian-geometry, perimeter, projection, source-ball-1993, fidelity-explicit-graph-charts")
 *Projection Jacobians and supporting-normal charts.* Let $`d\ge2` and
 $`u,\theta\in S^{d-1}`.
 The orthogonal projection $`P_{u,\theta}:u^\perp\to\theta^\perp` satisfies
@@ -737,7 +737,7 @@ Theorem 4.  The strict positive and negative patches make the inverse charts and
 Jacobian cancellation explicit.  Composing these charts with the preceding weighted area
 formula gives the surface-projection identity used in Ball's argument.
 
-:::theorem "ball-cauchy-projection-formula" (lean := "ProbabilityTheory.lintegral_unitSphere_orthogonalProjection_mul_absInner_ambient, ProbabilityTheory.lintegral_unitSphere_orthogonalProjection_mul_absInner") (uses := "intrinsic-sphere-hausdorff-normalization, ball-projection-jacobian-charts") (tags := "bentkus, gaussian-geometry, sphere, projection, cauchy-formula, source-ball-1993, fidelity-exact-weighted-two-hemisphere-formula")
+:::theorem "ball-cauchy-projection-formula" (parent := "probability-convex") (lean := "ProbabilityTheory.lintegral_unitSphere_orthogonalProjection_mul_absInner_ambient, ProbabilityTheory.lintegral_unitSphere_orthogonalProjection_mul_absInner") (uses := "intrinsic-sphere-hausdorff-normalization, ball-projection-jacobian-charts") (tags := "bentkus, gaussian-geometry, sphere, projection, cauchy-formula, source-ball-1993, fidelity-exact-weighted-two-hemisphere-formula")
 *Weighted Cauchy projection formula for the Euclidean sphere.* Let $`d\ge2`, let
 $`v\in S^{d-1}`, write $`P_v:\mathbb R^d\to v^\perp` for orthogonal projection,
 and let $`g:v^\perp\to[0,\infty]` be Borel measurable.  With intrinsic
@@ -761,7 +761,7 @@ $`|\langle\theta,v\rangle|` is equation (3), printed p. 416.  Applied to the Euc
 ball, the two projection charts give the exact weighted Cauchy formula above, including
 its intrinsic-Hausdorff and ambient-restriction forms.
 
-:::theorem "ball-spherical-projection-average" (lean := "ProbabilityTheory.standardSphereProbability, ProbabilityTheory.map_linearIsometryEquivUnitSphere_standardSphereProbability, ProbabilityTheory.measurePreserving_linearIsometryEquivUnitSphere_standardSphereProbability, ProbabilityTheory.integral_inner_sq_standardSphereProbability, ProbabilityTheory.integral_abs_inner_standardSphereProbability_le") (tags := "bentkus, gaussian-geometry, perimeter, sphere-average, source-ball-1993, fidelity-exact-normalized-moments")
+:::theorem "ball-spherical-projection-average" (parent := "probability-convex") (lean := "ProbabilityTheory.standardSphereProbability, ProbabilityTheory.map_linearIsometryEquivUnitSphere_standardSphereProbability, ProbabilityTheory.measurePreserving_linearIsometryEquivUnitSphere_standardSphereProbability, ProbabilityTheory.integral_inner_sq_standardSphereProbability, ProbabilityTheory.integral_abs_inner_standardSphereProbability_le") (tags := "bentkus, gaussian-geometry, perimeter, sphere-average, source-ball-1993, fidelity-exact-normalized-moments")
 *Spherical projection average.* Let $`\sigma_{d-1}` be rotation-invariant probability
 measure on $`S^{d-1}`.  For $`d\ge1` and $`u\in\mathbb R^d`,
 $$`
@@ -782,7 +782,7 @@ p. 416, in the proof of Theorem 4.  The displayed second moment is the rotation-
 covariance calculation underlying Ball's $`d^{-1/2}` factor; Cauchy--Schwarz gives the
 absolute first-moment inequality.
 
-:::theorem "ball-spherical-rearrangement" (lean := "ProbabilityTheory.ballSphericalRearrangement_absInner_of_measure, ProbabilityTheory.ballSphericalRearrangement_absInner") (uses := "ball-spherical-projection-average") (tags := "bentkus, gaussian-geometry, perimeter, rearrangement, source-ball-1993, fidelity-applied-continuous-g-equals-identity")
+:::theorem "ball-spherical-rearrangement" (parent := "probability-convex") (lean := "ProbabilityTheory.ballSphericalRearrangement_absInner_of_measure, ProbabilityTheory.ballSphericalRearrangement_absInner") (uses := "ball-spherical-projection-average") (tags := "bentkus, gaussian-geometry, perimeter, rearrangement, source-ball-1993, fidelity-applied-continuous-g-equals-identity")
 *Ball's spherical rearrangement inequality in the applied form.* Let $`d\ge1`, let
 $`\sigma_{d-1}` be rotation-invariant probability measure on $`S^{d-1}`, and let
 $`F:\mathbb R\to\mathbb R` be continuous and nondecreasing on $`[0,\infty)`.
@@ -808,7 +808,7 @@ equation (3), Ball takes $`F(t)=f(r\sqrt{1-t^2})`, which is nondecreasing becaus
 radial density $`f` is nonincreasing, and concludes that the spherical integral is
 minimized when the position and normal directions are perpendicular.
 
-:::lemma_ "ball-radial-gamma-peak" (lean := "ProbabilityTheory.exp_neg_half_mul_rpow_le_peak, ProbabilityTheory.ball_radial_gamma_peak_le") (tags := "bentkus, gaussian-geometry, perimeter, radial-estimate, source-ball-1993, fidelity-exact-one-over-pi")
+:::lemma_ "ball-radial-gamma-peak" (parent := "probability-convex") (lean := "ProbabilityTheory.exp_neg_half_mul_rpow_le_peak, ProbabilityTheory.ball_radial_gamma_peak_le") (tags := "bentkus, gaussian-geometry, perimeter, radial-estimate, source-ball-1993, fidelity-exact-one-over-pi")
 *Radial Gaussian peak and Gamma bound.* For every integer $`n\ge3` and every $`t\ge0`,
 $$`
 e^{-t^2/2}t^{n-2}
@@ -827,7 +827,7 @@ paragraph of {Citations.citet ball1993}[],
 printed p. 419, completing the analytic estimate in the proof of Theorem 4.  The second
 inequality retains Ball's exact $`1/\pi` constant in every dimension $`n\ge3`.
 
-:::theorem "ball-radial-majorant" (lean := "ProbabilityTheory.ballGaussianNormalization, ProbabilityTheory.ballRadialAuxIntegrand, ProbabilityTheory.ballRadialAux, ProbabilityTheory.ballRadialMajorant, ProbabilityTheory.continuous_ballRadialMajorant, ProbabilityTheory.ballRadialMajorant_nonneg, ProbabilityTheory.ballRadialMajorant_eq_zero_of_sqrt_two_mul_le, ProbabilityTheory.antitoneOn_ballRadialMajorant, ProbabilityTheory.ballRadialProjectionTransform, ProbabilityTheory.ballRadialAux_projection_eq_standardGaussian, ProbabilityTheory.standardGaussianDensityReal_le_ballRadialMajorant_projection, ProbabilityTheory.ballRadialMassCoefficient, ProbabilityTheory.ballRadialPolarFactor, ProbabilityTheory.ballRadialPolarFactor_mul_normalization, ProbabilityTheory.integral_ballRadialMajorant_rpow_le, ProbabilityTheory.integral_ballRadialMajorant_norm_le, ProbabilityTheory.lintegral_ballRadialMajorant_norm_le, ProbabilityTheory.lintegral_ballRadialMajorant_norm_le_of_finrank") (uses := "ball-radial-gamma-peak") (tags := "bentkus, gaussian-geometry, perimeter, radial-majorant, source-ball-1993, fidelity-exact-construction-projection-and-mass")
+:::theorem "ball-radial-majorant" (parent := "probability-convex") (lean := "ProbabilityTheory.ballGaussianNormalization, ProbabilityTheory.ballRadialAuxIntegrand, ProbabilityTheory.ballRadialAux, ProbabilityTheory.ballRadialMajorant, ProbabilityTheory.continuous_ballRadialMajorant, ProbabilityTheory.ballRadialMajorant_nonneg, ProbabilityTheory.ballRadialMajorant_eq_zero_of_sqrt_two_mul_le, ProbabilityTheory.antitoneOn_ballRadialMajorant, ProbabilityTheory.ballRadialProjectionTransform, ProbabilityTheory.ballRadialAux_projection_eq_standardGaussian, ProbabilityTheory.standardGaussianDensityReal_le_ballRadialMajorant_projection, ProbabilityTheory.ballRadialMassCoefficient, ProbabilityTheory.ballRadialPolarFactor, ProbabilityTheory.ballRadialPolarFactor_mul_normalization, ProbabilityTheory.integral_ballRadialMajorant_rpow_le, ProbabilityTheory.integral_ballRadialMajorant_norm_le, ProbabilityTheory.lintegral_ballRadialMajorant_norm_le, ProbabilityTheory.lintegral_ballRadialMajorant_norm_le_of_finrank") (uses := "ball-radial-gamma-peak") (tags := "bentkus, gaussian-geometry, perimeter, radial-majorant, source-ball-1993, fidelity-exact-construction-projection-and-mass")
 *Ball's radial projection majorant.* For $`n\ge2`, put
 $$`
 a_n=(\sqrt{2\pi})^{-n},\qquad
@@ -881,7 +881,7 @@ $`\mu(\mathbb R^{n-1})\le2n^{1/4}` on printed pp. 418--419. The statement above 
 the construction, the exact signed projection, the positive-part majorization, the
 compact positive-radius support, and both normalized forms of the mass estimate.
 
-:::theorem "ball-spherical-density-majorization" (lean := "ProbabilityTheory.ballSphericalRadialProfile, ProbabilityTheory.normalizedHausdorff_lintegral_ballSphericalRadialProfile_absInner_orthogonal, ProbabilityTheory.lintegral_ballSphericalRearrangement_radialProfile, ProbabilityTheory.ofReal_ballRadialProjectionTransform_le_normalizedHausdorff_lintegral, ProbabilityTheory.ofReal_ballGaussianRadialDensity_le_normalizedHausdorff_lintegral, ProbabilityTheory.standardGaussianDensityReal_mul_norm_le_sphere_ballRadialMajorant_absInner") (uses := "intrinsic-sphere-hausdorff-normalization, ball-cauchy-projection-formula, ball-spherical-rearrangement, ball-radial-majorant") (tags := "bentkus, gaussian-geometry, perimeter, spherical-projection, source-ball-1993, fidelity-exact-pointwise-vector-form")
+:::theorem "ball-spherical-density-majorization" (parent := "probability-convex") (lean := "ProbabilityTheory.ballSphericalRadialProfile, ProbabilityTheory.normalizedHausdorff_lintegral_ballSphericalRadialProfile_absInner_orthogonal, ProbabilityTheory.lintegral_ballSphericalRearrangement_radialProfile, ProbabilityTheory.ofReal_ballRadialProjectionTransform_le_normalizedHausdorff_lintegral, ProbabilityTheory.ofReal_ballGaussianRadialDensity_le_normalizedHausdorff_lintegral, ProbabilityTheory.standardGaussianDensityReal_mul_norm_le_sphere_ballRadialMajorant_absInner") (uses := "intrinsic-sphere-hausdorff-normalization, ball-cauchy-projection-formula, ball-spherical-rearrangement, ball-radial-majorant") (tags := "bentkus, gaussian-geometry, perimeter, spherical-projection, source-ball-1993, fidelity-exact-pointwise-vector-form")
 *Spherical majorization of Gaussian density times a normal magnitude.* Let $`d\ge2`,
 let $`x,N\in\mathbb R^d`, and write $`P_\theta` for orthogonal projection onto
 $`\theta^\perp`.  If $`f_d` is Ball's radial majorant, $`\phi_d` is standard Gaussian
@@ -905,7 +905,7 @@ pp. 416--417.  Equations (5)--(7) construct the monotone radial majorant used he
 pp. 417--418. These steps give the pointwise vector inequality used in the boundary
 area formula.
 
-:::theorem "ball-boundary-projection-area" (lean := "ProbabilityTheory.ballBoundaryCoordinateDirection, ProbabilityTheory.ballBoundaryCoordinatePiece, ProbabilityTheory.ballBoundaryCoordinateChartDomain, ProbabilityTheory.ballBoundaryCoordinateChart, ProbabilityTheory.ballBoundaryCoordinateProjectedChart, ProbabilityTheory.lintegral_ballBoundaryCoordinatePiece_eq_chart, ProbabilityTheory.ae_exists_unit_normal_ballBoundaryCoordinateChart, ProbabilityTheory.exists_ballBoundaryCoordinateProjectedChart_multiplicity_partition, ProbabilityTheory.lintegral_frontier_eq_tsum_ballBoundaryCoordinateCharts, ProbabilityTheory.ballBoundaryProjectionFiber, ProbabilityTheory.ae_encard_ballBoundaryProjectionFiber_le_two, ProbabilityTheory.tsum_lintegral_ballBoundaryCoordinateProjectedChart_le_two_mul, ProbabilityTheory.tsum_lintegral_ballBoundaryCoordinateProjectedChart_ballRadialMajorant_le") (uses := "ball-projection-jacobian-charts, ball-radial-majorant") (tags := "bentkus, gaussian-geometry, perimeter, boundary-projection, source-ball-1993, fidelity-exact-normal-free-chart-form")
+:::theorem "ball-boundary-projection-area" (parent := "probability-convex") (lean := "ProbabilityTheory.ballBoundaryCoordinateDirection, ProbabilityTheory.ballBoundaryCoordinatePiece, ProbabilityTheory.ballBoundaryCoordinateChartDomain, ProbabilityTheory.ballBoundaryCoordinateChart, ProbabilityTheory.ballBoundaryCoordinateProjectedChart, ProbabilityTheory.lintegral_ballBoundaryCoordinatePiece_eq_chart, ProbabilityTheory.ae_exists_unit_normal_ballBoundaryCoordinateChart, ProbabilityTheory.exists_ballBoundaryCoordinateProjectedChart_multiplicity_partition, ProbabilityTheory.lintegral_frontier_eq_tsum_ballBoundaryCoordinateCharts, ProbabilityTheory.ballBoundaryProjectionFiber, ProbabilityTheory.ae_encard_ballBoundaryProjectionFiber_le_two, ProbabilityTheory.tsum_lintegral_ballBoundaryCoordinateProjectedChart_le_two_mul, ProbabilityTheory.tsum_lintegral_ballBoundaryCoordinateProjectedChart_ballRadialMajorant_le") (uses := "ball-projection-jacobian-charts, ball-radial-majorant") (tags := "bentkus, gaussian-geometry, perimeter, boundary-projection, source-ball-1993, fidelity-exact-normal-free-chart-form")
 *Weighted boundary projection area and the factor-two line multiplicity.* Let $`d\ge2`,
 let $`C\subseteq\mathbb R^d` be a compact convex body with nonempty interior, and let
 $`\theta\in S^{d-1}`.  There is a finite disjoint family of Lipschitz graph charts
@@ -936,7 +936,7 @@ $`\mu(\mathbb R^{d-1})\le2d^{1/4}` is completed on printed pp. 418--419. The sam
 projection argument can be expressed through a finite disjoint chart cover and
 the equal-rank area formula, avoiding any measurable choice of an outward normal.
 
-:::theorem "ball-gaussian-perimeter" (lean := "ProbabilityTheory.standardGaussianBoundaryContent_le_one_of_interior_eq_empty, ProbabilityTheory.standardGaussianBoundaryContent_le_of_isBounded_case, ProbabilityTheory.standardGaussianBoundaryContent_le_of_convexBody_case_all, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_of_convexBody_case, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_compactBody, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant") (uses := "gaussian-affine-codimension-one-slicing, ball-spherical-density-majorization, ball-boundary-projection-area") (tags := "bentkus, gaussian-geometry, perimeter, source-ball-1993, fidelity-domain-completed-exact-constant")
+:::theorem "ball-gaussian-perimeter" (parent := "probability-convex") (lean := "ProbabilityTheory.standardGaussianBoundaryContent_le_one_of_interior_eq_empty, ProbabilityTheory.standardGaussianBoundaryContent_le_of_isBounded_case, ProbabilityTheory.standardGaussianBoundaryContent_le_of_convexBody_case_all, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_of_convexBody_case, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant_compactBody, ProbabilityTheory.standardGaussianBoundaryContent_le_ballGaussianPerimeterConstant") (uses := "gaussian-affine-codimension-one-slicing, ball-spherical-density-majorization, ball-boundary-projection-area") (tags := "bentkus, gaussian-geometry, perimeter, source-ball-1993, fidelity-domain-completed-exact-constant")
 *Ball's Gaussian perimeter theorem.* Let $`d\ge2` and let
 $`C\subseteq\mathbb R^d` be convex.  With
 $$`
@@ -959,7 +959,7 @@ set by the boundary-content
 reductions described in the statement; the codimension-one case uses normalized affine
 slicing, while higher-codimension boundaries have zero $`\mathcal H^{d-1}` measure.
 
-:::theorem "gaussian-convex-shell" (lean := "ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_boundaryContent_all, ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_convexBody_boundaryContent, ProbabilityTheory.stdGaussian_shell_pair_le_ball") (uses := "gaussian-signed-distance-coarea-profiles, ball-gaussian-perimeter") (tags := "bentkus, gaussian-geometry, perimeter, shells, source-ball-1993, source-raic-2019, fidelity-explicit-constant-all-dimensions")
+:::theorem "gaussian-convex-shell" (parent := "probability-convex") (lean := "ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_boundaryContent_all, ProbabilityTheory.stdGaussian_shell_pair_le_ball_of_convexBody_boundaryContent, ProbabilityTheory.stdGaussian_shell_pair_le_ball") (uses := "gaussian-signed-distance-coarea-profiles, ball-gaussian-perimeter") (tags := "bentkus, gaussian-geometry, perimeter, shells, source-ball-1993, source-raic-2019, fidelity-explicit-constant-all-dimensions")
 *Explicit Gaussian shell bounds for convex sets.* Let $`d\in\mathbb N`, let
 $`A\subseteq\mathbb R^d` be convex, and let $`\varepsilon\ge0`.  Put
 $`K_d=4d^{1/4}` and let $`\gamma_d` be standard Gaussian measure.  Then
@@ -988,7 +988,7 @@ one-dimensional endpoints.
 
 # Smoothing convex indicators
 
-:::lemma_ "bentkus-smoothing-inequality" (lean := "ProbabilityTheory.convexInnerParallel, ProbabilityTheory.mem_convexInnerParallel_iff_ball_subset, ProbabilityTheory.convexInnerParallel_subset, ProbabilityTheory.convexInnerParallel_isConvexSet, ProbabilityTheory.closure_isConvexSet, ProbabilityTheory.convexSetCutoff, ProbabilityTheory.convexSetCutoff_nonneg, ProbabilityTheory.convexSetCutoff_le_one, ProbabilityTheory.convexSetCutoff_eq_one_of_mem, ProbabilityTheory.convexSetCutoff_eq_zero_of_notMem_cthickening, ProbabilityTheory.convexSetCutoff_inner_eq_zero_of_notMem, ProbabilityTheory.contDiff_convexSetCutoff, ProbabilityTheory.norm_fderiv_convexSetCutoff_le, ProbabilityTheory.norm_fderiv_convexSetCutoff_sub_le, ProbabilityTheory.bentkus_convexSet_smoothingInequality") (uses := "bentkus-smooth-cutoff") (tags := "bentkus, smoothing, source-bentkus-2004, fidelity-explicit-boundary-convention")
+:::lemma_ "bentkus-smoothing-inequality" (parent := "probability-convex") (lean := "ProbabilityTheory.convexInnerParallel, ProbabilityTheory.mem_convexInnerParallel_iff_ball_subset, ProbabilityTheory.convexInnerParallel_subset, ProbabilityTheory.convexInnerParallel_isConvexSet, ProbabilityTheory.closure_isConvexSet, ProbabilityTheory.convexSetCutoff, ProbabilityTheory.convexSetCutoff_nonneg, ProbabilityTheory.convexSetCutoff_le_one, ProbabilityTheory.convexSetCutoff_eq_one_of_mem, ProbabilityTheory.convexSetCutoff_eq_zero_of_notMem_cthickening, ProbabilityTheory.convexSetCutoff_inner_eq_zero_of_notMem, ProbabilityTheory.contDiff_convexSetCutoff, ProbabilityTheory.norm_fderiv_convexSetCutoff_le, ProbabilityTheory.norm_fderiv_convexSetCutoff_sub_le, ProbabilityTheory.bentkus_convexSet_smoothingInequality") (uses := "bentkus-smooth-cutoff") (tags := "bentkus, smoothing, source-bentkus-2004, fidelity-explicit-boundary-convention")
 *Setwise Bentkus smoothing inequality.* Let $`\mu,\nu` be probability measures on
 $`\mathbb R^d`, let $`A` be measurable and convex, and let $`\varepsilon>0`.  Define
 the closed outer parallel set and the inner core by
@@ -1034,7 +1034,7 @@ $`\overline A` explicitly.
 
 # Gaussian density calculus
 
-:::lemma_ "density-derivative-integral-bound" (lean := "ProbabilityTheory.bentkus_lipschitz_schwartz_integral_fderiv_bound") (tags := "bentkus, analysis, integration-by-parts, source-bentkus-2004, fidelity-schwartz-exact")
+:::lemma_ "density-derivative-integral-bound" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkus_lipschitz_schwartz_integral_fderiv_bound") (tags := "bentkus, analysis, integration-by-parts, source-bentkus-2004, fidelity-schwartz-exact")
 *Derivative integral against a Lipschitz function.* Let $`E` be a finite-dimensional
 real normed vector space with a Haar measure $`\lambda`, let $`p:E\to\mathbb R` be a
 Schwartz function, and suppose that $`f:E\to\mathbb R` is $`a`-Lipschitz.  Then, for
@@ -1051,7 +1051,7 @@ $`p` and all of its derivatives decay faster than every inverse power is represe
 by the Schwartz-class hypothesis above. The difference-quotient argument does not require
 the Lipschitz factor to be differentiable.
 
-:::theorem "gaussian-density-third-derivative" (lean := "ProbabilityTheory.standardGaussianDensityNormalization, ProbabilityTheory.standardGaussianDensity, ProbabilityTheory.standardGaussianDensityD1, ProbabilityTheory.standardGaussianDensityD2, ProbabilityTheory.standardGaussianDensityD3, ProbabilityTheory.hasFDerivAt_standardGaussianDensity, ProbabilityTheory.fderiv_standardGaussianDensity_apply, ProbabilityTheory.fderiv_standardGaussianDensityD1_apply, ProbabilityTheory.fderiv_standardGaussianDensityD2_apply, ProbabilityTheory.gaussianThirdHermiteContraction, ProbabilityTheory.standardGaussianDensityD3_sameDirection, ProbabilityTheory.fderiv_standardGaussianDensityD2_sameDirection, ProbabilityTheory.integrable_gaussianThirdHermiteContraction_stdGaussian, ProbabilityTheory.standardGaussianFourthMoment, ProbabilityTheory.standardGaussianFourthMoment_nonneg, ProbabilityTheory.integral_inner_pow_four_stdGaussian, ProbabilityTheory.integral_inner_sq_stdGaussian, ProbabilityTheory.integral_abs_inner_stdGaussian_le_norm, ProbabilityTheory.integral_abs_gaussianThirdHermiteContraction_le") (tags := "bentkus, gaussian-analysis, density-derivatives, source-bentkus-2004, fidelity-explicit-absolute-constant")
+:::theorem "gaussian-density-third-derivative" (parent := "probability-convex") (lean := "ProbabilityTheory.standardGaussianDensityNormalization, ProbabilityTheory.standardGaussianDensity, ProbabilityTheory.standardGaussianDensityD1, ProbabilityTheory.standardGaussianDensityD2, ProbabilityTheory.standardGaussianDensityD3, ProbabilityTheory.hasFDerivAt_standardGaussianDensity, ProbabilityTheory.fderiv_standardGaussianDensity_apply, ProbabilityTheory.fderiv_standardGaussianDensityD1_apply, ProbabilityTheory.fderiv_standardGaussianDensityD2_apply, ProbabilityTheory.gaussianThirdHermiteContraction, ProbabilityTheory.standardGaussianDensityD3_sameDirection, ProbabilityTheory.fderiv_standardGaussianDensityD2_sameDirection, ProbabilityTheory.integrable_gaussianThirdHermiteContraction_stdGaussian, ProbabilityTheory.standardGaussianFourthMoment, ProbabilityTheory.standardGaussianFourthMoment_nonneg, ProbabilityTheory.integral_inner_pow_four_stdGaussian, ProbabilityTheory.integral_inner_sq_stdGaussian, ProbabilityTheory.integral_abs_inner_stdGaussian_le_norm, ProbabilityTheory.integral_abs_gaussianThirdHermiteContraction_le") (tags := "bentkus, gaussian-analysis, density-derivatives, source-bentkus-2004, fidelity-explicit-absolute-constant")
 *Gaussian density derivatives and the cubic-contraction bound.* Let $`E` be a
 finite-dimensional real inner-product space, let $`m=\dim E`, and set
 $$`
@@ -1097,7 +1097,7 @@ Gaussian integral estimate is the dimension-free content used in (3.22)--(3.23),
 printed pp. 405--406.  The general Lipschitz integration-by-parts lemma itself remains
 the separate node immediately above.
 
-:::theorem "gaussian-density-ibp" (lean := "ProbabilityTheory.integrable_standardGaussianDensityD1_volume, ProbabilityTheory.integral_fderiv_mul_standardGaussianDensity_eq_neg, ProbabilityTheory.bentkus_lipschitz_standardGaussianDensityD1_integral_D2_bound") (uses := "density-derivative-integral-bound, gaussian-density-third-derivative") (tags := "bentkus, gaussian-analysis, integration-by-parts, source-bentkus-2004, fidelity-exact-gaussian-specialization")
+:::theorem "gaussian-density-ibp" (parent := "probability-convex") (lean := "ProbabilityTheory.integrable_standardGaussianDensityD1_volume, ProbabilityTheory.integral_fderiv_mul_standardGaussianDensity_eq_neg, ProbabilityTheory.bentkus_lipschitz_standardGaussianDensityD1_integral_D2_bound") (uses := "density-derivative-integral-bound, gaussian-density-third-derivative") (tags := "bentkus, gaussian-analysis, integration-by-parts, source-bentkus-2004, fidelity-exact-gaussian-specialization")
 *Gaussian integration by parts localized to the support of a Lipschitz factor.* Put
 $$` \rho(y)=(2\pi)^{-d/2}e^{-\|y\|^2/2}. `
 The directional derivative $`D\rho(\cdot)[w]` is Lebesgue integrable.  If
@@ -1119,7 +1119,7 @@ Lemma 2.3, equations (2.3)--(2.4), printed pp. 402--403.  The first identity is 
 Gaussian-density integration-by-parts step used in equation (3.32), printed p. 407;
 the final estimate specializes Lemma 2.3 to $`p=D\rho(\cdot)[w]`.
 
-:::theorem "cutoff-derivative-shell-ibp" (lean := "ProbabilityTheory.convexSetCutoffDirectionalPullback, ProbabilityTheory.lipschitzWith_convexSetCutoffDirectionalPullback, ProbabilityTheory.tsupport_convexSetCutoffDirectionalPullback_subset, ProbabilityTheory.convexSetCutoffDirectionalPullback_D2_bound, ProbabilityTheory.convexSetCutoffDirectionalPullback_D2_shell_bound") (uses := "bentkus-smoothing-inequality, gaussian-density-ibp") (tags := "bentkus, gaussian-replacement, cutoff, integration-by-parts, source-bentkus-2004, fidelity-exact-closed-shell-support")
+:::theorem "cutoff-derivative-shell-ibp" (parent := "probability-convex") (lean := "ProbabilityTheory.convexSetCutoffDirectionalPullback, ProbabilityTheory.lipschitzWith_convexSetCutoffDirectionalPullback, ProbabilityTheory.tsupport_convexSetCutoffDirectionalPullback_subset, ProbabilityTheory.convexSetCutoffDirectionalPullback_D2_bound, ProbabilityTheory.convexSetCutoffDirectionalPullback_D2_shell_bound") (uses := "bentkus-smoothing-inequality, gaussian-density-ibp") (tags := "bentkus, gaussian-replacement, cutoff, integration-by-parts, source-bentkus-2004, fidelity-exact-closed-shell-support")
 *Pulled-back cutoff derivative and its shell-localized bound.* Let $`A` be closed and
 convex, $`\varepsilon>0`, and let $`\varphi_A` be the Bentkus cutoff.  For
 $`a,x\in\mathbb R^d` and a linear map $`L`, set
@@ -1149,7 +1149,7 @@ $`\operatorname{int}A`.
 
 # Taylor remainders and angle splitting
 
-:::lemma_ "bentkus-taylor-remainders" (lean := "ProbabilityTheory.abs_firstOrderTaylorRemainder_le, ProbabilityTheory.norm_twoShiftTaylorRemainder_le") (tags := "bentkus, gaussian-replacement, taylor, source-bentkus-2004, fidelity-sharp-quadratic-remainder")
+:::lemma_ "bentkus-taylor-remainders" (parent := "probability-convex") (lean := "ProbabilityTheory.abs_firstOrderTaylorRemainder_le, ProbabilityTheory.norm_twoShiftTaylorRemainder_le") (tags := "bentkus, gaussian-replacement, taylor, source-bentkus-2004, fidelity-sharp-quadratic-remainder")
 *First-order and two-shift Taylor remainders.* Let $`E` be a real normed vector space,
 let $`f:E\to\mathbb R` be continuously differentiable, and suppose that $`Df` is
 $`L`-Lipschitz.  Then
@@ -1167,7 +1167,7 @@ This is the integral Taylor estimate used in {Citations.citet bentkus2004}[], eq
 before the centering and covariance cancellations are applied.  The first inequality keeps
 the exact $`1/2` obtained by integrating the linear derivative increment.
 
-:::theorem "gaussian-density-second-order-remainder" (lean := "ProbabilityTheory.integral_abs_standardGaussianDensityD3_volume_le, ProbabilityTheory.integrable_standardGaussianDensityD3_volume, ProbabilityTheory.bentkus_abs_integral_bounded_mul_standardGaussianDensityD3_sub_le, ProbabilityTheory.bentkus_standardGaussianDensityD1_secondOrderRemainder_integral_bound") (uses := "gaussian-density-third-derivative") (tags := "bentkus, gaussian-analysis, gaussian-replacement, taylor, source-bentkus-2004, fidelity-explicit-dimension-free-remainder")
+:::theorem "gaussian-density-second-order-remainder" (parent := "probability-convex") (lean := "ProbabilityTheory.integral_abs_standardGaussianDensityD3_volume_le, ProbabilityTheory.integrable_standardGaussianDensityD3_volume, ProbabilityTheory.bentkus_abs_integral_bounded_mul_standardGaussianDensityD3_sub_le, ProbabilityTheory.bentkus_standardGaussianDensityD1_secondOrderRemainder_integral_bound") (uses := "gaussian-density-third-derivative") (tags := "bentkus, gaussian-analysis, gaussian-replacement, taylor, source-bentkus-2004, fidelity-explicit-dimension-free-remainder")
 *Integrated second-order remainder for the first Gaussian-density derivative.* Let
 $`\rho` be the standard Gaussian density on $`\mathbb R^d`, and let
 $`\varphi:\mathbb R^d\to\mathbb R` be measurable with $`|\varphi|\le1`.  For all
@@ -1190,7 +1190,7 @@ This is the cancellation-ready Taylor estimate in {Citations.citet bentkus2004}[
 printed pp. 405--406.  The factor $`1/2` is the integral of the second-order Taylor
 kernel, while the dimension-free constant is the absolute cubic Hermite contraction.
 
-:::lemma_ "bentkus-angle-integrals" (lean := "ProbabilityTheory.intervalIntegral_cos_div_sin_sq, ProbabilityTheory.intervalIntegral_cos_div_sin_sq_le_inv, ProbabilityTheory.intervalIntegral_cos_div_sin_sq_arcsin, ProbabilityTheory.intervalIntegral_cos_zero_arcsin") (tags := "bentkus, gaussian-replacement, induction, angle-splitting, source-bentkus-2004, fidelity-exact-antiderivatives-and-arcsine-substitution")
+:::lemma_ "bentkus-angle-integrals" (parent := "probability-convex") (lean := "ProbabilityTheory.intervalIntegral_cos_div_sin_sq, ProbabilityTheory.intervalIntegral_cos_div_sin_sq_le_inv, ProbabilityTheory.intervalIntegral_cos_div_sin_sq_arcsin, ProbabilityTheory.intervalIntegral_cos_zero_arcsin") (tags := "bentkus, gaussian-replacement, induction, angle-splitting, source-bentkus-2004, fidelity-exact-antiderivatives-and-arcsine-substitution")
 *Exact trigonometric integrals for Bentkus's angle split.* If
 $`0<\gamma\le\pi/2`, then
 $$`
@@ -1220,7 +1220,7 @@ $`\int_\gamma^{\pi/2}\cos\alpha/\sin^2\alpha\,d\alpha`, printed p. 409.
 Bentkus chooses $`\sin\gamma=\varepsilon` after equation (3.8), printed p. 404; the
 node retains the exact antiderivatives before taking the inequalities used in the paper.
 
-:::lemma_ "bentkus-coordinate-piece-assembly" (lean := "ProbabilityTheory.pi_div_two_sub_arcsin_le_two, ProbabilityTheory.intervalIntegral_eq_small_add_difference_add_reference, ProbabilityTheory.bentkus_largeAngle_integral_le_of_cos_div_sin_sq_envelope, ProbabilityTheory.bentkus_coordinate_bounds_sum, ProbabilityTheory.fin_sum_succAbove_le_sum_univ, ProbabilityTheory.bentkus_three_coordinate_pieces") (uses := "bentkus-angle-integrals") (tags := "bentkus, gaussian-replacement, induction, angle-splitting, scalar-assembly, source-bentkus-2004, fidelity-explicit-constant-bookkeeping")
+:::lemma_ "bentkus-coordinate-piece-assembly" (parent := "probability-convex") (lean := "ProbabilityTheory.pi_div_two_sub_arcsin_le_two, ProbabilityTheory.intervalIntegral_eq_small_add_difference_add_reference, ProbabilityTheory.bentkus_largeAngle_integral_le_of_cos_div_sin_sq_envelope, ProbabilityTheory.bentkus_coordinate_bounds_sum, ProbabilityTheory.fin_sum_succAbove_le_sum_univ, ProbabilityTheory.bentkus_three_coordinate_pieces") (uses := "bentkus-angle-integrals") (tags := "bentkus, gaussian-replacement, induction, angle-splitting, scalar-assembly, source-bentkus-2004, fidelity-explicit-constant-bookkeeping")
 *Three-piece angle decomposition and coordinate summation.*  If $`F` is
 interval-integrable on $`[0,\gamma]` and $`[\gamma,b]`, and $`R` is
 interval-integrable on $`[\gamma,b]`, then
@@ -1274,7 +1274,7 @@ gives equation (3.7), and insertion into the smoothing inequality gives equation
 (3.8)--(3.9).  The displayed decomposition and omitted-coordinate inequality make
 explicit the bookkeeping compressed in the paper.
 
-:::lemma_ "bentkus-parameter-closure" (lean := "ProbabilityTheory.bentkus_parameter_closure") (tags := "bentkus, gaussian-replacement, induction, scalar-closure, source-bentkus-2004, fidelity-exact-smoothing-scale")
+:::lemma_ "bentkus-parameter-closure" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkus_parameter_closure") (tags := "bentkus, gaussian-replacement, induction, scalar-closure, source-bentkus-2004, fidelity-exact-smoothing-scale")
 *Closure of the smoothing parameter.* Let $`C\ge1`, $`d\ge1`, $`\beta>0`, and
 $`\Delta\le1`.  Suppose
 $$`
@@ -1296,7 +1296,7 @@ $`\varepsilon\ge1` closes directly from $`\Delta\le1`.
 
 # The identity-covariance replacement induction
 
-:::lemma_ "bentkus-trivial-induction-branches" (lean := "ProbabilityTheory.sum_integral_norm_sq_eq_dimension_of_identityCovariance, ProbabilityTheory.dimension_cube_le_card_mul_thirdMomentSum_sq, ProbabilityTheory.small_cardinality_thirdMomentSum_lower, ProbabilityTheory.probability_error_le_M_mul_thirdMomentSum_of_small_cardinality, ProbabilityTheory.large_secondMoment_thirdMoment_lower") (uses := "covariance-additivity-and-leave-one-out") (tags := "bentkus, gaussian-replacement, induction, moments, source-bentkus-2004, fidelity-explicit-trivial-branches")
+:::lemma_ "bentkus-trivial-induction-branches" (parent := "probability-convex") (lean := "ProbabilityTheory.sum_integral_norm_sq_eq_dimension_of_identityCovariance, ProbabilityTheory.dimension_cube_le_card_mul_thirdMomentSum_sq, ProbabilityTheory.small_cardinality_thirdMomentSum_lower, ProbabilityTheory.probability_error_le_M_mul_thirdMomentSum_of_small_cardinality, ProbabilityTheory.large_secondMoment_thirdMoment_lower") (uses := "covariance-additivity-and-leave-one-out") (tags := "bentkus, gaussian-replacement, induction, moments, source-bentkus-2004, fidelity-explicit-trivial-branches")
 *The small-cardinality and large-summand induction branches.* Let
 $`X_1,\ldots,X_n` be independent centered $`L^3` random vectors in $`\mathbb R^d`,
 assume that $`\operatorname{Cov}(\sum_iX_i)=I_d`, and put
@@ -1327,7 +1327,7 @@ $`n\le d^3M^2`; the second is the large-individual-covariance exclusion immediat
 before equation (3.2). These are precisely the moment consequences used before the
 nontrivial Taylor induction begins.
 
-:::lemma_ "bentkus-leave-one-out-whitening" (lean := "ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix_posDef_of_integral_norm_sq_lt_quarter, ProbabilityTheory.norm_bentkusWhiteningCLM_leaveOneOut_apply_le_two, ProbabilityTheory.norm_bentkusWhiteningCLM_leaveOneOut_apply_pow_three_le, ProbabilityTheory.integral_norm_bentkusWhiteningCLM_leaveOneOut_pow_three_le") (uses := "covariance-additivity-and-leave-one-out, bentkus-whitening-covariance-identity") (tags := "bentkus, gaussian-replacement, leave-one-out, whitening, source-bentkus-2004, fidelity-explicit-small-moment-branch")
+:::lemma_ "bentkus-leave-one-out-whitening" (parent := "probability-convex") (lean := "ProbabilityTheory.bentkusLeaveOneOutCovarianceMatrix_posDef_of_integral_norm_sq_lt_quarter, ProbabilityTheory.norm_bentkusWhiteningCLM_leaveOneOut_apply_le_two, ProbabilityTheory.norm_bentkusWhiteningCLM_leaveOneOut_apply_pow_three_le, ProbabilityTheory.integral_norm_bentkusWhiteningCLM_leaveOneOut_pow_three_le") (uses := "covariance-additivity-and-leave-one-out, bentkus-whitening-covariance-identity") (tags := "bentkus, gaussian-replacement, leave-one-out, whitening, source-bentkus-2004, fidelity-explicit-small-moment-branch")
 *Leave-one-out whitening in the small-second-moment branch.* Under identity total
 covariance, fix $`k` and suppose that
 $$`
@@ -1352,7 +1352,7 @@ pp. 403--404.  The paper writes $`P_k^2=\operatorname{Cov}(U_k)` and
 $`Q_k=P_k^{-1}` and, after excluding the large-covariance trivial case, assumes
 $`\|Q_k\|\le2`; this gives the third-moment factor $`2^3=8`.
 
-:::theorem "bentkus-standardized-induction" (lean := "ProbabilityTheory.exists_bentkus_identity_covariance_constant") (uses := "gaussian-convex-shell, bentkus-smoothing-inequality, density-derivative-integral-bound, gaussian-density-ibp, cutoff-derivative-shell-ibp, bentkus-taylor-remainders, gaussian-density-second-order-remainder, bentkus-angle-integrals, bentkus-rotation-fubini, bentkus-coordinate-piece-assembly, bentkus-parameter-closure, bentkus-rotation-cancellation, covariance-additivity-and-leave-one-out, gaussian-companion-third-moment-comparison, gaussian-companion-mixed-moment, bentkus-trivial-induction-branches, bentkus-leave-one-out-whitening, bentkus-identity-covariance-contract") (tags := "bentkus, gaussian-replacement, induction, source-bentkus-2004, fidelity-exact-identity-covariance")
+:::theorem "bentkus-standardized-induction" (parent := "probability-convex") (lean := "ProbabilityTheory.exists_bentkus_identity_covariance_constant") (uses := "gaussian-convex-shell, bentkus-smoothing-inequality, density-derivative-integral-bound, gaussian-density-ibp, cutoff-derivative-shell-ibp, bentkus-taylor-remainders, gaussian-density-second-order-remainder, bentkus-angle-integrals, bentkus-rotation-fubini, bentkus-coordinate-piece-assembly, bentkus-parameter-closure, bentkus-rotation-cancellation, covariance-additivity-and-leave-one-out, gaussian-companion-third-moment-comparison, gaussian-companion-mixed-moment, bentkus-trivial-induction-branches, bentkus-leave-one-out-whitening, bentkus-identity-covariance-contract") (tags := "bentkus, gaussian-replacement, induction, source-bentkus-2004, fidelity-exact-identity-covariance")
 *Identity-covariance convex-set replacement bound.* There is an absolute constant
 $`C>0` such that, for every $`d,n\in\mathbb N` with $`d>0`, every probability
 space $`(\Omega,\mathcal F,\mu)`, and every family
@@ -1382,7 +1382,7 @@ tracking constants through the preceding estimates gives one absolute choice.
 
 # Bentkus's convex-set theorem
 
-:::theorem "bentkus-convex-set" (lean := "ProbabilityTheory.exists_bentkus_convex_set_constant") (uses := "bentkus-standardized-induction, bentkus-whitening-one-set-transport") (tags := "principal-theorem, source-bentkus-2004, multivariate, convex-set, fidelity-exact")
+:::theorem "bentkus-convex-set" (parent := "probability-convex") (lean := "ProbabilityTheory.exists_bentkus_convex_set_constant") (uses := "bentkus-standardized-induction, bentkus-whitening-one-set-transport") (tags := "principal-theorem, source-bentkus-2004, multivariate, convex-set, fidelity-exact")
 *Bentkus's Lyapunov bound for convex sets.* There is an absolute constant $`C>0` with the
 following property. Let $`d,n\in\mathbb N` with $`d>0`, let
 $`X_1,\ldots,X_n` be independent measurable random vectors in $`\mathbb R^d` such that

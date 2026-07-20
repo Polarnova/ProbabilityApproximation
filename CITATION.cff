@@ -7,10 +7,10 @@ type: software
 authors:
   - family-names: Yan
     given-names: Asher
-version: 0.9.5
-date-released: 2026-07-17
+version: 0.9.6
+date-released: 2026-07-20
 repository-code: "https://github.com/Polarnova/ProbabilityApproximation"
-url: "https://github.com/Polarnova/ProbabilityApproximation/releases/tag/v0.9.5"
+url: "https://github.com/Polarnova/ProbabilityApproximation/releases/tag/v0.9.6"
 license: Apache-2.0
 abstract: >-
   A Lean 4 and Mathlib formalization of nonuniform Berry–Esseen bounds via

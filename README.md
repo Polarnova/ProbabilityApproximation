@@ -67,14 +67,14 @@ The library also develops reusable foundations for probability, analysis, and co
 
 ## Using the library
 
-The current release is `v0.9.5`, built with Lean and Mathlib `v4.32.0`. Add the tagged package to a
+The current release is `v0.9.6`, built with Lean and Mathlib `v4.32.0`. Add the tagged package to a
 downstream `lakefile.toml`:
 
 ```toml
 [[require]]
 name = "ProbabilityApproximation"
 git = "https://github.com/Polarnova/ProbabilityApproximation.git"
-rev = "v0.9.5"
+rev = "v0.9.6"
 ```
 
 Then update and build:
@@ -117,6 +117,9 @@ The [Verso Blueprint](https://github.com/leanprover/verso-blueprint) presents bo
 mathematical text with complete statements, source citations, Lean declarations, and dependency
 graphs. The same text is available as a
 [downloadable PDF](https://probability.polarnova.site/berry-esseen-bounds.pdf).
+
+Use `./scripts/site.sh serve dev` inside `blueprint-verso` to retain fidelity metadata during local
+review. Public builds use the default `release` profile and omit those tags from the reading view.
 
 ## Contributing
 

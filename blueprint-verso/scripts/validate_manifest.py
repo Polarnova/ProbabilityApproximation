@@ -57,6 +57,10 @@ EXPECTED_LABELS = {
 EXPECTED_OPEN: set[str] = set()
 EXPECTED_DECLARATIONS = 345
 EXPECTED_EDGES = 97
+EXPECTED_GROUPS = {
+    "probability-scalar": 17,
+    "probability-convex": 48,
+}
 
 
 def fail(message: str) -> None:
@@ -190,6 +194,27 @@ def main() -> None:
         fail("proof-only dependency edges are not permitted")
     if any(edge.get("axes") != ["statement"] for edge in edges):
         fail("dependency graph contains a non-statement edge")
+    groups = graph.get("groups", [])
+    group_sizes = {
+        group.get("label"): len(group.get("children", []))
+        for group in groups
+        if group.get("declared")
+    }
+    if group_sizes != EXPECTED_GROUPS:
+        fail(f"unexpected dependency graph groups: {group_sizes}")
+    parent_sizes = Counter(node.get("parent") for node in nodes)
+    if dict(parent_sizes) != EXPECTED_GROUPS:
+        fail(f"unexpected dependency graph parents: {dict(parent_sizes)}")
+    variants = graph.get("variants", [])
+    expected_variants = {
+        "full",
+        "group",
+        *(f"parent:{group}" for group in EXPECTED_GROUPS),
+    }
+    if {variant.get("key") for variant in variants} != expected_variants:
+        fail("dependency graph is missing a topic view")
+    if any((variant.get("options") or {}).get("direction") != "LR" for variant in variants):
+        fail("dependency graph does not default to LR")
 
     nodes_by_key = {node["previewKey"]: node for node in nodes}
     warnings = [node.get("label") for node in nodes if any(node.get("warnings", {}).values())]

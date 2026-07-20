@@ -1,5 +1,5 @@
 name = "ProbabilityApproximation"
-version = "0.9.5"
+version = "0.9.6"
 defaultTargets = ["ProbabilityApproximation"]
 releaseRepo = "https://github.com/Polarnova/ProbabilityApproximation"
 preferReleaseBuild = true

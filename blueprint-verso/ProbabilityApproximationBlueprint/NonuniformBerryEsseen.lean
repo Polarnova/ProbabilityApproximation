@@ -31,7 +31,7 @@ estimate into a bound on the whole real line.
 
 # The half-line Stein equation
 
-:::definition "indicator-stein-solution" (lean := "ProbabilityTheory.steinSolution, ProbabilityTheory.steinSolutionDeriv, ProbabilityTheory.stein_equation, ProbabilityTheory.steinSolution_nonneg, ProbabilityTheory.abs_mul_steinSolution_le_one, ProbabilityTheory.abs_steinSolutionDeriv_le_two, ProbabilityTheory.abs_steinSolution_le_sqrt_two_pi_div_two") (tags := "scalar, stein, source-chen-shao-2005, fidelity-exact")
+:::definition "indicator-stein-solution" (parent := "probability-scalar") (lean := "ProbabilityTheory.steinSolution, ProbabilityTheory.steinSolutionDeriv, ProbabilityTheory.stein_equation, ProbabilityTheory.steinSolution_nonneg, ProbabilityTheory.abs_mul_steinSolution_le_one, ProbabilityTheory.abs_steinSolutionDeriv_le_two, ProbabilityTheory.abs_steinSolution_le_sqrt_two_pi_div_two") (tags := "scalar, stein, source-chen-shao-2005, fidelity-exact")
 *Indicator Stein solution.* For $`z,w\in\mathbb R`, put
 $$`
 h_z(w)=\mathbf 1_{\{w\le z\}}-\Phi(z),\qquad
@@ -52,7 +52,7 @@ This is the half-line specialization of {Citations.citet chenShao2005}[], Sectio
 equations (2.3)--(2.9), printed pp. 10--11.  The displayed integral fixes the same
 $`(-\infty,z]` convention as the library CDF.
 
-:::theorem "nonuniform-stein-derivative-bounds" (lean := "ProbabilityTheory.steinSolutionDeriv_of_le, ProbabilityTheory.steinSolutionDeriv_of_gt, ProbabilityTheory.abs_steinSolutionDeriv_le_two_mul_tail, ProbabilityTheory.abs_steinSolutionDeriv_le_majorant_of_abs_le_half, ProbabilityTheory.cdf_sub_eq_integral_steinSolutionDeriv_sub_Wf") (uses := "indicator-stein-solution") (tags := "scalar, stein, nonuniform, source-chen-shao-2005, fidelity-exact-tail-majorants")
+:::theorem "nonuniform-stein-derivative-bounds" (parent := "probability-scalar") (lean := "ProbabilityTheory.steinSolutionDeriv_of_le, ProbabilityTheory.steinSolutionDeriv_of_gt, ProbabilityTheory.abs_steinSolutionDeriv_le_two_mul_tail, ProbabilityTheory.abs_steinSolutionDeriv_le_majorant_of_abs_le_half, ProbabilityTheory.cdf_sub_eq_integral_steinSolutionDeriv_sub_Wf") (uses := "indicator-stein-solution") (tags := "scalar, stein, nonuniform, source-chen-shao-2005, fidelity-exact-tail-majorants")
 *Tail-sensitive derivative bounds and the integrated Stein equation.*  Write
 $`\Phi` for the standard Gaussian distribution function.  The derivative of the
 indicator Stein solution has the two exact forms
@@ -93,7 +93,7 @@ residual expansion (6.16), printed p. 46.
 
 # Uniform approximation and leave-one-out concentration
 
-:::lemma_ "uniform-leave-one-out-concentration" (tags := "scalar, concentration, source-chen-shao-2001, fidelity-explicit-constants-without-smallness") (lean := "ProbabilityTheory.concentration_leaveOneOut")
+:::lemma_ "uniform-leave-one-out-concentration" (parent := "probability-scalar") (tags := "scalar, concentration, source-chen-shao-2001, fidelity-explicit-constants-without-smallness") (lean := "ProbabilityTheory.concentration_leaveOneOut")
 *Uniform leave-one-out concentration.* Suppose
 $`\mathbb EX_i=0`, $`\mathbb E X_i^2<\infty`, and
 $`\sum_i\operatorname{Var}(X_i)=1`.  If $`\gamma<\infty`, then, for
@@ -109,7 +109,7 @@ especially Proposition 3.2 and equations (3.2)--(3.6), printed pp. 239--241.
 The constants above follow without the paper's additional small-truncation hypothesis; under that
 hypothesis, Chen--Shao obtain the sharper coefficients $`1.5` and $`3.3\delta`.
 
-:::theorem "uniform-third-moment-berry-esseen" (lean := "ProbabilityTheory.thirdMomentBerryEsseenConstant, ProbabilityTheory.uniformBerryEsseen_thirdMoment") (uses := "indicator-stein-solution, uniform-leave-one-out-concentration") (tags := "scalar, berry-esseen, source-chen-shao-2005, fidelity-explicit-constant")
+:::theorem "uniform-third-moment-berry-esseen" (parent := "probability-scalar") (lean := "ProbabilityTheory.thirdMomentBerryEsseenConstant, ProbabilityTheory.uniformBerryEsseen_thirdMoment") (uses := "indicator-stein-solution, uniform-leave-one-out-concentration") (tags := "scalar, berry-esseen, source-chen-shao-2005, fidelity-explicit-constant")
 *Uniform third-moment Berry--Esseen theorem.* Suppose
 $`\mathbb EX_i=0`, $`\mathbb E|X_i|^3<\infty`, and
 $`\sum_i\operatorname{Var}(X_i)=1`.  Then, for every $`x\in\mathbb R`,
@@ -125,7 +125,7 @@ Theorem 2.1, printed pp. 237--238, belongs to their truncated-moment bound.
 
 # Exponential concentration
 
-:::lemma_ "bennett-hoeffding-mgf" (lean := "ProbabilityTheory.mgf_finsetSum_le_exp_bennett, ProbabilityTheory.measure_finsetSum_ge_le_exp_bennett") (tags := "scalar, concentration, mgf, source-chen-shao-2005, fidelity-generalized-parameter-form")
+:::lemma_ "bennett-hoeffding-mgf" (parent := "probability-scalar") (lean := "ProbabilityTheory.mgf_finsetSum_le_exp_bennett, ProbabilityTheory.measure_finsetSum_ge_le_exp_bennett") (tags := "scalar, concentration, mgf, source-chen-shao-2005, fidelity-generalized-parameter-form")
 *Bennett--Hoeffding moment-generating-function bound.* Let $`J` be finite and let
 $`(\eta_j)_{j\in J}` be independent measurable random variables with finite second
 moments.  Suppose $`\mathbb E\eta_j\le0`, $`\eta_j\le\alpha` almost surely,
@@ -150,7 +150,7 @@ its Chernoff consequence,
 printed pp. 40--41. Keeping $`t` as a parameter and
 optimizing it recovers the paper's equations (6.3)--(6.4).
 
-:::proposition "exponential-leave-one-out-concentration" (lean := "ProbabilityTheory.chenShao_exponentialConcentration_upperTruncated") (uses := "bennett-hoeffding-mgf") (tags := "scalar, concentration, upper-truncation, source-chen-shao-2005, fidelity-corrected-explicit-constants")
+:::proposition "exponential-leave-one-out-concentration" (parent := "probability-scalar") (lean := "ProbabilityTheory.chenShao_exponentialConcentration_upperTruncated") (uses := "bennett-hoeffding-mgf") (tags := "scalar, concentration, upper-truncation, source-chen-shao-2005, fidelity-corrected-explicit-constants")
 *Exponential concentration for the upper-truncated leave-one-out sum.* Define
 $`\bar X_j=X_j\mathbf 1_{\{X_j\le1\}}` and
 $`\bar W^{(i)}=\sum_{j\ne i}\bar X_j`.  Suppose
@@ -170,7 +170,7 @@ coefficients $`24,48`; the displayed exchange equality in the source omits this 
 
 # One-sided truncation
 
-:::proposition "one-sided-truncation-comparison" (lean := "ProbabilityTheory.upperTruncatedFamily, ProbabilityTheory.upperTruncatedSum, ProbabilityTheory.measureReal_sumX_upperTail_le_upperTruncatedTail_add, ProbabilityTheory.abs_cdf_sumX_sub_gaussian_le_upperTruncated_add") (tags := "scalar, upper-truncation, source-chen-shao-2005, fidelity-explicit-constant")
+:::proposition "one-sided-truncation-comparison" (parent := "probability-scalar") (lean := "ProbabilityTheory.upperTruncatedFamily, ProbabilityTheory.upperTruncatedSum, ProbabilityTheory.measureReal_sumX_upperTail_le_upperTruncatedTail_add, ProbabilityTheory.abs_cdf_sumX_sub_gaussian_le_upperTruncated_add") (tags := "scalar, upper-truncation, source-chen-shao-2005, fidelity-explicit-constant")
 *Comparison with one-sided truncation.* Suppose
 $`\mathbb EX_i=0`, $`\mathbb E|X_i|^3<\infty`,
 $`\sum_i\operatorname{Var}(X_i)=1`, and $`\gamma\le1`.  Put
@@ -194,7 +194,7 @@ the large-jump and leave-one-out estimates.
 
 # Stein exchange and residual decomposition
 
-:::theorem "upper-truncated-stein-exchange" (lean := "ProbabilityTheory.stein_identity_sum_leaveOneOut_noncentered, ProbabilityTheory.stein_identity_upperTruncatedSum") (uses := "indicator-stein-solution, one-sided-truncation-comparison") (tags := "scalar, stein, upper-truncation, source-chen-shao-2005, fidelity-exact-noncentered-form")
+:::theorem "upper-truncated-stein-exchange" (parent := "probability-scalar") (lean := "ProbabilityTheory.stein_identity_sum_leaveOneOut_noncentered, ProbabilityTheory.stein_identity_upperTruncatedSum") (uses := "indicator-stein-solution, one-sided-truncation-comparison") (tags := "scalar, stein, upper-truncation, source-chen-shao-2005, fidelity-exact-noncentered-form")
 *Noncentered Stein exchange for the upper-truncated sum.* Let
 $`Y_i=\bar X_i`, $`\bar W=\sum_iY_i`, and
 $`\bar W^{(i)}=\bar W-Y_i`.  Define
@@ -215,7 +215,7 @@ This is the noncentered form of the exchange used in Section 6.2, equation
 printed p. 45.  Retaining the second sum is essential:
 one-sided truncation generally makes $`\mathbb EY_i<0`.
 
-:::theorem "upper-truncated-residual-decomposition" (lean := "ProbabilityTheory.upperTruncatedMissingSecondMoment, ProbabilityTheory.upperTruncatedR1, ProbabilityTheory.upperTruncatedR2, ProbabilityTheory.upperTruncatedR3, ProbabilityTheory.upperTruncatedMissingSecondMoment_le_thirdMomentSum, ProbabilityTheory.cdf_upperTruncatedSum_sub_gaussian_eq_R1_add_R2_add_R3") (uses := "nonuniform-stein-derivative-bounds, upper-truncated-stein-exchange") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-exact")
+:::theorem "upper-truncated-residual-decomposition" (parent := "probability-scalar") (lean := "ProbabilityTheory.upperTruncatedMissingSecondMoment, ProbabilityTheory.upperTruncatedR1, ProbabilityTheory.upperTruncatedR2, ProbabilityTheory.upperTruncatedR3, ProbabilityTheory.upperTruncatedMissingSecondMoment_le_thirdMomentSum, ProbabilityTheory.cdf_upperTruncatedSum_sub_gaussian_eq_R1_add_R2_add_R3") (uses := "nonuniform-stein-derivative-bounds, upper-truncated-stein-exchange") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-exact")
 *The $`R_1+R_2+R_3` identity.* Set
 $$`
 q=1-\sum_i\mathbb E\bar X_i^2,\qquad
@@ -245,7 +245,7 @@ missing second-moment mass and nonzero truncated means made explicit.
 
 # Estimates for the residual terms
 
-:::lemma_ "upper-truncated-r1-r3-bounds" (lean := "ProbabilityTheory.abs_upperTruncatedR1_le, ProbabilityTheory.abs_upperTruncatedR3_le") (uses := "bennett-hoeffding-mgf, upper-truncated-residual-decomposition") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-explicit-constant")
+:::lemma_ "upper-truncated-r1-r3-bounds" (parent := "probability-scalar") (lean := "ProbabilityTheory.abs_upperTruncatedR1_le, ProbabilityTheory.abs_upperTruncatedR3_le") (uses := "bennett-hoeffding-mgf, upper-truncated-residual-decomposition") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-explicit-constant")
 *Exponential bounds for $`R_1` and $`R_3`.* Under the centered, unit-total-variance,
 finite-third-moment hypotheses above, for every $`z\ge2`,
 $$`
@@ -257,7 +257,7 @@ These are explicit versions of {Citations.citet chenShao2005}[], Section 6.2, eq
 (6.17)--(6.18), printed p. 45. The source records an unspecified absolute constant;
 the estimates above give $`8` in both inequalities.
 
-:::theorem "upper-truncated-r2-expected-kernel" (lean := "ProbabilityTheory.upperTruncatedExpectedKernel, ProbabilityTheory.integral_upperTruncatedExpectedKernel, ProbabilityTheory.upperTruncatedR2_eq_sum_integral_expectedKernel, ProbabilityTheory.upperTruncatedR21, ProbabilityTheory.upperTruncatedR22, ProbabilityTheory.upperTruncatedR2_eq_R21_add_R22") (uses := "upper-truncated-residual-decomposition") (tags := "scalar, stein, expected-kernel, source-chen-shao-2005, fidelity-exact")
+:::theorem "upper-truncated-r2-expected-kernel" (parent := "probability-scalar") (lean := "ProbabilityTheory.upperTruncatedExpectedKernel, ProbabilityTheory.integral_upperTruncatedExpectedKernel, ProbabilityTheory.upperTruncatedR2_eq_sum_integral_expectedKernel, ProbabilityTheory.upperTruncatedR21, ProbabilityTheory.upperTruncatedR22, ProbabilityTheory.upperTruncatedR2_eq_R21_add_R22") (uses := "upper-truncated-residual-decomposition") (tags := "scalar, stein, expected-kernel, source-chen-shao-2005, fidelity-exact")
 *Deterministic expected-kernel representation and split of $`R_2`.* For
 $`K_i(t)=\mathbb E[|\bar X_i|\mathbf1_{\{\min(0,\bar X_i)\le t\le
 \max(0,\bar X_i)\}}]`, one has
@@ -285,7 +285,7 @@ This is the split immediately after equation (6.18) in {Citations.citet chenShao
 printed pp. 45--46.  Fubini and leave-one-out independence supply
 the deterministic kernels in the display.
 
-:::lemma_ "upper-truncated-indicator-residual" (lean := "ProbabilityTheory.abs_upperTruncatedR21_le_exp_thirdMomentSum") (uses := "exponential-leave-one-out-concentration, upper-truncated-r2-expected-kernel") (tags := "scalar, concentration, residuals, source-chen-shao-2005, fidelity-explicit-constant")
+:::lemma_ "upper-truncated-indicator-residual" (parent := "probability-scalar") (lean := "ProbabilityTheory.abs_upperTruncatedR21_le_exp_thirdMomentSum") (uses := "exponential-leave-one-out-concentration, upper-truncated-r2-expected-kernel") (tags := "scalar, concentration, residuals, source-chen-shao-2005, fidelity-explicit-constant")
 *Indicator part of $`R_2`.* Under the centered, unit-total-variance,
 finite-third-moment hypotheses, for every $`z\in\mathbb R`,
 $$` |R_{2,1}|\le168e^{-z/2}\gamma. `
@@ -296,7 +296,7 @@ Section 6.2, equations (6.19) and (6.21)--(6.22), of {Citations.citet chenShao20
 printed p. 46 gives the stated bound. The source uses an unspecified constant; the
 preceding concentration estimate gives $`168`.
 
-:::lemma_ "stein-product-increment" (lean := "ProbabilityTheory.steinProductDeriv, ProbabilityTheory.mul_steinSolution_sub_eq_integral_steinProductDeriv, ProbabilityTheory.steinProductIncrementConstant, ProbabilityTheory.abs_integral_steinProductIncrement_upperTruncated_le_abs_add") (uses := "nonuniform-stein-derivative-bounds, bennett-hoeffding-mgf") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-explicit-constant")
+:::lemma_ "stein-product-increment" (parent := "probability-scalar") (lean := "ProbabilityTheory.steinProductDeriv, ProbabilityTheory.mul_steinSolution_sub_eq_integral_steinProductDeriv, ProbabilityTheory.steinProductIncrementConstant, ProbabilityTheory.abs_integral_steinProductIncrement_upperTruncated_le_abs_add") (uses := "nonuniform-stein-derivative-bounds, bennett-hoeffding-mgf") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-explicit-constant")
 *Stein-product increment estimate.* Let $`g_z(w)=(wf_z(w))'` away from $`z`, with
 the everywhere-defined representative obtained from the two one-sided formulas.
 There is an explicit absolute constant $`C_{\mathrm{inc}}>0` such that, under the
@@ -319,7 +319,7 @@ printed pp. 46--48.
 Here
 $`C_{\mathrm{inc}}=C_{\mathrm{low}}+3(\sqrt{2\pi}/2+2)e^2e^{e^2-3}`.
 
-:::lemma_ "upper-truncated-product-residual" (lean := "ProbabilityTheory.integral_upperTruncatedSteinProduct_eq_iterated_leaveOneOut, ProbabilityTheory.abs_upperTruncatedR22_le_exp_thirdMomentSum") (uses := "upper-truncated-r2-expected-kernel, stein-product-increment") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-explicit-constant")
+:::lemma_ "upper-truncated-product-residual" (parent := "probability-scalar") (lean := "ProbabilityTheory.integral_upperTruncatedSteinProduct_eq_iterated_leaveOneOut, ProbabilityTheory.abs_upperTruncatedR22_le_exp_thirdMomentSum") (uses := "upper-truncated-r2-expected-kernel, stein-product-increment") (tags := "scalar, stein, residuals, source-chen-shao-2005, fidelity-explicit-constant")
 *Stein-product part of $`R_2`.* Leave-one-out independence gives, for every $`i`,
 $$`
 \mathbb E[\bar Wf_z(\bar W)]
@@ -340,7 +340,7 @@ first moment, bounded by $`1`.
 
 # The central nonuniform estimate
 
-:::theorem "upper-truncated-central-decay" (lean := "ProbabilityTheory.upperTruncatedNonuniformConstant, ProbabilityTheory.upperTruncatedNonuniformConstant_nonneg, ProbabilityTheory.abs_cdf_upperTruncatedSum_sub_gaussian_le_exp_thirdMomentSum") (uses := "upper-truncated-r1-r3-bounds, upper-truncated-indicator-residual, upper-truncated-product-residual") (tags := "scalar, central-estimate, source-chen-shao-2005, fidelity-explicit-constant")
+:::theorem "upper-truncated-central-decay" (parent := "probability-scalar") (lean := "ProbabilityTheory.upperTruncatedNonuniformConstant, ProbabilityTheory.upperTruncatedNonuniformConstant_nonneg, ProbabilityTheory.abs_cdf_upperTruncatedSum_sub_gaussian_le_exp_thirdMomentSum") (uses := "upper-truncated-r1-r3-bounds, upper-truncated-indicator-residual, upper-truncated-product-residual") (tags := "scalar, central-estimate, source-chen-shao-2005, fidelity-explicit-constant")
 *Central exponential estimate for the upper-truncated sum.* There is an absolute
 constant
 $$` A=184+\frac32 C_{\mathrm{inc}}\ge0 `
@@ -360,7 +360,7 @@ $`168` from $`R_{2,1}`, and $`(3/2)C_{\mathrm{inc}}` from $`R_{2,2}`.
 
 # Reflection and the nonuniform theorem
 
-:::theorem "nonuniform-reflection-reduction" (lean := "ProbabilityTheory.nonuniformReductionConstant, ProbabilityTheory.nonuniformReductionConstant_pos, ProbabilityTheory.cdf_gaussian_error_le_of_nonneg_of_map_neg, ProbabilityTheory.nonuniformBerryEsseen_nonnegative_of_upperTruncated_decay, ProbabilityTheory.exists_nonuniformBerryEsseen_of_upperTruncated_decay") (uses := "uniform-third-moment-berry-esseen, one-sided-truncation-comparison, upper-truncated-central-decay") (tags := "scalar, reduction, reflection, source-chen-shao-2005, fidelity-exact")
+:::theorem "nonuniform-reflection-reduction" (parent := "probability-scalar") (lean := "ProbabilityTheory.nonuniformReductionConstant, ProbabilityTheory.nonuniformReductionConstant_pos, ProbabilityTheory.cdf_gaussian_error_le_of_nonneg_of_map_neg, ProbabilityTheory.nonuniformBerryEsseen_nonnegative_of_upperTruncated_decay, ProbabilityTheory.exists_nonuniformBerryEsseen_of_upperTruncated_decay") (uses := "uniform-third-moment-berry-esseen, one-sided-truncation-comparison, upper-truncated-central-decay") (tags := "scalar, reduction, reflection, source-chen-shao-2005, fidelity-exact")
 *Reduction from upper-truncated decay to the nonuniform theorem.* Suppose an
 absolute $`A\ge0` satisfies the central exponential estimate in the preceding node for
 all finite families.  Then there is an absolute
@@ -378,7 +378,7 @@ handles large jumps, and $`e^{-x/2}\le54/(1+x^3)` for $`x\ge2`.  Reflection of t
 law supplies negative thresholds with the atom-safe $`(-x)+\varepsilon` limit required
 by the closed-half-line CDF convention.
 
-:::theorem "nonuniform-berry-esseen" (lean := "ProbabilityTheory.nonuniformBerryEsseen") (uses := "nonuniform-reflection-reduction") (tags := "principal-theorem, source-bikelis-1966, source-chen-shao-2005, scalar, fidelity-exact")
+:::theorem "nonuniform-berry-esseen" (parent := "probability-scalar") (lean := "ProbabilityTheory.nonuniformBerryEsseen") (uses := "nonuniform-reflection-reduction") (tags := "principal-theorem, source-bikelis-1966, source-chen-shao-2005, scalar, fidelity-exact")
 *Finite-third-moment nonuniform Berry--Esseen theorem.* There is an absolute constant
 $`C>0` with the following property. Let $`I` be a finite index set, let
 $`(\Omega,\mathcal F,\mathbb P)` be a probability space, and let

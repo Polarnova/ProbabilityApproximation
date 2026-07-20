@@ -5,6 +5,18 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 output="$root/_out/site"
 book_output="$root/_out/book"
+profile="${2:-release}"
+
+case "$profile" in
+  dev|release)
+    ;;
+  *)
+    echo "invalid Blueprint profile '$profile'; expected dev or release" >&2
+    exit 2
+    ;;
+esac
+
+export BLUEPRINT_PROFILE="$profile"
 
 if command -v lake >/dev/null 2>&1; then
   lake_cmd="$(command -v lake)"
@@ -33,6 +45,10 @@ build_site() {
   build_library
   echo "Rendering Blueprint HTML..."
   rm -rf -- "$output/html-multi"
+  export PROBABILITY_APPROXIMATION_SOURCE_REVISION="${GITHUB_SHA:-$(git -C "$root/.." rev-parse HEAD)}"
+  export MATHLIB_SOURCE_REVISION="$(
+    git -C "$root/.lake/packages/mathlib" rev-parse HEAD
+  )"
   "$lake_cmd" lean ProbabilityApproximationBlueprintMain.lean -- --run \
     ProbabilityApproximationBlueprintMain.lean --output "$output"
   test -f "$output/html-multi/index.html"
@@ -75,7 +91,7 @@ case "${1:-build}" in
     build_pdf
     ;;
   *)
-    echo "usage: $0 [build|serve|pdf]" >&2
+    echo "usage: $0 [build|serve|pdf] [release|dev]" >&2
     exit 2
     ;;
 esac

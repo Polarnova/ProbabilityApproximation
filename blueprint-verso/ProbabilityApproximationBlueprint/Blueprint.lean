@@ -49,10 +49,18 @@ The chapters below present the scalar and multivariate arguments in mathematical
 continuous reading and offline use, the complete text is also available as a
 [PDF](berry-esseen-bounds.pdf).
 
+:::group "probability-scalar"
+Nonuniform Berry–Esseen bounds
+:::
+
+:::group "probability-convex"
+Normal approximation over convex sets
+:::
+
 {include 0 ProbabilityApproximationBlueprint.NonuniformBerryEsseen}
 
 {include 0 ProbabilityApproximationBlueprint.ConvexSetApproximation}
 
 {references}
 
-{blueprint_graph}
+{blueprint_graph (direction := LR)}
