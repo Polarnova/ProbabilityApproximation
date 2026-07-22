@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Set up Lean and restore Mathlib cache
         uses: leanprover/lean-action@v1
         with:
@@ -28,7 +28,7 @@ jobs:
           use-mathlib-cache: true
           use-github-cache: false
       - name: Restore project build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: .lake/build
           key: probability-approximation-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ github.sha }}
@@ -44,7 +44,7 @@ jobs:
         working-directory: blueprint-verso
         run: lake exe cache get
       - name: Restore Blueprint dependency build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             .lake/packages/Cli/.lake/build
@@ -64,7 +64,7 @@ jobs:
             .lake/packages/verso-slides/.lake/build
           key: probability-blueprint-deps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json') }}
       - name: Restore Blueprint project build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: blueprint-verso/.lake/build
           key: probability-blueprint-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json', 'lake-manifest.json') }}-${{ github.sha }}
@@ -106,7 +106,7 @@ jobs:
         run: ./scripts/site.sh build release
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: blueprint-verso/_out/site/html-multi
 
@@ -126,4 +126,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
