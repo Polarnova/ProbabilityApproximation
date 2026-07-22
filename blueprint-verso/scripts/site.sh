@@ -30,8 +30,10 @@ fi
 build_library() {
   cd "$root"
   python3 "$root/scripts/check_statement_style.py"
-  echo "Checking compiled Blueprint modules with Lake..."
-  "$lake_cmd" build ProbabilityApproximationBlueprint
+  echo "Reusing the checked production-library artifacts..."
+  "$lake_cmd" --no-build build @ProbabilityApproximation/ProbabilityApproximation
+  echo "Building the Blueprint modules..."
+  "$lake_cmd" build @/ProbabilityApproximationBlueprint
 }
 
 validate_site() {

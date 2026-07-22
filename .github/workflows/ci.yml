@@ -2,8 +2,14 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -41,21 +47,21 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            blueprint-verso/.lake/packages/Cli/.lake/build
-            blueprint-verso/.lake/packages/LeanSearchClient/.lake/build
-            blueprint-verso/.lake/packages/MD4Lean/.lake/build
-            blueprint-verso/.lake/packages/Qq/.lake/build
-            blueprint-verso/.lake/packages/VersoBlueprint/.lake/build
-            blueprint-verso/.lake/packages/aesop/.lake/build
-            blueprint-verso/.lake/packages/batteries/.lake/build
-            blueprint-verso/.lake/packages/checkdecls/.lake/build
-            blueprint-verso/.lake/packages/illuminate/.lake/build
-            blueprint-verso/.lake/packages/importGraph/.lake/build
-            blueprint-verso/.lake/packages/plausible/.lake/build
-            blueprint-verso/.lake/packages/proofwidgets/.lake/build
-            blueprint-verso/.lake/packages/subverso/.lake/build
-            blueprint-verso/.lake/packages/verso/.lake/build
-            blueprint-verso/.lake/packages/verso-slides/.lake/build
+            .lake/packages/Cli/.lake/build
+            .lake/packages/LeanSearchClient/.lake/build
+            .lake/packages/MD4Lean/.lake/build
+            .lake/packages/Qq/.lake/build
+            .lake/packages/VersoBlueprint/.lake/build
+            .lake/packages/aesop/.lake/build
+            .lake/packages/batteries/.lake/build
+            .lake/packages/checkdecls/.lake/build
+            .lake/packages/illuminate/.lake/build
+            .lake/packages/importGraph/.lake/build
+            .lake/packages/plausible/.lake/build
+            .lake/packages/proofwidgets/.lake/build
+            .lake/packages/subverso/.lake/build
+            .lake/packages/verso/.lake/build
+            .lake/packages/verso-slides/.lake/build
           key: probability-blueprint-deps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('blueprint-verso/lean-toolchain', 'blueprint-verso/lake-manifest.json') }}
       - name: Restore Blueprint project build cache
         uses: actions/cache@v4

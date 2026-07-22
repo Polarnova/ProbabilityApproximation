@@ -118,8 +118,10 @@ mathematical text with complete statements, source citations, Lean declarations,
 graphs. The same text is available as a
 [downloadable PDF](https://probability.polarnova.site/berry-esseen-bounds.pdf).
 
-Use `./scripts/site.sh serve dev` inside `blueprint-verso` to retain fidelity metadata during local
-review. Public builds use the default `release` profile and omit those tags from the reading view.
+Build `ProbabilityApproximation` at the repository root, then use `./scripts/site.sh serve dev`
+inside `blueprint-verso` to retain fidelity metadata during local review. The Blueprint workspace
+shares the root dependencies and refuses to rebuild a missing or stale production library. Public
+builds use the default `release` profile and omit fidelity tags from the reading view.
 
 ## Contributing
 

@@ -173,11 +173,17 @@ cd blueprint-verso
 During Blueprint editing, build the statement module before rendering the site:
 
 ```bash
+lake --wfail build ProbabilityApproximation
 cd blueprint-verso
 lake build +ProbabilityApproximationBlueprint.NonuniformBerryEsseen
 lake build +ProbabilityApproximationBlueprint.ConvexSetApproximation
 lake build +ProbabilityApproximationBlueprint.References
 ```
+
+The Blueprint package shares the root `.lake/packages` directory. Its site driver checks
+`@ProbabilityApproximation/ProbabilityApproximation` with `lake --no-build` before compiling the
+documentation modules; missing or stale production artifacts are an error rather than an implicit
+second library build.
 
 `site.sh build release` runs the statement-style check, Blueprint library build, HTML render,
 strict manifest validator, `vbp check`, and PDF render. The release profile is the default and
