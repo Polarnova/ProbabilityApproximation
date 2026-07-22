@@ -84,7 +84,7 @@ def main() -> None:
     ]
     lean_decls = [preview for preview in previews if preview.get("targetKind") == "leanDecl"]
     citations = [preview for preview in previews if preview.get("targetKind") == "citation"]
-    if data.get("vbpInternalSchemaVersion") != 2:
+    if data.get("vbpInternalSchemaVersion") != 3:
         fail("unexpected Blueprint schema version")
     if len(blocks) != len(EXPECTED_LABELS):
         fail(f"expected {len(EXPECTED_LABELS)} statement blocks, found {len(blocks)}")

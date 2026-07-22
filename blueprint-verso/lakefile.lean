@@ -37,6 +37,3 @@ target referencesBibStamp pkg : System.FilePath := do
 @[default_target]
 lean_lib ProbabilityApproximationBlueprint where
   extraDepTargets := #[`referencesBibStamp]
-
-lean_exe «blueprint-gen» where
-  root := `ProbabilityApproximationBlueprintMain
