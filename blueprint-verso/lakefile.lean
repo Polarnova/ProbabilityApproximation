@@ -11,6 +11,7 @@ require VersoBlueprint from git "https://github.com/leanprover/verso-blueprint" 
 require ProbabilityApproximation from ".."
 
 package ProbabilityApproximationBlueprint where
+  packagesDir := "../.lake/packages"
   precompileModules := false
   leanOptions := #[⟨`experimental.module, true⟩]
 
@@ -21,6 +22,7 @@ input_file referencesBib where
 target referencesBibStamp pkg : System.FilePath := do
   let bibliography ← referencesBib.fetch
   let stamp := pkg.buildDir / "references.bib.stamp"
+  IO.FS.createDirAll pkg.buildDir
   buildFileAfterDep (text := true) stamp bibliography fun bibliographyPath => do
     let sourcesOlean :=
       pkg.buildDir / "lib" / "lean" /
