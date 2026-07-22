@@ -22,6 +22,7 @@ input_file referencesBib where
 target referencesBibStamp pkg : System.FilePath := do
   let bibliography ← referencesBib.fetch
   let stamp := pkg.buildDir / "references.bib.stamp"
+  IO.FS.createDirAll pkg.buildDir
   buildFileAfterDep (text := true) stamp bibliography fun bibliographyPath => do
     let sourcesOlean :=
       pkg.buildDir / "lib" / "lean" /
