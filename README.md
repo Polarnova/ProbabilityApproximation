@@ -82,12 +82,12 @@ Then update and build:
 ```bash
 lake update
 lake exe cache get
-lake build
+lake build @ProbabilityApproximation:release
 ```
 
-Lake automatically downloads the matching precompiled ProbabilityApproximation release archive on
-Linux x86-64 and macOS arm64. If an archive is unavailable for a platform, Lake falls back to the
-same tagged source and builds it locally.
+The explicit release target downloads the matching precompiled ProbabilityApproximation archive on
+Linux x86-64 and macOS arm64 and fails if that verified platform asset is unavailable; it does not
+silently replace the download with a local source build.
 
 Import all public declarations with:
 
@@ -102,13 +102,14 @@ The principal declarations are:
 #check ProbabilityTheory.exists_bentkus_convex_set_constant
 ```
 
-To build the repository itself:
+Full repository, Blueprint, and PDF builds run in GitHub Actions. For local proof development,
+fetch Mathlib's cache and build only the affected production module, for example:
 
 ```bash
 git clone https://github.com/Polarnova/ProbabilityApproximation.git
 cd ProbabilityApproximation
 lake exe cache get
-lake build ProbabilityApproximation
+lake build ProbabilityApproximation.BerryEsseen
 ```
 
 ## Blueprint
@@ -118,10 +119,11 @@ mathematical text with complete statements, source citations, Lean declarations,
 graphs. The same text is available as a
 [downloadable PDF](https://probability.polarnova.site/berry-esseen-bounds.pdf).
 
-Build `ProbabilityApproximation` at the repository root, then use `./scripts/site.sh serve dev`
-inside `blueprint-verso` to retain fidelity metadata during local review. The Blueprint workspace
+After the root production artifacts are current, `./scripts/site.sh serve dev` inside
+`blueprint-verso` retains fidelity metadata for optional local review. The Blueprint workspace
 shares the root dependencies and refuses to rebuild a missing or stale production library. Public
-builds use the default `release` profile and omit fidelity tags from the reading view.
+builds run in GitHub Actions with the default `release` profile and omit fidelity tags from the
+reading view.
 
 ## Contributing
 

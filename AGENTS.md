@@ -159,21 +159,19 @@ lake update
 lake exe cache get
 ```
 
-During proof work, build the narrowest affected production module. Before handoff, run from the
-repository root:
+During proof work, build only the narrowest affected production module. Before handoff, run the
+lightweight source audits locally and use the pull request's GitHub Actions result as the required
+full-library, Blueprint, and PDF validation:
 
 ```bash
-lake --wfail build ProbabilityApproximation
 ./.github/scripts/forbidden_tokens.sh
 ./.github/scripts/audit_axioms.sh
-cd blueprint-verso
-./scripts/site.sh build
 ```
 
-During Blueprint editing, build the statement module before rendering the site:
+During Blueprint editing, a narrow statement-module build is optional local feedback after the
+root production artifacts are current:
 
 ```bash
-lake --wfail build ProbabilityApproximation
 cd blueprint-verso
 lake build +ProbabilityApproximationBlueprint.NonuniformBerryEsseen
 lake build +ProbabilityApproximationBlueprint.ConvexSetApproximation
@@ -183,7 +181,8 @@ lake build +ProbabilityApproximationBlueprint.References
 The Blueprint package shares the root `.lake/packages` directory. Its site driver checks
 `@ProbabilityApproximation/ProbabilityApproximation` with `lake --no-build` before compiling the
 documentation modules; missing or stale production artifacts are an error rather than an implicit
-second library build.
+second library build. Resource-constrained local work must consume release caches where available;
+full production, Blueprint, and publication builds belong in GitHub Actions.
 
 `site.sh build release` runs the statement-style check, Blueprint library build, HTML render,
 strict manifest validator, `vbp check`, and PDF render. The release profile is the default and
