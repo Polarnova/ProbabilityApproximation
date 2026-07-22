@@ -3,6 +3,8 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+packages_dir="$(jq -er '.packagesDir // ".lake/packages"' "$root/lake-manifest.json")"
+packages_root="$(cd "$root/$packages_dir" && pwd)"
 output="$root/_out/site"
 book_output="$root/_out/book"
 profile="${2:-release}"
@@ -49,7 +51,7 @@ build_site() {
   rm -rf -- "$output/html-multi"
   export PROBABILITY_APPROXIMATION_SOURCE_REVISION="${GITHUB_SHA:-$(git -C "$root/.." rev-parse HEAD)}"
   export MATHLIB_SOURCE_REVISION="$(
-    git -C "$root/.lake/packages/mathlib" rev-parse HEAD
+    git -C "$packages_root/mathlib" rev-parse HEAD
   )"
   "$lake_cmd" lean ProbabilityApproximationBlueprintMain.lean -- --run \
     ProbabilityApproximationBlueprintMain.lean --output "$output"
